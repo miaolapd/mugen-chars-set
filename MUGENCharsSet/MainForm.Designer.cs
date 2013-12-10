@@ -223,26 +223,26 @@
             this.tsmiOpenCnsFile,
             this.tsmiOpenDefDir});
             this.ctxmnuCharList.Name = "contextMenuStrip1";
-            this.ctxmnuCharList.Size = new System.Drawing.Size(144, 70);
+            this.ctxmnuCharList.Size = new System.Drawing.Size(153, 92);
             // 
             // tsmiOpenDefFile
             // 
             this.tsmiOpenDefFile.Name = "tsmiOpenDefFile";
-            this.tsmiOpenDefFile.Size = new System.Drawing.Size(143, 22);
+            this.tsmiOpenDefFile.Size = new System.Drawing.Size(152, 22);
             this.tsmiOpenDefFile.Text = "打开def文件";
             this.tsmiOpenDefFile.Click += new System.EventHandler(this.tsmiOpenDefFile_Click);
             // 
             // tsmiOpenCnsFile
             // 
             this.tsmiOpenCnsFile.Name = "tsmiOpenCnsFile";
-            this.tsmiOpenCnsFile.Size = new System.Drawing.Size(143, 22);
+            this.tsmiOpenCnsFile.Size = new System.Drawing.Size(152, 22);
             this.tsmiOpenCnsFile.Text = "打开cns文件";
             this.tsmiOpenCnsFile.Click += new System.EventHandler(this.tsmiOpenCnsFile_Click);
             // 
             // tsmiOpenDefDir
             // 
             this.tsmiOpenDefDir.Name = "tsmiOpenDefDir";
-            this.tsmiOpenDefDir.Size = new System.Drawing.Size(143, 22);
+            this.tsmiOpenDefDir.Size = new System.Drawing.Size(152, 22);
             this.tsmiOpenDefDir.Text = "打开文件夹";
             this.tsmiOpenDefDir.Click += new System.EventHandler(this.tsmiOpenDefDir_Click);
             // 

@@ -166,7 +166,6 @@ namespace MUGENCharsSet
             ModifyEnabled = false;
             MultiModified = false;
             lstChars.DataSource = null;
-            curLstCharSearchNo = -1;
             txtKeyword.Clear();
             if (!Directory.Exists(MugenCharsDir))
             {
@@ -394,6 +393,7 @@ namespace MUGENCharsSet
             string keyword = txtKeyword.Text.Trim();
             if (keyword == String.Empty) return;
             if (lstChars.Items.Count == 0) return;
+            if (lstChars.SelectedIndex != -1) curLstCharSearchNo = lstChars.SelectedIndex;
             lstChars.SelectedIndex = -1;
             bool isFind = false;
             if (isUp)
@@ -709,7 +709,6 @@ namespace MUGENCharsSet
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyValue == (int)Keys.Enter) btnSearchDown_Click(null, null);
-            else curLstCharSearchNo = -1;
         }
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
