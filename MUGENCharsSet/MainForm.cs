@@ -32,7 +32,7 @@ namespace MUGENCharsSet
         private bool _multiModified = false;
         private string _editProgram = DEF_EDIT_PROGRAM;
         private string[] _allActFileList;
-        private StringCollection curDefList = new StringCollection();   //def文件绝对路径列表
+        private StringCollection _curDefList = new StringCollection();
         private Character curChar = null;   //当前MUGEN人物类
         private bool isLstCharPreparing = false;    //lstChar控件是否在设置DataSource过程中
         private int curLstCharSearchNo = -1;    //当前人物列表搜索索引号
@@ -89,6 +89,15 @@ namespace MUGENCharsSet
         }
 
         /// <summary>
+        /// 获取或设置当前def文件绝对路径列表
+        /// </summary>
+        private StringCollection CurDefList
+        {
+            get { return _curDefList; }
+            set { _curDefList = value; }
+        }
+
+        /// <summary>
         /// 获取或设置是否进入批量修改模式
         /// </summary>
         private bool MultiModified
@@ -112,10 +121,10 @@ namespace MUGENCharsSet
                     btnRestore.Enabled = true;
                     lblDefPath.Text = MULTI_VALUE;
                     ttpCommon.SetToolTip(lblDefPath, MULTI_VALUE);
-                    curDefList.Clear();
+                    _curDefList.Clear();
                     foreach (int i in lstChars.SelectedIndices)
                     {
-                        curDefList.Add(((CharFile)lstChars.Items[i]).DefPath);
+                        _curDefList.Add(((CharFile)lstChars.Items[i]).DefPath);
                     }
                     setMutliDefPathLabel();
                     curChar = new Character();
@@ -263,18 +272,18 @@ namespace MUGENCharsSet
         private void readSingleCharSet()
         {
             if (lstChars.SelectedIndices.Count != 1) return;
-            curDefList.Clear();
+            _curDefList.Clear();
             ModifyEnabled = false;
             MultiModified = false;
-            curDefList.Add(lstChars.SelectedValue.ToString());
-            if (!File.Exists(curDefList[0]))
+            _curDefList.Add(lstChars.SelectedValue.ToString());
+            if (!File.Exists(_curDefList[0]))
             {
                 ShowErrorMsg("def文件不存在！");
                 return;
             }
             try
             {
-                curChar = new Character(curDefList[0]);
+                curChar = new Character(_curDefList[0]);
             }
             catch (ApplicationException ex)
             {
@@ -282,7 +291,7 @@ namespace MUGENCharsSet
                 ShowErrorMsg(ex.Message);
                 return;
             }
-            setDefPathLabel(curDefList[0]);
+            setDefPathLabel(_curDefList[0]);
             txtName.Text = curChar.Name;
             txtDisplayName.Text = curChar.DisplayName;
             txtLife.Text = curChar.Life.ToString();
@@ -313,7 +322,7 @@ namespace MUGENCharsSet
                 }
             }
             ModifyEnabled = true;
-            if (!File.Exists(curDefList[0] + Character.BAK_EXT)) btnRestore.Enabled = false;
+            if (!File.Exists(_curDefList[0] + Character.BAK_EXT)) btnRestore.Enabled = false;
         }
 
         /// <summary>
@@ -342,7 +351,7 @@ namespace MUGENCharsSet
         private void setMutliDefPathLabel()
         {
             string msg = "";
-            foreach (string def in curDefList)
+            foreach (string def in _curDefList)
             {
                 string strTemp = def.Substring(MugenCharsDirPath.Length);
                 msg += strTemp + "\r\n";
@@ -375,12 +384,12 @@ namespace MUGENCharsSet
         /// </summary>
         private void writeMultiCharSet()
         {
-            if (curDefList.Count == 0) return;
+            if (_curDefList.Count == 0) return;
             int total = 0;
             try
             {
                 readValues();
-                total = Character.writeMultiCharSet(curDefList, curChar);
+                total = Character.writeMultiCharSet(_curDefList, curChar);
             }
             catch (Exception ex)
             {
@@ -578,7 +587,7 @@ namespace MUGENCharsSet
         {
             if (MultiModified)
             {
-                int total = Character.backupMultiCharSet(curDefList);
+                int total = Character.backupMultiCharSet(_curDefList);
                 if (total > 0) ShowSuccessMsg(total + "条项目备份成功！");
                 else ShowErrorMsg("备份失败！");
             }
@@ -594,7 +603,7 @@ namespace MUGENCharsSet
                     return;
                 }
                 ShowSuccessMsg("备份成功！");
-                if (File.Exists(curDefList[0] + Character.BAK_EXT)) btnRestore.Enabled = true;
+                if (File.Exists(_curDefList[0] + Character.BAK_EXT)) btnRestore.Enabled = true;
             }
         }
 
@@ -602,7 +611,7 @@ namespace MUGENCharsSet
         {
             if (MultiModified)
             {
-                int total = Character.restoreMultiCharSet(curDefList);
+                int total = Character.restoreMultiCharSet(_curDefList);
                 if (total > 0)
                 {
                     ShowSuccessMsg(total + "条项目还原成功！");
