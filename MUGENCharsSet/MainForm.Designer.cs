@@ -223,26 +223,26 @@
             this.tsmiOpenCnsFile,
             this.tsmiOpenDefDir});
             this.ctxmnuCharList.Name = "contextMenuStrip1";
-            this.ctxmnuCharList.Size = new System.Drawing.Size(153, 92);
+            this.ctxmnuCharList.Size = new System.Drawing.Size(144, 70);
             // 
             // tsmiOpenDefFile
             // 
             this.tsmiOpenDefFile.Name = "tsmiOpenDefFile";
-            this.tsmiOpenDefFile.Size = new System.Drawing.Size(152, 22);
+            this.tsmiOpenDefFile.Size = new System.Drawing.Size(143, 22);
             this.tsmiOpenDefFile.Text = "打开def文件";
             this.tsmiOpenDefFile.Click += new System.EventHandler(this.tsmiOpenDefFile_Click);
             // 
             // tsmiOpenCnsFile
             // 
             this.tsmiOpenCnsFile.Name = "tsmiOpenCnsFile";
-            this.tsmiOpenCnsFile.Size = new System.Drawing.Size(152, 22);
+            this.tsmiOpenCnsFile.Size = new System.Drawing.Size(143, 22);
             this.tsmiOpenCnsFile.Text = "打开cns文件";
             this.tsmiOpenCnsFile.Click += new System.EventHandler(this.tsmiOpenCnsFile_Click);
             // 
             // tsmiOpenDefDir
             // 
             this.tsmiOpenDefDir.Name = "tsmiOpenDefDir";
-            this.tsmiOpenDefDir.Size = new System.Drawing.Size(152, 22);
+            this.tsmiOpenDefDir.Size = new System.Drawing.Size(143, 22);
             this.tsmiOpenDefDir.Text = "打开文件夹";
             this.tsmiOpenDefDir.Click += new System.EventHandler(this.tsmiOpenDefDir_Click);
             // 
@@ -279,7 +279,7 @@
             this.grpProperty.Size = new System.Drawing.Size(307, 187);
             this.grpProperty.TabIndex = 3;
             this.grpProperty.TabStop = false;
-            this.grpProperty.Text = "属性设置";
+            this.grpProperty.Text = "人物属性设置";
             // 
             // txtDefence
             // 
@@ -290,10 +290,7 @@
             this.txtDefence.Name = "txtDefence";
             this.txtDefence.Size = new System.Drawing.Size(240, 21);
             this.txtDefence.TabIndex = 5;
-            this.txtDefence.Click += new System.EventHandler(this.textProperty_Click);
-            this.txtDefence.Enter += new System.EventHandler(this.textProperty_Enter);
             this.txtDefence.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textProperty_KeyDown);
-            this.txtDefence.Leave += new System.EventHandler(this.textProperty_Leave);
             // 
             // lblDefence
             // 
@@ -313,10 +310,7 @@
             this.txtAttack.Name = "txtAttack";
             this.txtAttack.Size = new System.Drawing.Size(240, 21);
             this.txtAttack.TabIndex = 4;
-            this.txtAttack.Click += new System.EventHandler(this.textProperty_Click);
-            this.txtAttack.Enter += new System.EventHandler(this.textProperty_Enter);
             this.txtAttack.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textProperty_KeyDown);
-            this.txtAttack.Leave += new System.EventHandler(this.textProperty_Leave);
             // 
             // lblAttack
             // 
@@ -336,10 +330,7 @@
             this.txtPower.Name = "txtPower";
             this.txtPower.Size = new System.Drawing.Size(240, 21);
             this.txtPower.TabIndex = 6;
-            this.txtPower.Click += new System.EventHandler(this.textProperty_Click);
-            this.txtPower.Enter += new System.EventHandler(this.textProperty_Enter);
             this.txtPower.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textProperty_KeyDown);
-            this.txtPower.Leave += new System.EventHandler(this.textProperty_Leave);
             // 
             // lblPower
             // 
@@ -359,10 +350,7 @@
             this.txtLife.Name = "txtLife";
             this.txtLife.Size = new System.Drawing.Size(240, 21);
             this.txtLife.TabIndex = 3;
-            this.txtLife.Click += new System.EventHandler(this.textProperty_Click);
-            this.txtLife.Enter += new System.EventHandler(this.textProperty_Enter);
             this.txtLife.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textProperty_KeyDown);
-            this.txtLife.Leave += new System.EventHandler(this.textProperty_Leave);
             // 
             // lblLife
             // 
@@ -382,10 +370,7 @@
             this.txtDisplayName.Name = "txtDisplayName";
             this.txtDisplayName.Size = new System.Drawing.Size(240, 21);
             this.txtDisplayName.TabIndex = 2;
-            this.txtDisplayName.Click += new System.EventHandler(this.textProperty_Click);
-            this.txtDisplayName.Enter += new System.EventHandler(this.textProperty_Enter);
             this.txtDisplayName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textProperty_KeyDown);
-            this.txtDisplayName.Leave += new System.EventHandler(this.textProperty_Leave);
             // 
             // lblDisplayName
             // 
@@ -405,10 +390,7 @@
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(240, 21);
             this.txtName.TabIndex = 1;
-            this.txtName.Click += new System.EventHandler(this.textProperty_Click);
-            this.txtName.Enter += new System.EventHandler(this.textProperty_Enter);
             this.txtName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textProperty_KeyDown);
-            this.txtName.Leave += new System.EventHandler(this.textProperty_Leave);
             // 
             // lblName
             // 

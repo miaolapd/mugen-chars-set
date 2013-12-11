@@ -9,6 +9,9 @@ using System.Windows.Forms;
 
 namespace MUGENCharsSet
 {
+    /// <summary>
+    /// 设置窗口类
+    /// </summary>
     public partial class SettingForm : Form
     {
         public SettingForm()
@@ -63,11 +66,19 @@ namespace MUGENCharsSet
             txtEditProgram.Text = MainForm.DEF_EDIT_PROGRAM;
         }
 
+        /// <summary>
+        /// 显示操作成功消息
+        /// </summary>
+        /// <param name="msg">消息</param>
         private void ShowSuccessMsg(string msg)
         {
             MessageBox.Show(msg, "操作成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        /// <summary>
+        /// 显示操作失败消息
+        /// </summary>
+        /// <param name="msg">消息</param>
         private void ShowErrorMsg(string msg)
         {
             MessageBox.Show(msg, "操作失败", MessageBoxButtons.OK, MessageBoxIcon.Error);

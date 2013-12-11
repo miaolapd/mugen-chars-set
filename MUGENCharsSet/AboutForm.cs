@@ -9,6 +9,9 @@ using System.Windows.Forms;
 
 namespace MUGENCharsSet
 {
+    /// <summary>
+    /// 关于窗口类
+    /// </summary>
     public partial class AboutForm : Form
     {
         public AboutForm()

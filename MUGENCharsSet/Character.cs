@@ -7,96 +7,130 @@ using System.Collections.Specialized;
 
 namespace MUGENCharsSet
 {
+    /// <summary>
+    /// MUGEN人物类
+    /// </summary>
     public class Character
     {
-        public const char NAME_DELIMETER = '"';
-        public const string INFO_SECTION = "Info";
-        public const string FILES_SECTION = "Files";
-        public const string DATA_SECTION = "Data";
-        public const string NAME_ITEM = "name";
-        public const string DISPLAYNAME_ITEM = "displayname";
-        public const string CNS_ITEM = "cns";
-        public const string LIFE_ITEM = "life";
-        public const string ATTACK_ITEM = "attack";
-        public const string DEFENCE_ITEM = "defence";
-        public const string POWER_ITEM = "power";
-        public const string PAL_ITEM_PREFIX = "pal";
-        public const string ACT_EXT = ".act";
-        public const string DEF_EXT = ".def";
-        public const string BAK_EXT = ".bak";
+        public const char NAME_DELIMETER = '"'; //人物名界定符
+        public const string INFO_SECTION = "Info";  //Info配置分段
+        public const string FILES_SECTION = "Files";    //Files配置分段
+        public const string DATA_SECTION = "Data";  //Data配置分段
+        public const string NAME_ITEM = "name"; //人物名配置项
+        public const string DISPLAYNAME_ITEM = "displayname";   //人物显示名配置项
+        public const string CNS_ITEM = "cns";   //cns相对路径配置项
+        public const string LIFE_ITEM = "life"; //生命值配置项
+        public const string ATTACK_ITEM = "attack"; //攻击力配置项
+        public const string DEFENCE_ITEM = "defence";   //防御力配置项
+        public const string POWER_ITEM = "power";   //气上限配置项
+        public const string PAL_ITEM_PREFIX = "pal";    //pal配置项前缀名
+        public const string ACT_EXT = ".act";   //act文件扩展名
+        public const string DEF_EXT = ".def";   //def文件扩展名
+        public const string BAK_EXT = ".bak";   //备份文件扩展名
 
-        private string defPath;
-        private string name;
-        private string displayName;
-        private int life;
-        private int attack;
-        private int defence;
-        private int power;
-        private string cns;
-        private NameValueCollection palList;
+        private string _defPath;
+        private string _name;
+        private string _displayName;
+        private int _life;
+        private int _attack;
+        private int _defence;
+        private int _power;
+        private string _cns;
+        private NameValueCollection _palList;
 
+        /// <summary>
+        /// 获取或设置def文件绝对路径
+        /// </summary>
         public string DefPath
         {
-            get { return defPath; }
-            set { defPath = value; }
+            get { return _defPath; }
+            set { _defPath = value; }
         }
 
+        /// <summary>
+        /// 获取或设置人物名
+        /// </summary>
         public string Name
         {
-            get { return name; }
-            set { name = value; }
+            get { return _name; }
+            set { _name = value; }
         }
 
+        /// <summary>
+        /// 获取或设置显示名
+        /// </summary>
         public string DisplayName
         {
-            get { return displayName; }
-            set { displayName = value; }
+            get { return _displayName; }
+            set { _displayName = value; }
         }
 
+        /// <summary>
+        /// 获取或设置生命值
+        /// </summary>
         public int Life
         {
-            get { return life; }
-            set { life = value; }
+            get { return _life; }
+            set { _life = value; }
         }
 
+        /// <summary>
+        /// 获取或设置攻击力
+        /// </summary>
         public int Attack
         {
-            get { return attack; }
-            set { attack = value; }
+            get { return _attack; }
+            set { _attack = value; }
         }
 
+        /// <summary>
+        /// 获取或设置防御力
+        /// </summary>
         public int Defence
         {
-            get { return defence; }
-            set { defence = value; }
+            get { return _defence; }
+            set { _defence = value; }
         }
 
+        /// <summary>
+        /// 获取或设置气上限
+        /// </summary>
         public int Power
         {
-            get { return power; }
-            set { power = value; }
+            get { return _power; }
+            set { _power = value; }
         }
 
+        /// <summary>
+        /// 获取或设置cns相对路径
+        /// </summary>
         public string Cns
         {
-            get { return cns; }
-            set { cns = value; }
+            get { return _cns; }
+            set { _cns = value; }
         }
 
+        /// <summary>
+        /// 获取或设置Pal相对路径键值对列表
+        /// </summary>
         public NameValueCollection PalList
         {
-            get { return palList; }
-            set { palList = value; }
+            get { return _palList; }
+            set { _palList = value; }
         }
 
+
+        /// <summary>
+        /// 获取或设置当前所有可用的act文件相对路径列表
+        /// </summary>
         public string[] AllActFileList
         {
             get
             {
-                string path = Tools.getFileDir(DefPath);
+                string path = Tools.getFileDirPath(DefPath);
                 if (!Directory.Exists(path)) return null;
                 StringCollection actArr = new StringCollection();
-                getActList(actArr, path);
+                scanActList(actArr, path);
                 string[] tempActList = new string[actArr.Count];
                 actArr.CopyTo(tempActList, 0);
                 return tempActList;
@@ -115,42 +149,49 @@ namespace MUGENCharsSet
 
         }
 
-        public Character(string strDefPath, string strName, string strDisplayName, int intLife, int intAttack, int intDefence, int intPower,
-            string strCns, NameValueCollection arrPalList)
+        public Character(string defPath, string name, string displayName, int life, int attack, int defence, int power,
+            string cns, NameValueCollection palList)
         {
-            DefPath = strDefPath;
-            Name = strName;
-            DisplayName = strDisplayName;
-            Life = intLife;
-            Attack = intAttack;
-            Defence = intDefence;
-            Power = intPower;
-            Cns = strCns;
-            PalList = arrPalList;
+            DefPath = defPath;
+            Name = name;
+            DisplayName = displayName;
+            Life = life;
+            Attack = attack;
+            Defence = defence;
+            Power = power;
+            Cns = cns;
+            PalList = palList;
         }
 
-        public Character(string strDefPath)
+        /// <summary>
+        /// 类构造函数
+        /// </summary>
+        /// <param name="defPath">def文件绝对路径</param>
+        public Character(string defPath)
         {
             try
             {
-                DefPath = strDefPath;
+                DefPath = defPath;
                 if (!File.Exists(DefPath)) throw (new ApplicationException("def文件不存在！"));
                 IniFiles ini = new IniFiles(DefPath);
                 Name = getTrimName(ini.ReadString(INFO_SECTION, NAME_ITEM, ""));
                 DisplayName = getTrimName(ini.ReadString(INFO_SECTION, DISPLAYNAME_ITEM, ""));
                 Cns = ini.ReadString(FILES_SECTION, CNS_ITEM, "");
                 readPalSet();
-                string cnsPath = Tools.getFileDir(DefPath) + Cns;
+                string cnsPath = Tools.getFileDirPath(DefPath) + Cns;
                 if (!File.Exists(cnsPath)) throw (new ApplicationException("cns文件不存在！"));
                 readCnsSet(cnsPath);
             }
-            catch(ApplicationException ex)
+            catch (ApplicationException ex)
             {
                 throw ex;
             }
         }
 
-        public void readPalSet()
+        /// <summary>
+        /// 读取Pal设置
+        /// </summary>
+        private void readPalSet()
         {
             try
             {
@@ -170,7 +211,11 @@ namespace MUGENCharsSet
             }
         }
 
-        public void readCnsSet(string cnsPath)
+        /// <summary>
+        /// 读取cns设置
+        /// </summary>
+        /// <param name="cnsPath">cns文件绝对路径</param>
+        private void readCnsSet(string cnsPath)
         {
             try
             {
@@ -186,23 +231,31 @@ namespace MUGENCharsSet
             }
         }
 
-        public void getActList(StringCollection actArr, string dir)
+        /// <summary>
+        /// 扫描当前人物文件夹下所有act文件
+        /// </summary>
+        /// <param name="actArr">act文件相对路径列表</param>
+        /// <param name="dir">act文件夹绝对路径</param>
+        private void scanActList(StringCollection actArr, string dir)
         {
             if (!Directory.Exists(dir)) return;
             string[] tempPalFiles = Directory.GetFiles(dir, "*" + ACT_EXT);
             for (int i = 0; i < tempPalFiles.Length; i++)
             {
-                tempPalFiles[i] = Tools.getSlashDir(tempPalFiles[i].Substring(Tools.getFileDir(DefPath).Length));
+                tempPalFiles[i] = Tools.getSlashPath(tempPalFiles[i].Substring(Tools.getFileDirPath(DefPath).Length));
             }
             actArr.AddRange(tempPalFiles);
             string[] tempDirs = Directory.GetDirectories(dir);
             foreach (string tempDir in tempDirs)
             {
-                getActList(actArr, tempDir);
+                scanActList(actArr, tempDir);
             }
             return;
         }
 
+        /// <summary>
+        /// 写入人物设置
+        /// </summary>
         public void writeCharSet()
         {
             try
@@ -214,7 +267,7 @@ namespace MUGENCharsSet
                 {
                     ini.WriteString(FILES_SECTION, key, PalList[key]);
                 }
-                string cnsPath = Tools.getFileDir(DefPath) + Cns;
+                string cnsPath = Tools.getFileDirPath(DefPath) + Cns;
                 if (!File.Exists(cnsPath)) throw (new ApplicationException("cns文件不存在！"));
                 writeCnsSet(cnsPath);
             }
@@ -224,7 +277,11 @@ namespace MUGENCharsSet
             }
         }
 
-        public void writeCnsSet(string cnsPath)
+        /// <summary>
+        /// 写入人物属性设置
+        /// </summary>
+        /// <param name="cnsPath">cns文件绝对路径</param>
+        private void writeCnsSet(string cnsPath)
         {
             try
             {
@@ -240,12 +297,16 @@ namespace MUGENCharsSet
             }
         }
 
+
+        /// <summary>
+        /// 备份当前人物列表
+        /// </summary>
         public void backupCharSet()
         {
             try
             {
                 if (!File.Exists(DefPath)) throw (new ApplicationException("def文件不存在！"));
-                string cnsPath = Tools.getFileDir(DefPath) + Cns;
+                string cnsPath = Tools.getFileDirPath(DefPath) + Cns;
                 if (!File.Exists(cnsPath)) throw (new ApplicationException("cns文件不存在！"));
                 File.Copy(DefPath, DefPath + BAK_EXT, true);
                 File.Copy(cnsPath, cnsPath + BAK_EXT, true);
@@ -260,12 +321,15 @@ namespace MUGENCharsSet
             }
         }
 
+        /// <summary>
+        /// 还原当前人物列表
+        /// </summary>
         public void restoreCharSet()
         {
             try
             {
                 if (!File.Exists(DefPath + BAK_EXT)) throw (new ApplicationException("def备份文件不存在！"));
-                string cnsPath = Tools.getFileDir(DefPath) + Cns;
+                string cnsPath = Tools.getFileDirPath(DefPath) + Cns;
                 if (!File.Exists(cnsPath + BAK_EXT)) throw (new ApplicationException("cns备份文件不存在！"));
                 File.Copy(DefPath + BAK_EXT, DefPath, true);
                 File.Copy(cnsPath + BAK_EXT, cnsPath, true);
@@ -280,43 +344,64 @@ namespace MUGENCharsSet
             }
         }
 
-        public static string getTrimName(string strName)
+        /// <summary>
+        /// 获取去除界定符的人物名
+        /// </summary>
+        /// <param name="name">人物名</param>
+        /// <returns>人物名</returns>
+        public static string getTrimName(string name)
         {
-            return strName.Trim(NAME_DELIMETER);
+            return name.Trim(NAME_DELIMETER);
         }
 
-        public static string getSettingName(string strName)
+        /// <summary>
+        /// 获取头尾带界定符的人物名
+        /// </summary>
+        /// <param name="name">人物名</param>
+        /// <returns>人物名</returns>
+        public static string getSettingName(string name)
         {
-            return NAME_DELIMETER + getTrimName(strName) + NAME_DELIMETER;
+            return NAME_DELIMETER + getTrimName(name) + NAME_DELIMETER;
         }
 
-        public static string getCnsPath(string strDefPath)
+        /// <summary>
+        /// 获取cns文件绝对路径
+        /// </summary>
+        /// <param name="defPath">def文件绝对路径</param>
+        /// <returns>cns文件绝对路径</returns>
+        public static string getCnsPath(string defPath)
         {
             try
             {
-                IniFiles ini = new IniFiles(strDefPath);
-                return Tools.getFileDir(strDefPath) + ini.ReadString(FILES_SECTION, CNS_ITEM, "");
+                IniFiles ini = new IniFiles(defPath);
+                return Tools.getFileDirPath(defPath) + ini.ReadString(FILES_SECTION, CNS_ITEM, "");
             }
-            catch(ApplicationException ex)
+            catch (ApplicationException ex)
             {
                 throw ex;
             }
         }
 
-        public static int writeMultiCharSet(StringCollection defList ,Character curChar)
+        /// <summary>
+        /// 批量写入人物设置
+        /// </summary>
+        /// <param name="defList">def文件绝对路径列表</param>
+        /// <param name="curChar">MUGEN人物类</param>
+        /// <returns>修改成功总数</returns>
+        public static int writeMultiCharSet(StringCollection defList, Character curChar)
         {
             int total = 0;
             IniFiles ini;
-            foreach(string path in defList)
+            foreach (string path in defList)
             {
                 if (!File.Exists(path)) continue;
                 string cnsPath;
                 try
                 {
                     ini = new IniFiles(path);
-                    cnsPath = Tools.getFileDir(path) + ini.ReadString(FILES_SECTION, CNS_ITEM, "");
+                    cnsPath = Tools.getFileDirPath(path) + ini.ReadString(FILES_SECTION, CNS_ITEM, "");
                 }
-                catch(ApplicationException)
+                catch (ApplicationException)
                 {
                     continue;
                 }
@@ -326,7 +411,13 @@ namespace MUGENCharsSet
             return total;
         }
 
-        public static bool writeMultiCnsSet(string cnsPath, Character curChar)
+        /// <summary>
+        /// 批量写入人物属性设置
+        /// </summary>
+        /// <param name="cnsPath">cns文件绝对路径</param>
+        /// <param name="curChar">MUGEN人物类</param>
+        /// <returns>修改成功总数</returns>
+        private static bool writeMultiCnsSet(string cnsPath, Character curChar)
         {
             try
             {
@@ -337,12 +428,17 @@ namespace MUGENCharsSet
                 if (curChar.Power != 0) ini.WriteInteger(DATA_SECTION, POWER_ITEM, curChar.Power);
                 return true;
             }
-            catch(ApplicationException)
+            catch (ApplicationException)
             {
                 return false;
             }
         }
 
+        /// <summary>
+        /// 批量备份人物设置
+        /// </summary>
+        /// <param name="defList">def文件绝对路径列表</param>
+        /// <returns>备份成功总数</returns>
         public static int backupMultiCharSet(StringCollection defList)
         {
             int total = 0;
@@ -353,7 +449,7 @@ namespace MUGENCharsSet
                 {
                     if (!File.Exists(path)) continue;
                     ini = new IniFiles(path);
-                    string cnsPath = Tools.getFileDir(path) + ini.ReadString(FILES_SECTION, CNS_ITEM, "");
+                    string cnsPath = Tools.getFileDirPath(path) + ini.ReadString(FILES_SECTION, CNS_ITEM, "");
                     if (!File.Exists(cnsPath)) continue;
                     File.Copy(path, path + BAK_EXT, true);
                     File.Copy(cnsPath, cnsPath + BAK_EXT, true);
@@ -367,6 +463,11 @@ namespace MUGENCharsSet
             return total;
         }
 
+        /// <summary>
+        /// 批量还原人物设置
+        /// </summary>
+        /// <param name="defList">def文件绝对路径列表</param>
+        /// <returns>还原成功总数</returns>
         public static int restoreMultiCharSet(StringCollection defList)
         {
             int total = 0;
@@ -377,7 +478,7 @@ namespace MUGENCharsSet
                 {
                     if (!File.Exists(path + BAK_EXT)) continue;
                     ini = new IniFiles(path);
-                    string cnsPath = Tools.getFileDir(path) + ini.ReadString(FILES_SECTION, CNS_ITEM, "");
+                    string cnsPath = Tools.getFileDirPath(path) + ini.ReadString(FILES_SECTION, CNS_ITEM, "");
                     if (!File.Exists(cnsPath + BAK_EXT)) continue;
                     File.Copy(path + BAK_EXT, path, true);
                     File.Copy(cnsPath + BAK_EXT, cnsPath, true);
