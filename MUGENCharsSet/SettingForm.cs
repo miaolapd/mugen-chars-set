@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -42,7 +43,7 @@ namespace MUGENCharsSet
                 txtEditProgram.Focus();
                 return;
             }
-            if(Tools.getFileExt(editProgram)!=".exe")
+            if (Path.GetExtension(editProgram) != ".exe")
             {
                 ShowErrorMsg("必须为可执行程序！");
                 txtEditProgram.SelectAll();
@@ -51,7 +52,7 @@ namespace MUGENCharsSet
             }
             MainForm owner = (MainForm)Owner;
             owner.EditProgram = editProgram;
-            owner.writeIniSet(MainForm.DATA_SECTION, MainForm.EDIT_PROGRAM_ITEM, editProgram);
+            owner.WriteIniSet(MainForm.DATA_SECTION, MainForm.EDIT_PROGRAM_ITEM, editProgram);
             this.DialogResult = DialogResult.OK;
             this.Close();
         }

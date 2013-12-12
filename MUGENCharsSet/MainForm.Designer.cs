@@ -30,9 +30,9 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.lblMugenDir = new System.Windows.Forms.Label();
-            this.txtMugenDir = new System.Windows.Forms.TextBox();
-            this.btnOpenMugenDir = new System.Windows.Forms.Button();
+            this.lblMugenExePath = new System.Windows.Forms.Label();
+            this.txtMugenExePath = new System.Windows.Forms.TextBox();
+            this.btnOpenMugenExe = new System.Windows.Forms.Button();
             this.grpChars = new System.Windows.Forms.GroupBox();
             this.btnSearchDown = new System.Windows.Forms.Button();
             this.btnSearchUp = new System.Windows.Forms.Button();
@@ -45,6 +45,7 @@
             this.tsmiOpenDefFile = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiOpenCnsFile = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiOpenDefDir = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiDeleteChar = new System.Windows.Forms.ToolStripMenuItem();
             this.btnReadChars = new System.Windows.Forms.Button();
             this.grpProperty = new System.Windows.Forms.GroupBox();
             this.txtDefence = new System.Windows.Forms.TextBox();
@@ -68,55 +69,55 @@
             this.btnReset = new System.Windows.Forms.Button();
             this.btnBackup = new System.Windows.Forms.Button();
             this.btnRestore = new System.Windows.Forms.Button();
-            this.fbdMugenDir = new System.Windows.Forms.FolderBrowserDialog();
             this.ttpCommon = new System.Windows.Forms.ToolTip(this.components);
             this.grpDefPath = new System.Windows.Forms.GroupBox();
-            this.grpMugenDir = new System.Windows.Forms.GroupBox();
+            this.grpMugenExePath = new System.Windows.Forms.GroupBox();
             this.mnuMain = new System.Windows.Forms.MenuStrip();
             this.tsmiApp = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiOpenMugenDir = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiLaunchMugenExe = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiSetting = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiAbout = new System.Windows.Forms.ToolStripMenuItem();
+            this.ofdOpenMugenExe = new System.Windows.Forms.OpenFileDialog();
             this.grpChars.SuspendLayout();
             this.ctxmnuCharList.SuspendLayout();
             this.grpProperty.SuspendLayout();
             this.grpPal.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPal)).BeginInit();
             this.grpDefPath.SuspendLayout();
-            this.grpMugenDir.SuspendLayout();
+            this.grpMugenExePath.SuspendLayout();
             this.mnuMain.SuspendLayout();
             this.SuspendLayout();
             // 
-            // lblMugenDir
+            // lblMugenExePath
             // 
-            this.lblMugenDir.AutoSize = true;
-            this.lblMugenDir.Location = new System.Drawing.Point(6, 18);
-            this.lblMugenDir.Name = "lblMugenDir";
-            this.lblMugenDir.Size = new System.Drawing.Size(107, 12);
-            this.lblMugenDir.TabIndex = 0;
-            this.lblMugenDir.Text = "MUGEN程序根目录：";
+            this.lblMugenExePath.AutoSize = true;
+            this.lblMugenExePath.Location = new System.Drawing.Point(6, 18);
+            this.lblMugenExePath.Name = "lblMugenExePath";
+            this.lblMugenExePath.Size = new System.Drawing.Size(95, 12);
+            this.lblMugenExePath.TabIndex = 0;
+            this.lblMugenExePath.Text = "MUGEN程序位置：";
             // 
-            // txtMugenDir
+            // txtMugenExePath
             // 
-            this.txtMugenDir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtMugenExePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtMugenDir.Location = new System.Drawing.Point(119, 15);
-            this.txtMugenDir.Name = "txtMugenDir";
-            this.txtMugenDir.Size = new System.Drawing.Size(371, 21);
-            this.txtMugenDir.TabIndex = 1;
-            this.txtMugenDir.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMugenDir_KeyDown);
+            this.txtMugenExePath.Location = new System.Drawing.Point(107, 15);
+            this.txtMugenExePath.Name = "txtMugenExePath";
+            this.txtMugenExePath.Size = new System.Drawing.Size(383, 21);
+            this.txtMugenExePath.TabIndex = 1;
+            this.txtMugenExePath.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMugenDir_KeyDown);
             // 
-            // btnOpenMugenDir
+            // btnOpenMugenExe
             // 
-            this.btnOpenMugenDir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOpenMugenDir.Location = new System.Drawing.Point(496, 13);
-            this.btnOpenMugenDir.Name = "btnOpenMugenDir";
-            this.btnOpenMugenDir.Size = new System.Drawing.Size(31, 23);
-            this.btnOpenMugenDir.TabIndex = 2;
-            this.btnOpenMugenDir.Text = "...";
-            this.btnOpenMugenDir.UseVisualStyleBackColor = true;
-            this.btnOpenMugenDir.Click += new System.EventHandler(this.btnOpenMugenDir_Click);
+            this.btnOpenMugenExe.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnOpenMugenExe.Location = new System.Drawing.Point(496, 13);
+            this.btnOpenMugenExe.Name = "btnOpenMugenExe";
+            this.btnOpenMugenExe.Size = new System.Drawing.Size(31, 23);
+            this.btnOpenMugenExe.TabIndex = 2;
+            this.btnOpenMugenExe.Text = "...";
+            this.btnOpenMugenExe.UseVisualStyleBackColor = true;
+            this.btnOpenMugenExe.Click += new System.EventHandler(this.btnOpenMugenExe_Click);
             // 
             // grpChars
             // 
@@ -221,30 +222,39 @@
             this.ctxmnuCharList.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiOpenDefFile,
             this.tsmiOpenCnsFile,
-            this.tsmiOpenDefDir});
+            this.tsmiOpenDefDir,
+            this.tsmiDeleteChar});
             this.ctxmnuCharList.Name = "contextMenuStrip1";
-            this.ctxmnuCharList.Size = new System.Drawing.Size(144, 70);
+            this.ctxmnuCharList.Size = new System.Drawing.Size(170, 92);
             // 
             // tsmiOpenDefFile
             // 
             this.tsmiOpenDefFile.Name = "tsmiOpenDefFile";
-            this.tsmiOpenDefFile.Size = new System.Drawing.Size(143, 22);
-            this.tsmiOpenDefFile.Text = "打开def文件";
+            this.tsmiOpenDefFile.Size = new System.Drawing.Size(169, 22);
+            this.tsmiOpenDefFile.Text = "打开def文件(&D)";
             this.tsmiOpenDefFile.Click += new System.EventHandler(this.tsmiOpenDefFile_Click);
             // 
             // tsmiOpenCnsFile
             // 
             this.tsmiOpenCnsFile.Name = "tsmiOpenCnsFile";
-            this.tsmiOpenCnsFile.Size = new System.Drawing.Size(143, 22);
-            this.tsmiOpenCnsFile.Text = "打开cns文件";
+            this.tsmiOpenCnsFile.Size = new System.Drawing.Size(169, 22);
+            this.tsmiOpenCnsFile.Text = "打开cns文件(&C)";
             this.tsmiOpenCnsFile.Click += new System.EventHandler(this.tsmiOpenCnsFile_Click);
             // 
             // tsmiOpenDefDir
             // 
             this.tsmiOpenDefDir.Name = "tsmiOpenDefDir";
-            this.tsmiOpenDefDir.Size = new System.Drawing.Size(143, 22);
-            this.tsmiOpenDefDir.Text = "打开文件夹";
+            this.tsmiOpenDefDir.Size = new System.Drawing.Size(169, 22);
+            this.tsmiOpenDefDir.Text = "打开文件夹(&O)";
             this.tsmiOpenDefDir.Click += new System.EventHandler(this.tsmiOpenDefDir_Click);
+            // 
+            // tsmiDeleteChar
+            // 
+            this.tsmiDeleteChar.Name = "tsmiDeleteChar";
+            this.tsmiDeleteChar.ShortcutKeys = System.Windows.Forms.Keys.Delete;
+            this.tsmiDeleteChar.Size = new System.Drawing.Size(169, 22);
+            this.tsmiDeleteChar.Text = "删除人物";
+            this.tsmiDeleteChar.Click += new System.EventHandler(this.tsmiDeleteChar_Click);
             // 
             // btnReadChars
             // 
@@ -521,19 +531,19 @@
             this.grpDefPath.TabStop = false;
             this.grpDefPath.Text = "人物配置文件";
             // 
-            // grpMugenDir
+            // grpMugenExePath
             // 
-            this.grpMugenDir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.grpMugenExePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpMugenDir.Controls.Add(this.lblMugenDir);
-            this.grpMugenDir.Controls.Add(this.txtMugenDir);
-            this.grpMugenDir.Controls.Add(this.btnOpenMugenDir);
-            this.grpMugenDir.Location = new System.Drawing.Point(12, 28);
-            this.grpMugenDir.Name = "grpMugenDir";
-            this.grpMugenDir.Size = new System.Drawing.Size(533, 43);
-            this.grpMugenDir.TabIndex = 0;
-            this.grpMugenDir.TabStop = false;
-            this.grpMugenDir.Text = "程序根目录";
+            this.grpMugenExePath.Controls.Add(this.lblMugenExePath);
+            this.grpMugenExePath.Controls.Add(this.txtMugenExePath);
+            this.grpMugenExePath.Controls.Add(this.btnOpenMugenExe);
+            this.grpMugenExePath.Location = new System.Drawing.Point(12, 28);
+            this.grpMugenExePath.Name = "grpMugenExePath";
+            this.grpMugenExePath.Size = new System.Drawing.Size(533, 43);
+            this.grpMugenExePath.TabIndex = 0;
+            this.grpMugenExePath.TabStop = false;
+            this.grpMugenExePath.Text = "MUGEN程序";
             // 
             // mnuMain
             // 
@@ -548,23 +558,23 @@
             // tsmiApp
             // 
             this.tsmiApp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiOpenMugenDir,
+            this.tsmiLaunchMugenExe,
             this.tsmiSetting});
             this.tsmiApp.Name = "tsmiApp";
             this.tsmiApp.Size = new System.Drawing.Size(44, 21);
             this.tsmiApp.Text = "程序";
             // 
-            // tsmiOpenMugenDir
+            // tsmiLaunchMugenExe
             // 
-            this.tsmiOpenMugenDir.Name = "tsmiOpenMugenDir";
-            this.tsmiOpenMugenDir.Size = new System.Drawing.Size(154, 22);
-            this.tsmiOpenMugenDir.Text = "打开根目录(&O)";
-            this.tsmiOpenMugenDir.Click += new System.EventHandler(this.tsmiOpenMugenDir_Click);
+            this.tsmiLaunchMugenExe.Name = "tsmiLaunchMugenExe";
+            this.tsmiLaunchMugenExe.Size = new System.Drawing.Size(185, 22);
+            this.tsmiLaunchMugenExe.Text = "运行MUGEN程序(&L)";
+            this.tsmiLaunchMugenExe.Click += new System.EventHandler(this.tsmiLaunchMugenExe_Click);
             // 
             // tsmiSetting
             // 
             this.tsmiSetting.Name = "tsmiSetting";
-            this.tsmiSetting.Size = new System.Drawing.Size(154, 22);
+            this.tsmiSetting.Size = new System.Drawing.Size(185, 22);
             this.tsmiSetting.Text = "设置(&S)";
             this.tsmiSetting.Click += new System.EventHandler(this.tsmiSetting_Click);
             // 
@@ -583,13 +593,17 @@
             this.tsmiAbout.Text = "关于(&A)";
             this.tsmiAbout.Click += new System.EventHandler(this.tsmiAbout_Click);
             // 
+            // ofdOpenMugenExe
+            // 
+            this.ofdOpenMugenExe.Filter = "可执行程序|*.exe";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(559, 570);
             this.Controls.Add(this.mnuMain);
-            this.Controls.Add(this.grpMugenDir);
+            this.Controls.Add(this.grpMugenExePath);
             this.Controls.Add(this.grpDefPath);
             this.Controls.Add(this.btnRestore);
             this.Controls.Add(this.btnBackup);
@@ -614,8 +628,8 @@
             this.grpPal.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvPal)).EndInit();
             this.grpDefPath.ResumeLayout(false);
-            this.grpMugenDir.ResumeLayout(false);
-            this.grpMugenDir.PerformLayout();
+            this.grpMugenExePath.ResumeLayout(false);
+            this.grpMugenExePath.PerformLayout();
             this.mnuMain.ResumeLayout(false);
             this.mnuMain.PerformLayout();
             this.ResumeLayout(false);
@@ -625,9 +639,9 @@
 
         #endregion
 
-        private System.Windows.Forms.Label lblMugenDir;
-        private System.Windows.Forms.TextBox txtMugenDir;
-        private System.Windows.Forms.Button btnOpenMugenDir;
+        private System.Windows.Forms.Label lblMugenExePath;
+        private System.Windows.Forms.TextBox txtMugenExePath;
+        private System.Windows.Forms.Button btnOpenMugenExe;
         private System.Windows.Forms.GroupBox grpChars;
         private System.Windows.Forms.ListBox lstChars;
         private System.Windows.Forms.GroupBox grpProperty;
@@ -650,7 +664,6 @@
         private System.Windows.Forms.Button btnBackup;
         private System.Windows.Forms.Button btnRestore;
         private System.Windows.Forms.Button btnReadChars;
-        private System.Windows.Forms.FolderBrowserDialog fbdMugenDir;
         private System.Windows.Forms.ContextMenuStrip ctxmnuCharList;
         private System.Windows.Forms.ToolStripMenuItem tsmiOpenDefFile;
         private System.Windows.Forms.Label lblDefPath;
@@ -661,7 +674,7 @@
         private System.Windows.Forms.CheckBox chkAutoSort;
         private System.Windows.Forms.DataGridViewTextBoxColumn PalNo;
         private System.Windows.Forms.DataGridViewComboBoxColumn PalVal;
-        private System.Windows.Forms.GroupBox grpMugenDir;
+        private System.Windows.Forms.GroupBox grpMugenExePath;
         private System.Windows.Forms.Button btnSelectInvert;
         private System.Windows.Forms.Button btnSelectAll;
         private System.Windows.Forms.Button btnSearchUp;
@@ -669,10 +682,12 @@
         private System.Windows.Forms.MenuStrip mnuMain;
         private System.Windows.Forms.ToolStripMenuItem tsmiHelp;
         private System.Windows.Forms.ToolStripMenuItem tsmiApp;
-        private System.Windows.Forms.ToolStripMenuItem tsmiOpenMugenDir;
+        private System.Windows.Forms.ToolStripMenuItem tsmiLaunchMugenExe;
         private System.Windows.Forms.ToolStripMenuItem tsmiAbout;
         private System.Windows.Forms.Button btnSearchDown;
         private System.Windows.Forms.ToolStripMenuItem tsmiSetting;
+        private System.Windows.Forms.ToolStripMenuItem tsmiDeleteChar;
+        private System.Windows.Forms.OpenFileDialog ofdOpenMugenExe;
     }
 }
 

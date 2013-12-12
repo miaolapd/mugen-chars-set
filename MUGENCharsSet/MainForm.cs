@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.IO;
-using System.Collections;
-using System.Collections.Specialized;
 
 namespace MUGENCharsSet
 {
@@ -17,38 +18,61 @@ namespace MUGENCharsSet
     /// </summary>
     public partial class MainForm : Form
     {
+        #region 类常量
+
         public const string CHARS_DIR = @"chars\";  //人物文件夹名
         public const string MULTI_VALUE = "(多值)";   //多值的显示值
         public const int PAL_NO_COLUMN_NO = 0;  //序号的列数
         public const int PAL_VAL_COLUMN_NO = 1; //Pal值的列数
         public const string DATA_SECTION = "Data";  //Data配置分段
-        public const string MUGEN_PATH_ITEM = "MugenPath";  //根目录绝对路径配置项
+        public const string MUGEN_PATH_ITEM = "MugenPath";  //MUGEN程序绝对路径配置项
         public const string AUTO_SORT_ITEM = "AutoSort";    //自动排序配置项
         public const string EDIT_PROGRAM_ITEM = "EditProgram";  //文本编辑器配置项
         public const string DEF_EDIT_PROGRAM = "notepad.exe";   //默认文本编辑器路径
 
-        private string _mugenDirPath = "";
+        #endregion
+
+        #region 类私有变量
+
+        private string _mugenExePath = "";
         private bool _modifyEnabled = false;
         private bool _multiModified = false;
         private string _editProgram = DEF_EDIT_PROGRAM;
         private string[] _allActFileList;
         private StringCollection _curDefList = new StringCollection();
-        private Character curChar = null;   //当前MUGEN人物类
-        private bool isLstCharPreparing = false;    //lstChar控件是否在设置DataSource过程中
-        private int curLstCharSearchNo = -1;    //当前人物列表搜索索引号
+        private Character _curChar = null;
+        private ArrayList _charList = null;
+        private bool _isLstCharPreparing = false;
+        private int _curLstCharSearchIndex = -1;
+
+        #endregion
 
         public MainForm()
         {
             InitializeComponent();
         }
 
+        #region 类属性
+
         /// <summary>
-        /// 获取或设置MUGEN程序根目录绝对路径
+        /// 获取或设置MUGEN程序绝对路径
+        /// </summary>
+        private string MugenExePath
+        {
+            get { return _mugenExePath; }
+            set
+            {
+                if (Path.GetExtension(value) != ".exe") throw (new ApplicationException("必须为可执行程序！"));
+                else _mugenExePath = value;
+            }
+        }
+
+        /// <summary>
+        /// 获取MUGEN程序根目录绝对路径
         /// </summary>
         private string MugenDirPath
         {
-            get { return _mugenDirPath; }
-            set { _mugenDirPath = Tools.getCorrectDirPath(value); }
+            get { return Tools.GetFileDirName(MugenExePath); }
         }
 
         /// <summary>
@@ -66,7 +90,7 @@ namespace MUGENCharsSet
         {
             get
             {
-                return Tools.getCorrectDirPath(Application.UserAppDataPath) + Application.ProductName + ".ini";
+                return Tools.GetFormatDirPath(Application.UserAppDataPath) + Application.ProductName + ".ini";
             }
         }
 
@@ -82,7 +106,7 @@ namespace MUGENCharsSet
         /// <summary>
         /// 获取或设置当前所有可用的act文件相对路径列表
         /// </summary>
-        public string[] AllActFileList
+        private string[] AllActFileList
         {
             get { return _allActFileList; }
             set { _allActFileList = value; }
@@ -98,6 +122,42 @@ namespace MUGENCharsSet
         }
 
         /// <summary>
+        /// 获取或设置当前MUGEN人物类
+        /// </summary>
+        private Character CurChar
+        {
+            get { return _curChar; }
+            set { _curChar = value; }
+        }
+
+        /// <summary>
+        /// 获取或设置MUGEN人物列表
+        /// </summary>
+        private ArrayList CharList
+        {
+            get { return _charList; }
+            set { _charList = value; }
+        }
+
+        /// <summary>
+        /// 获取或设置人物列表控件是否处于配置DataSource准备过程中
+        /// </summary>
+        private bool IsLstCharPreparing
+        {
+            get { return _isLstCharPreparing; }
+            set { _isLstCharPreparing = value; }
+        }
+
+        /// <summary>
+        /// 获取或设置当前人物列表搜索索引
+        /// </summary>
+        private int CurLstCharSearchIndex
+        {
+            get { return _curLstCharSearchIndex; }
+            set { _curLstCharSearchIndex = value; }
+        }
+
+        /// <summary>
         /// 获取或设置是否进入批量修改模式
         /// </summary>
         private bool MultiModified
@@ -109,7 +169,7 @@ namespace MUGENCharsSet
                 {
                     if (!_multiModified)
                     {
-                        resetControl();
+                        ResetControl();
                         foreach (Control ctlTemp in grpProperty.Controls)
                         {
                             if (ctlTemp is TextBox) ((TextBox)ctlTemp).Text = MULTI_VALUE;
@@ -121,13 +181,13 @@ namespace MUGENCharsSet
                     btnRestore.Enabled = true;
                     lblDefPath.Text = MULTI_VALUE;
                     ttpCommon.SetToolTip(lblDefPath, MULTI_VALUE);
-                    _curDefList.Clear();
+                    CurDefList.Clear();
                     foreach (int i in lstChars.SelectedIndices)
                     {
-                        _curDefList.Add(((CharFile)lstChars.Items[i]).DefPath);
+                        CurDefList.Add(((CharFile)lstChars.Items[i]).DefPath);
                     }
-                    setMutliDefPathLabel();
-                    curChar = new Character();
+                    SetMutliDefPathLabel();
+                    CurChar = new Character();
                 }
                 else
                 {
@@ -160,16 +220,38 @@ namespace MUGENCharsSet
                     btnReset.Enabled = false;
                     btnBackup.Enabled = false;
                     btnRestore.Enabled = false;
-                    resetControl();
+                    ResetControl();
                 }
                 _modifyEnabled = value;
             }
         }
 
+        #endregion
+
+        #region 类方法
+
+        /// <summary>
+        /// 显示操作成功消息
+        /// </summary>
+        /// <param name="msg">消息</param>
+        private void ShowSuccessMsg(string msg)
+        {
+            MessageBox.Show(msg, "操作成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        /// <summary>
+        /// 显示操作失败消息
+        /// </summary>
+        /// <param name="msg">消息</param>
+        private void ShowErrorMsg(string msg)
+        {
+            MessageBox.Show(msg, "操作失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
         /// <summary>
         /// 重置人物属性设置及色表设置控件
         /// </summary>
-        private void resetControl()
+        private void ResetControl()
         {
             lblDefPath.Text = "";
             foreach (Control ctlTemp in grpProperty.Controls)
@@ -184,12 +266,12 @@ namespace MUGENCharsSet
         /// <summary>
         /// 读取程序配置
         /// </summary>
-        private void readIniSet()
+        private void ReadIniSet()
         {
             try
             {
                 IniFiles ini = new IniFiles(IniFilePath);
-                txtMugenDir.Text = ini.ReadString(DATA_SECTION, MUGEN_PATH_ITEM, "");
+                txtMugenExePath.Text = ini.ReadString(DATA_SECTION, MUGEN_PATH_ITEM, "");
                 if (ini.ReadInteger(DATA_SECTION, AUTO_SORT_ITEM, 0) == 1)
                 {
                     chkAutoSort.Checked = true;
@@ -202,15 +284,23 @@ namespace MUGENCharsSet
         /// <summary>
         /// 读取人物列表
         /// </summary>
-        private void readCharList()
+        private void ReadCharList()
         {
-            if (txtMugenDir.Text.Trim() == String.Empty)
+            if (txtMugenExePath.Text.Trim() == String.Empty)
             {
                 ShowErrorMsg("路径不得为空！");
-                txtMugenDir.Focus();
+                txtMugenExePath.Focus();
                 return;
             }
-            else MugenDirPath = txtMugenDir.Text.Trim();
+            else
+            {
+                try { MugenExePath = txtMugenExePath.Text.Trim(); }
+                catch(ApplicationException ex)
+                {
+                    ShowErrorMsg(ex.Message);
+                    return;
+                }
+            }
             ModifyEnabled = false;
             MultiModified = false;
             lstChars.DataSource = null;
@@ -220,16 +310,18 @@ namespace MUGENCharsSet
                 ShowErrorMsg("无法找到MUGEN人物文件夹！");
                 return;
             }
-            ArrayList charList = new ArrayList();
-            scanCharDir(charList, MugenCharsDirPath);
-            if (chkAutoSort.Checked) charList.Sort(new CharFile.CharFileCompare());
-            isLstCharPreparing = true;
-            lstChars.DataSource = charList;
+            CharList = new ArrayList();
+            ScanCharDir(CharList, MugenCharsDirPath);
+            if (chkAutoSort.Checked) CharList.Sort(new CharFile.CharFileCompare());
+            BindingSource bs = new BindingSource();
+            bs.DataSource = CharList;
+            IsLstCharPreparing = true;
+            lstChars.DataSource = bs;
             lstChars.DisplayMember = "Name";
             lstChars.ValueMember = "DefPath";
             lstChars.SelectedIndex = -1;
-            isLstCharPreparing = false;
-            writeIniSet(DATA_SECTION, MUGEN_PATH_ITEM, MugenDirPath);
+            IsLstCharPreparing = false;
+            WriteIniSet(DATA_SECTION, MUGEN_PATH_ITEM, MugenExePath);
             return;
         }
 
@@ -238,7 +330,7 @@ namespace MUGENCharsSet
         /// </summary>
         /// <param name="charList">人物列表</param>
         /// <param name="dir">人物文件夹</param>
-        private void scanCharDir(ArrayList charList, string dir)
+        private void ScanCharDir(ArrayList charList, string dir)
         {
             string[] tempDefList = Directory.GetFiles(dir, "*" + Character.DEF_EXT);
             foreach (string tempDef in tempDefList)
@@ -247,10 +339,10 @@ namespace MUGENCharsSet
                 {
                     if (!File.Exists(tempDef)) continue;
                     IniFiles ini = new IniFiles(tempDef);
-                    string name = Character.getTrimName(ini.ReadString(Character.INFO_SECTION, Character.NAME_ITEM, ""));
+                    string name = Character.GetTrimName(ini.ReadString(Character.INFO_SECTION, Character.NAME_ITEM, ""));
                     if (name == String.Empty) continue;
                     string cns = ini.ReadString(Character.FILES_SECTION, Character.CNS_ITEM, "").Trim();
-                    if (cns == String.Empty || !File.Exists(Tools.getFileDirPath(tempDef) + cns)) continue;
+                    if (cns == String.Empty || !File.Exists(Tools.GetFileDirName(tempDef) + cns)) continue;
                     charList.Add(new CharFile(name, tempDef));
                 }
                 catch (ApplicationException ex)
@@ -262,28 +354,28 @@ namespace MUGENCharsSet
             string[] tempDirArr = Directory.GetDirectories(dir);
             foreach (string tempDir in tempDirArr)
             {
-                scanCharDir(charList, tempDir);
+                ScanCharDir(charList, tempDir);
             }
         }
 
         /// <summary>
         /// 读取单个人物设置
         /// </summary>
-        private void readSingleCharSet()
+        private void ReadSingleCharSet()
         {
             if (lstChars.SelectedIndices.Count != 1) return;
-            _curDefList.Clear();
+            CurDefList.Clear();
             ModifyEnabled = false;
             MultiModified = false;
-            _curDefList.Add(lstChars.SelectedValue.ToString());
-            if (!File.Exists(_curDefList[0]))
+            CurDefList.Add(lstChars.SelectedValue.ToString());
+            if (!File.Exists(CurDefList[0]))
             {
                 ShowErrorMsg("def文件不存在！");
                 return;
             }
             try
             {
-                curChar = new Character(_curDefList[0]);
+                CurChar = new Character(CurDefList[0]);
             }
             catch (ApplicationException ex)
             {
@@ -291,14 +383,14 @@ namespace MUGENCharsSet
                 ShowErrorMsg(ex.Message);
                 return;
             }
-            setDefPathLabel(_curDefList[0]);
-            txtName.Text = curChar.Name;
-            txtDisplayName.Text = curChar.DisplayName;
-            txtLife.Text = curChar.Life.ToString();
-            txtAttack.Text = curChar.Attack.ToString();
-            txtDefence.Text = curChar.Defence.ToString();
-            txtPower.Text = curChar.Power.ToString();
-            AllActFileList = curChar.AllActFileList;
+            SetDefPathLabel(CurDefList[0]);
+            txtName.Text = CurChar.Name;
+            txtDisplayName.Text = CurChar.DisplayName;
+            txtLife.Text = CurChar.Life.ToString();
+            txtAttack.Text = CurChar.Attack.ToString();
+            txtDefence.Text = CurChar.Defence.ToString();
+            txtPower.Text = CurChar.Power.ToString();
+            AllActFileList = CurChar.AllActFileList;
             if (AllActFileList.Length == 0)
             {
                 ShowErrorMsg("色表文件未找到！");
@@ -306,7 +398,7 @@ namespace MUGENCharsSet
             }
             DataGridViewComboBoxColumn dgvPalFileList = (DataGridViewComboBoxColumn)dgvPal.Columns[1];
             dgvPalFileList.Items.AddRange(AllActFileList);
-            foreach (string palKey in curChar.PalList)
+            foreach (string palKey in CurChar.PalList)
             {
                 dgvPal.Rows.Add(palKey);
             }
@@ -314,21 +406,21 @@ namespace MUGENCharsSet
             {
                 foreach (string item in AllActFileList)
                 {
-                    if (Tools.getSlashPath(curChar.PalList[dgvPal.Rows[i].Cells[PAL_NO_COLUMN_NO].Value.ToString()].ToLower())
-                        == Tools.getSlashPath(item.ToLower()))
+                    if (Tools.GetSlashPath(CurChar.PalList[dgvPal.Rows[i].Cells[PAL_NO_COLUMN_NO].Value.ToString()].ToLower())
+                        == Tools.GetSlashPath(item.ToLower()))
                     {
                         dgvPal.Rows[i].Cells[PAL_VAL_COLUMN_NO].Value = item;
                     }
                 }
             }
             ModifyEnabled = true;
-            if (!File.Exists(_curDefList[0] + Character.BAK_EXT)) btnRestore.Enabled = false;
+            if (!File.Exists(CurDefList[0] + Character.BAK_EXT)) btnRestore.Enabled = false;
         }
 
         /// <summary>
         /// 批量读取人物设置
         /// </summary>
-        private void readMultiCharSet()
+        private void ReadMultiCharSet()
         {
             if (lstChars.SelectedIndices.Count <= 1) return;
             MultiModified = true;
@@ -338,7 +430,7 @@ namespace MUGENCharsSet
         /// 在标签上显示当前读取的def文件相对路径
         /// </summary>
         /// <param name="defFullPath">def文件绝对路径</param>
-        private void setDefPathLabel(string defFullPath)
+        private void SetDefPathLabel(string defFullPath)
         {
             string msg = defFullPath.Substring(MugenCharsDirPath.Length);
             lblDefPath.Text = msg;
@@ -348,10 +440,10 @@ namespace MUGENCharsSet
         /// <summary>
         /// 在标签上显示当前批量读取的def文件相对路径
         /// </summary>
-        private void setMutliDefPathLabel()
+        private void SetMutliDefPathLabel()
         {
             string msg = "";
-            foreach (string def in _curDefList)
+            foreach (string def in CurDefList)
             {
                 string strTemp = def.Substring(MugenCharsDirPath.Length);
                 msg += strTemp + "\r\n";
@@ -363,13 +455,13 @@ namespace MUGENCharsSet
         /// <summary>
         /// 写入单个人物设置
         /// </summary>
-        private void writeSingleCharSet()
+        private void WriteSingleCharSet()
         {
             try
             {
-                readValues();
-                readPalValues();
-                curChar.writeCharSet();
+                ReadValues();
+                ReadPalValues();
+                CurChar.WriteCharSet();
             }
             catch (Exception ex)
             {
@@ -382,14 +474,14 @@ namespace MUGENCharsSet
         /// <summary>
         /// 批量写入人物设置
         /// </summary>
-        private void writeMultiCharSet()
+        private void WriteMultiCharSet()
         {
-            if (_curDefList.Count == 0) return;
+            if (CurDefList.Count == 0) return;
             int total = 0;
             try
             {
-                readValues();
-                total = Character.writeMultiCharSet(_curDefList, curChar);
+                ReadValues();
+                total = Character.WriteMultiCharSet(CurDefList, CurChar);
             }
             catch (Exception ex)
             {
@@ -403,7 +495,7 @@ namespace MUGENCharsSet
         /// <summary>
         /// 读取人物属性字段
         /// </summary>
-        private void readValues()
+        private void ReadValues()
         {
             foreach (Control ctlTemp in grpProperty.Controls)
             {
@@ -425,10 +517,10 @@ namespace MUGENCharsSet
                             if (txtTemp.Text.Trim() == MULTI_VALUE) value = 0;
                             else value = Convert.ToInt32(txtTemp.Text.Trim());
                             if (value < 0) throw (new ApplicationException("数值不得小于0！"));
-                            if (txtTemp.Name == txtLife.Name) curChar.Life = value;
-                            else if (txtTemp.Name == txtAttack.Name) curChar.Attack = value;
-                            else if (txtTemp.Name == txtDefence.Name) curChar.Defence = value;
-                            else if (txtTemp.Name == txtPower.Name) curChar.Power = value;
+                            if (txtTemp.Name == txtLife.Name) CurChar.Life = value;
+                            else if (txtTemp.Name == txtAttack.Name) CurChar.Attack = value;
+                            else if (txtTemp.Name == txtDefence.Name) CurChar.Defence = value;
+                            else if (txtTemp.Name == txtPower.Name) CurChar.Power = value;
                         }
                         catch (FormatException)
                         {
@@ -445,8 +537,8 @@ namespace MUGENCharsSet
                     }
                     else
                     {
-                        if (txtTemp.Name == txtName.Name) curChar.Name = txtTemp.Text.Trim();
-                        else if (txtTemp.Name == txtDisplayName.Name) curChar.DisplayName = txtTemp.Text.Trim();
+                        if (txtTemp.Name == txtName.Name) CurChar.Name = txtTemp.Text.Trim();
+                        else if (txtTemp.Name == txtDisplayName.Name) CurChar.DisplayName = txtTemp.Text.Trim();
                     }
                 }
             }
@@ -455,13 +547,13 @@ namespace MUGENCharsSet
         /// <summary>
         /// 读取Pal属性字段
         /// </summary>
-        private void readPalValues()
+        private void ReadPalValues()
         {
             for (int i = 0; i < dgvPal.Rows.Count; i++)
             {
                 if (dgvPal.Rows[i].Cells[PAL_VAL_COLUMN_NO].Value != null &&
                     dgvPal.Rows[i].Cells[PAL_VAL_COLUMN_NO].Value.ToString() != String.Empty)
-                    curChar.PalList[dgvPal.Rows[i].Cells[PAL_NO_COLUMN_NO].Value.ToString()] =
+                    CurChar.PalList[dgvPal.Rows[i].Cells[PAL_NO_COLUMN_NO].Value.ToString()] =
                         dgvPal.Rows[i].Cells[PAL_VAL_COLUMN_NO].Value.ToString();
             }
         }
@@ -470,22 +562,22 @@ namespace MUGENCharsSet
         /// 在人物列表里查找关键字
         /// </summary>
         /// <param name="isUp">是否向上搜索</param>
-        private void searchKeyword(bool isUp)
+        private void SearchKeyword(bool isUp)
         {
             string keyword = txtKeyword.Text.Trim();
             if (keyword == String.Empty) return;
             if (lstChars.Items.Count == 0) return;
-            if (lstChars.SelectedIndex != -1) curLstCharSearchNo = lstChars.SelectedIndex;
+            if (lstChars.SelectedIndex != -1) CurLstCharSearchIndex = lstChars.SelectedIndex;
             lstChars.SelectedIndex = -1;
             bool isFind = false;
             if (isUp)
             {
-                for (int i = curLstCharSearchNo - 1; i >= 0; i--)
+                for (int i = CurLstCharSearchIndex - 1; i >= 0; i--)
                 {
                     if (((CharFile)lstChars.Items[i]).Name.ToString().IndexOf(keyword, StringComparison.CurrentCultureIgnoreCase) >= 0)
                     {
                         lstChars.SelectedIndex = i;
-                        curLstCharSearchNo = i;
+                        CurLstCharSearchIndex = i;
                         isFind = true;
                         break;
                     }
@@ -493,12 +585,12 @@ namespace MUGENCharsSet
             }
             else
             {
-                for (int i = curLstCharSearchNo + 1; i < lstChars.Items.Count; i++)
+                for (int i = CurLstCharSearchIndex + 1; i < lstChars.Items.Count; i++)
                 {
                     if (((CharFile)lstChars.Items[i]).Name.ToString().IndexOf(keyword, StringComparison.CurrentCultureIgnoreCase) >= 0)
                     {
                         lstChars.SelectedIndex = i;
-                        curLstCharSearchNo = i;
+                        CurLstCharSearchIndex = i;
                         isFind = true;
                         break;
                     }
@@ -506,13 +598,13 @@ namespace MUGENCharsSet
             }
             if (!isFind)
             {
-                if (curLstCharSearchNo != -1)
+                if (CurLstCharSearchIndex != -1)
                 {
-                    if (isUp) curLstCharSearchNo = lstChars.Items.Count;
-                    else curLstCharSearchNo = -1;
-                    searchKeyword(isUp);
+                    if (isUp) CurLstCharSearchIndex = lstChars.Items.Count;
+                    else CurLstCharSearchIndex = -1;
+                    SearchKeyword(isUp);
                 }
-                else curLstCharSearchNo = -1;
+                else CurLstCharSearchIndex = -1;
             }
         }
 
@@ -523,7 +615,7 @@ namespace MUGENCharsSet
         /// <param name="item">配置项</param>
         /// <param name="value">配置值</param>
         /// <returns>是否写入成功</returns>
-        public bool writeIniSet(string section, string item, string value)
+        public bool WriteIniSet(string section, string item, string value)
         {
             try
             {
@@ -537,34 +629,38 @@ namespace MUGENCharsSet
             }
         }
 
+        #endregion
+
+        #region 类事件
+
         private void MainForm_Load(object sender, EventArgs e)
         {
-            readIniSet();
+            ReadIniSet();
         }
 
-        private void btnOpenMugenDir_Click(object sender, EventArgs e)
+        private void btnOpenMugenExe_Click(object sender, EventArgs e)
         {
-            if (fbdMugenDir.ShowDialog() == DialogResult.OK)
+            if (ofdOpenMugenExe.ShowDialog() == DialogResult.OK)
             {
-                txtMugenDir.Text = fbdMugenDir.SelectedPath;
-                readCharList();
+                txtMugenExePath.Text = ofdOpenMugenExe.FileName;
+                ReadCharList();
             }
         }
 
         private void btnReadChars_Click(object sender, EventArgs e)
         {
-            readCharList();
+            ReadCharList();
         }
 
         private void btnModify_Click(object sender, EventArgs e)
         {
             if (MultiModified)
             {
-                writeMultiCharSet();
+                WriteMultiCharSet();
             }
             else
             {
-                writeSingleCharSet();
+                WriteSingleCharSet();
             }
         }
 
@@ -579,7 +675,7 @@ namespace MUGENCharsSet
             }
             else
             {
-                readSingleCharSet();
+                ReadSingleCharSet();
             }
         }
 
@@ -587,7 +683,7 @@ namespace MUGENCharsSet
         {
             if (MultiModified)
             {
-                int total = Character.backupMultiCharSet(_curDefList);
+                int total = Character.BackupMultiCharSet(CurDefList);
                 if (total > 0) ShowSuccessMsg(total + "条项目备份成功！");
                 else ShowErrorMsg("备份失败！");
             }
@@ -595,7 +691,7 @@ namespace MUGENCharsSet
             {
                 try
                 {
-                    curChar.backupCharSet();
+                    CurChar.BackupCharSet();
                 }
                 catch (ApplicationException ex)
                 {
@@ -603,7 +699,7 @@ namespace MUGENCharsSet
                     return;
                 }
                 ShowSuccessMsg("备份成功！");
-                if (File.Exists(_curDefList[0] + Character.BAK_EXT)) btnRestore.Enabled = true;
+                if (File.Exists(CurDefList[0] + Character.BAK_EXT)) btnRestore.Enabled = true;
             }
         }
 
@@ -611,7 +707,7 @@ namespace MUGENCharsSet
         {
             if (MultiModified)
             {
-                int total = Character.restoreMultiCharSet(_curDefList);
+                int total = Character.RestoreMultiCharSet(CurDefList);
                 if (total > 0)
                 {
                     ShowSuccessMsg(total + "条项目还原成功！");
@@ -623,107 +719,29 @@ namespace MUGENCharsSet
             {
                 try
                 {
-                    curChar.restoreCharSet();
+                    CurChar.RestoreCharSet();
                 }
                 catch (ApplicationException ex)
                 {
                     ShowErrorMsg(ex.Message);
                     return;
                 }
-                readSingleCharSet();
+                ReadSingleCharSet();
                 ShowSuccessMsg("恢复成功！");
             }
         }
 
-        /// <summary>
-        /// 显示操作成功消息
-        /// </summary>
-        /// <param name="msg">消息</param>
-        private void ShowSuccessMsg(string msg)
-        {
-            MessageBox.Show(msg, "操作成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        /// <summary>
-        /// 显示操作失败消息
-        /// </summary>
-        /// <param name="msg">消息</param>
-        private void ShowErrorMsg(string msg)
-        {
-            MessageBox.Show(msg, "操作失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
         private void lstChars_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (isLstCharPreparing) return;
+            if (IsLstCharPreparing) return;
             if (lstChars.SelectedIndices.Count > 1)
             {
-                readMultiCharSet();
+                ReadMultiCharSet();
             }
             else
             {
-                readSingleCharSet();
+                ReadSingleCharSet();
             }
-        }
-
-        private void tsmiOpenDefFile_Click(object sender, EventArgs e)
-        {
-            if (lstChars.SelectedIndex < 0) return;
-            string path = lstChars.SelectedValue.ToString();
-            if (File.Exists(path))
-            {
-                try
-                {
-                    System.Diagnostics.Process.Start(EditProgram, path);
-                }
-                catch (Exception)
-                {
-                    ShowErrorMsg("未找到文本编辑器！");
-                    return;
-                }
-            }
-            else ShowErrorMsg("def文件不存在！");
-        }
-
-        private void tsmiOpenCnsFile_Click(object sender, EventArgs e)
-        {
-            if (lstChars.SelectedIndex < 0) return;
-            try
-            {
-                string path = Character.getCnsPath(lstChars.SelectedValue.ToString());
-                if (File.Exists(path))
-                    System.Diagnostics.Process.Start(EditProgram, path);
-                else ShowErrorMsg("cns文件不存在！");
-            }
-            catch (ApplicationException ex)
-            {
-                ShowErrorMsg(ex.Message);
-                return;
-            }
-            catch (Exception)
-            {
-                ShowErrorMsg("未找到文本编辑器！");
-                return;
-            }
-        }
-
-        private void tsmiOpenDefDir_Click(object sender, EventArgs e)
-        {
-            if (lstChars.SelectedIndex < 0) return;
-            string path = lstChars.SelectedValue.ToString();
-            if (File.Exists(path))
-            {
-                try
-                {
-                    System.Diagnostics.Process.Start("explorer.exe", "/select," + path);
-                }
-                catch (Exception)
-                {
-                    ShowErrorMsg("打开文件夹失败！");
-                    return;
-                }
-            }
-            else ShowErrorMsg("def文件不存在！");
         }
 
         // 当点击色表单元格时自动显示下拉框
@@ -738,12 +756,12 @@ namespace MUGENCharsSet
 
         private void txtMugenDir_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyValue == (int)Keys.Enter) readCharList();
+            if (e.KeyValue == (int)Keys.Enter) ReadCharList();
         }
 
         private void chkAutoSort_CheckedChanged(object sender, EventArgs e)
         {
-            writeIniSet(DATA_SECTION, AUTO_SORT_ITEM, chkAutoSort.Checked ? "1" : "0");
+            WriteIniSet(DATA_SECTION, AUTO_SORT_ITEM, chkAutoSort.Checked ? "1" : "0");
         }
 
         private void btnSelectAll_Click(object sender, EventArgs e)
@@ -774,12 +792,12 @@ namespace MUGENCharsSet
 
         private void btnSearchUp_Click(object sender, EventArgs e)
         {
-            searchKeyword(true);
+            SearchKeyword(true);
         }
 
         private void btnSearchDown_Click(object sender, EventArgs e)
         {
-            searchKeyword(false);
+            SearchKeyword(false);
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
@@ -826,9 +844,133 @@ namespace MUGENCharsSet
             }
         }
 
-        private void tsmiOpenMugenDir_Click(object sender, EventArgs e)
+        #endregion
+
+        #region 人物列表右键菜单
+
+        private void tsmiOpenDefFile_Click(object sender, EventArgs e)
         {
-            btnOpenMugenDir_Click(null, null);
+            if (lstChars.SelectedIndex < 0) return;
+            string path = lstChars.SelectedValue.ToString();
+            if (File.Exists(path))
+            {
+                try
+                {
+                    Process.Start(EditProgram, path);
+                }
+                catch (Exception)
+                {
+                    ShowErrorMsg("未找到文本编辑器！");
+                    return;
+                }
+            }
+            else ShowErrorMsg("def文件不存在！");
+        }
+
+        private void tsmiOpenCnsFile_Click(object sender, EventArgs e)
+        {
+            if (lstChars.SelectedIndex < 0) return;
+            try
+            {
+                string path = Character.GetCnsPath(lstChars.SelectedValue.ToString());
+                if (File.Exists(path))
+                    Process.Start(EditProgram, path);
+                else ShowErrorMsg("cns文件不存在！");
+            }
+            catch (ApplicationException ex)
+            {
+                ShowErrorMsg(ex.Message);
+                return;
+            }
+            catch (Exception)
+            {
+                ShowErrorMsg("未找到文本编辑器！");
+                return;
+            }
+        }
+
+        private void tsmiOpenDefDir_Click(object sender, EventArgs e)
+        {
+            if (lstChars.SelectedIndex < 0) return;
+            string path = lstChars.SelectedValue.ToString();
+            if (File.Exists(path))
+            {
+                try
+                {
+                    Process.Start("explorer.exe", "/select," + path);
+                }
+                catch (Exception)
+                {
+                    ShowErrorMsg("打开文件夹失败！");
+                    return;
+                }
+            }
+            else ShowErrorMsg("def文件不存在！");
+        }
+
+        private void tsmiDeleteChar_Click(object sender, EventArgs e)
+        {
+            if (lstChars.SelectedIndices.Count <= 0) return;
+            if(MultiModified)
+            {
+
+            }
+            else
+            {
+                if (CurChar == null) return;
+                try
+                {
+                    CurChar.DeleteChar();
+                }
+                catch(ApplicationException ex)
+                {
+                    ShowErrorMsg(ex.Message);
+                    return;
+                }
+                int index = lstChars.SelectedIndex;
+                CharList.Remove((CharFile)lstChars.SelectedItem);
+                BindingSource bs = new BindingSource();
+                bs.DataSource = CharList;
+                IsLstCharPreparing = true;
+                lstChars.DataSource = bs;
+                IsLstCharPreparing = false;
+                lstChars.ClearSelected();
+                if (index < lstChars.Items.Count) lstChars.SelectedIndex = index;
+                else lstChars.SelectedIndex = lstChars.Items.Count - 1;
+            }
+        }
+
+        #endregion
+
+        #region 主菜单
+
+        private void tsmiLaunchMugenExe_Click(object sender, EventArgs e)
+        {
+            if (MugenExePath == String.Empty)
+            {
+                try { MugenExePath = txtMugenExePath.Text.Trim(); }
+                catch(ApplicationException ex)
+                {
+                    ShowErrorMsg(ex.Message);
+                    return;
+                }
+            }
+            if (File.Exists(MugenExePath))
+            {
+                try
+                {
+                    ProcessStartInfo psi = new ProcessStartInfo(MugenExePath);
+                    psi.UseShellExecute = false;
+                    psi.WorkingDirectory = MugenDirPath;
+                    Process.Start(psi);
+                }
+                catch (Exception)
+                {
+                    ShowErrorMsg("运行MUGEN程序失败！");
+                    return;
+                }
+            }
+            else ShowErrorMsg("MUGEN程序不存在！");
         }
 
         private void tsmiAbout_Click(object sender, EventArgs e)
@@ -843,7 +985,11 @@ namespace MUGENCharsSet
             settingForm.Owner = this;
             settingForm.ShowDialog();
         }
+
+        #endregion
     }
+
+    #region 人物文件类
 
     /// <summary>
     /// 人物文件类（为人物列表控件DataSource所使用）
@@ -899,4 +1045,6 @@ namespace MUGENCharsSet
         }
 
     }
+
+    #endregion
 }

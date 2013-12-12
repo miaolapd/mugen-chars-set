@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.IO;
 
 namespace MUGENCharsSet
 {
@@ -16,7 +16,7 @@ namespace MUGENCharsSet
         /// </summary>
         /// <param name="dirPath">文件夹路径</param>
         /// <returns>文件夹路径</returns>
-        public static string getCorrectDirPath(string dirPath)
+        public static string GetFormatDirPath(string dirPath)
         {
             if (dirPath.Length > 0 && dirPath[dirPath.Length - 1] != '\\')
                 return dirPath + "\\";
@@ -28,46 +28,11 @@ namespace MUGENCharsSet
         /// </summary>
         /// <param name="filePath">文件路径</param>
         /// <returns>文件夹路径</returns>
-        public static string getFileDirPath(string filePath)
+        public static string GetFileDirName(string filePath)
         {
             try
             {
-                FileInfo file = new FileInfo(filePath);
-                return getCorrectDirPath(file.DirectoryName);
-            }
-            catch (Exception) { return filePath; }
-        }
-
-        /// <summary>
-        /// 获取文件扩展名
-        /// </summary>
-        /// <param name="filePath">文件路径</param>
-        /// <returns>扩展名</returns>
-        public static string getFileExt(string filePath)
-        {
-            try
-            {
-                FileInfo file = new FileInfo(filePath);
-                return file.Extension;
-            }
-            catch (Exception) { return filePath; }
-        }
-
-        /// <summary>
-        /// 获取不带扩展名的文件名
-        /// </summary>
-        /// <param name="filePath">文件路径</param>
-        /// <returns>文件名</returns>
-        public static string getFileNameWithoutExt(string filePath)
-        {
-            try
-            {
-                FileInfo file = new FileInfo(filePath);
-                if (file.Name.LastIndexOf('.') >= 0)
-                {
-                    return file.Name.Substring(0, file.Name.LastIndexOf('.'));
-                }
-                else return file.Name;
+                return Path.GetDirectoryName(filePath) + "\\";
             }
             catch (Exception) { return ""; }
         }
@@ -77,7 +42,7 @@ namespace MUGENCharsSet
         /// </summary>
         /// <param name="path">文件(夹)路径</param>
         /// <returns>文件(夹)路径</returns>
-        public static string getSlashPath(string path)
+        public static string GetSlashPath(string path)
         {
             return path.Replace('\\', '/');
         }
