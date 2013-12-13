@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
 
 namespace MUGENCharsSet
 {
@@ -300,7 +301,18 @@ namespace MUGENCharsSet
                 return;
             }
             CharList = new ArrayList();
-            ScanCharDir(CharList, MugenCharsDirPath);
+            try
+            {
+                if (cbbReadCharType.SelectedIndex == 1)
+                    ScanCharDir(CharList, MugenCharsDirPath);
+                else
+                    ReadSelectDef(CharList, MugenDirPath + SELECT_DEF_PATH);
+            }
+            catch(ApplicationException ex)
+            {
+                ShowErrorMsg(ex.Message);
+                return;
+            }
             if (chkAutoSort.Checked) CharList.Sort(new CharFile.CharFileCompare());
             BindingSource bs = new BindingSource();
             bs.DataSource = CharList;
@@ -326,24 +338,81 @@ namespace MUGENCharsSet
             {
                 try
                 {
-                    if (!File.Exists(tempDef)) continue;
-                    IniFiles ini = new IniFiles(tempDef);
-                    string name = Character.GetTrimName(ini.ReadString(Character.INFO_SECTION, Character.NAME_ITEM, ""));
+                    string name = CheckDefFile(tempDef);
                     if (name == String.Empty) continue;
-                    string cns = ini.ReadString(Character.FILES_SECTION, Character.CNS_ITEM, "").Trim();
-                    if (cns == String.Empty || !File.Exists(Tools.GetFileDirName(tempDef) + cns)) continue;
                     charList.Add(new CharFile(name, tempDef));
                 }
                 catch (ApplicationException ex)
                 {
-                    ShowErrorMsg(ex.Message);
-                    return;
+                    throw ex;
                 }
             }
             string[] tempDirArr = Directory.GetDirectories(dir);
             foreach (string tempDir in tempDirArr)
             {
                 ScanCharDir(charList, tempDir);
+            }
+        }
+
+
+        /// <summary>
+        /// 读取select.def文件中的人物列表
+        /// </summary>
+        /// <param name="charList">人物列表</param>
+        private void ReadSelectDef(ArrayList charList, string path)
+        {
+            if (!File.Exists(MugenDirPath + SELECT_DEF_PATH)) throw (new ApplicationException("无法找到slect.def文件！"));
+            string[] charLines = null;
+            try
+            {
+                string defContent = File.ReadAllText(path, Encoding.Default);
+                Regex regex = new Regex(@"\[Characters\](.*)\r\n\[ExtraStages\]", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                charLines = regex.Match(defContent).Groups[1].Value.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            }
+            catch (Exception)
+            {
+                throw (new ApplicationException("读取select.def文件失败！"));
+            }
+            if (charLines.Length == 0) throw (new ApplicationException("读取select.def文件失败！"));
+            ArrayList tempCharList = new ArrayList();
+            foreach (string tempLine in charLines)
+            {
+                string line = tempLine.Trim();
+                line = line.Split(new string[] { IniFiles.COMMENT_MARK }, 2, StringSplitOptions.None)[0];
+                if (line == String.Empty || line.ToLower() == "blank" || line.ToLower() == "empty" || line == "/-" || line == "/") continue;
+                line = line.Split(new string[] { "," }, 2, StringSplitOptions.None)[0].Trim();
+                if (Path.GetExtension(line) != Character.DEF_EXT) line = Tools.GetFormatDirPath(line) + line + Character.DEF_EXT;
+                string defPath = MugenCharsDirPath + line;
+                if (!File.Exists(defPath)) continue;
+                if (!tempCharList.Contains(defPath))
+                {
+                    tempCharList.Add(defPath);
+                    string name = CheckDefFile(defPath);
+                    if (name != String.Empty) charList.Add(new CharFile(name, defPath));
+                }
+            }
+        }
+
+        /// <summary>
+        /// 检测是否为可用def文件并返回人物名
+        /// </summary>
+        /// <param name="defPath">def文件绝对路径</param>
+        /// <returns>人物名</returns>
+        private string CheckDefFile(string defPath)
+        {
+            try
+            {
+                if (!File.Exists(defPath)) return "";
+                IniFiles ini = new IniFiles(defPath);
+                string name = Character.GetTrimName(ini.ReadString(Character.INFO_SECTION, Character.NAME_ITEM, ""));
+                if (name == String.Empty) return "";
+                string cns = ini.ReadString(Character.FILES_SECTION, Character.CNS_ITEM, "").Trim();
+                if (cns == String.Empty || !File.Exists(Tools.GetFileDirName(defPath) + cns)) return "";
+                return name;
+            }
+            catch (ApplicationException ex)
+            {
+                throw ex;
             }
         }
 

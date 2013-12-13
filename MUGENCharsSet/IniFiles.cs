@@ -13,8 +13,8 @@ namespace MUGENCharsSet
     /// </summary>
     public class IniFiles
     {
+        public const string COMMENT_MARK = ";";    //注释分隔符
         public string FileName; //INI文件名
-        public string CommentMark = ";";    //注释分隔符
 
         // 声明读写INI文件的API函数
         [DllImport("kernel32")]
@@ -79,7 +79,7 @@ namespace MUGENCharsSet
             //必须设定0（系统默认的代码页）的编码方式，否则无法支持中文
             string s = Encoding.Default.GetString(Buffer);
             s = s.Substring(0, bufLen);
-            if (s.IndexOf(CommentMark) >= 0) s = s.Substring(0, s.IndexOf(CommentMark));
+            if (s.IndexOf(COMMENT_MARK) >= 0) s = s.Substring(0, s.IndexOf(COMMENT_MARK));
             return s.Trim();
         }
 
