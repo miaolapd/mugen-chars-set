@@ -34,6 +34,7 @@
             this.txtMugenExePath = new System.Windows.Forms.TextBox();
             this.btnOpenMugenExe = new System.Windows.Forms.Button();
             this.grpChars = new System.Windows.Forms.GroupBox();
+            this.cbbReadCharType = new System.Windows.Forms.ComboBox();
             this.btnSearchDown = new System.Windows.Forms.Button();
             this.btnSearchUp = new System.Windows.Forms.Button();
             this.txtKeyword = new System.Windows.Forms.TextBox();
@@ -75,6 +76,7 @@
             this.mnuMain = new System.Windows.Forms.MenuStrip();
             this.tsmiApp = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiLaunchMugenExe = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiOpenSelectDef = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiSetting = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiAbout = new System.Windows.Forms.ToolStripMenuItem();
@@ -123,6 +125,7 @@
             // 
             this.grpChars.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.grpChars.Controls.Add(this.cbbReadCharType);
             this.grpChars.Controls.Add(this.btnSearchDown);
             this.grpChars.Controls.Add(this.btnSearchUp);
             this.grpChars.Controls.Add(this.txtKeyword);
@@ -138,12 +141,27 @@
             this.grpChars.TabStop = false;
             this.grpChars.Text = "人物列表";
             // 
+            // cbbReadCharType
+            // 
+            this.cbbReadCharType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbbReadCharType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbbReadCharType.FormattingEnabled = true;
+            this.cbbReadCharType.Items.AddRange(new object[] {
+            "select.def",
+            "人物文件夹"});
+            this.cbbReadCharType.Location = new System.Drawing.Point(97, 427);
+            this.cbbReadCharType.Name = "cbbReadCharType";
+            this.cbbReadCharType.Size = new System.Drawing.Size(117, 20);
+            this.cbbReadCharType.TabIndex = 6;
+            this.cbbReadCharType.SelectedIndexChanged += new System.EventHandler(this.cbbReadCharType_SelectedIndexChanged);
+            // 
             // btnSearchDown
             // 
             this.btnSearchDown.Location = new System.Drawing.Point(191, 18);
             this.btnSearchDown.Name = "btnSearchDown";
             this.btnSearchDown.Size = new System.Drawing.Size(23, 23);
-            this.btnSearchDown.TabIndex = 7;
+            this.btnSearchDown.TabIndex = 2;
             this.btnSearchDown.Text = "∨";
             this.btnSearchDown.UseVisualStyleBackColor = true;
             this.btnSearchDown.Click += new System.EventHandler(this.btnSearchDown_Click);
@@ -170,10 +188,10 @@
             // btnSelectInvert
             // 
             this.btnSelectInvert.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSelectInvert.Location = new System.Drawing.Point(54, 425);
+            this.btnSelectInvert.Location = new System.Drawing.Point(49, 425);
             this.btnSelectInvert.Name = "btnSelectInvert";
             this.btnSelectInvert.Size = new System.Drawing.Size(42, 23);
-            this.btnSelectInvert.TabIndex = 4;
+            this.btnSelectInvert.TabIndex = 5;
             this.btnSelectInvert.Text = "反选";
             this.btnSelectInvert.UseVisualStyleBackColor = true;
             this.btnSelectInvert.Click += new System.EventHandler(this.btnSelectInvert_Click);
@@ -184,7 +202,7 @@
             this.btnSelectAll.Location = new System.Drawing.Point(6, 425);
             this.btnSelectAll.Name = "btnSelectAll";
             this.btnSelectAll.Size = new System.Drawing.Size(42, 23);
-            this.btnSelectAll.TabIndex = 3;
+            this.btnSelectAll.TabIndex = 4;
             this.btnSelectAll.Text = "全选";
             this.btnSelectAll.UseVisualStyleBackColor = true;
             this.btnSelectAll.Click += new System.EventHandler(this.btnSelectAll_Click);
@@ -193,10 +211,10 @@
             // 
             this.chkAutoSort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.chkAutoSort.AutoSize = true;
-            this.chkAutoSort.Location = new System.Drawing.Point(142, 429);
+            this.chkAutoSort.Location = new System.Drawing.Point(142, 458);
             this.chkAutoSort.Name = "chkAutoSort";
             this.chkAutoSort.Size = new System.Drawing.Size(72, 16);
-            this.chkAutoSort.TabIndex = 5;
+            this.chkAutoSort.TabIndex = 8;
             this.chkAutoSort.Text = "自动排序";
             this.chkAutoSort.UseVisualStyleBackColor = true;
             this.chkAutoSort.CheckedChanged += new System.EventHandler(this.chkAutoSort_CheckedChanged);
@@ -214,7 +232,7 @@
             this.lstChars.Name = "lstChars";
             this.lstChars.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.lstChars.Size = new System.Drawing.Size(208, 364);
-            this.lstChars.TabIndex = 2;
+            this.lstChars.TabIndex = 3;
             this.lstChars.SelectedIndexChanged += new System.EventHandler(this.lstChars_SelectedIndexChanged);
             // 
             // ctxmnuCharList
@@ -262,8 +280,8 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnReadChars.Location = new System.Drawing.Point(6, 451);
             this.btnReadChars.Name = "btnReadChars";
-            this.btnReadChars.Size = new System.Drawing.Size(208, 28);
-            this.btnReadChars.TabIndex = 6;
+            this.btnReadChars.Size = new System.Drawing.Size(130, 28);
+            this.btnReadChars.TabIndex = 7;
             this.btnReadChars.Text = "读取人物列表";
             this.btnReadChars.UseVisualStyleBackColor = true;
             this.btnReadChars.Click += new System.EventHandler(this.btnReadChars_Click);
@@ -559,6 +577,7 @@
             // 
             this.tsmiApp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiLaunchMugenExe,
+            this.tsmiOpenSelectDef,
             this.tsmiSetting});
             this.tsmiApp.Name = "tsmiApp";
             this.tsmiApp.Size = new System.Drawing.Size(44, 21);
@@ -567,14 +586,21 @@
             // tsmiLaunchMugenExe
             // 
             this.tsmiLaunchMugenExe.Name = "tsmiLaunchMugenExe";
-            this.tsmiLaunchMugenExe.Size = new System.Drawing.Size(185, 22);
+            this.tsmiLaunchMugenExe.Size = new System.Drawing.Size(194, 22);
             this.tsmiLaunchMugenExe.Text = "运行MUGEN程序(&L)";
             this.tsmiLaunchMugenExe.Click += new System.EventHandler(this.tsmiLaunchMugenExe_Click);
+            // 
+            // tsmiOpenSelectDef
+            // 
+            this.tsmiOpenSelectDef.Name = "tsmiOpenSelectDef";
+            this.tsmiOpenSelectDef.Size = new System.Drawing.Size(194, 22);
+            this.tsmiOpenSelectDef.Text = "打开select.def文件(&S)";
+            this.tsmiOpenSelectDef.Click += new System.EventHandler(this.tsmiOpenSelectDef_Click);
             // 
             // tsmiSetting
             // 
             this.tsmiSetting.Name = "tsmiSetting";
-            this.tsmiSetting.Size = new System.Drawing.Size(185, 22);
+            this.tsmiSetting.Size = new System.Drawing.Size(194, 22);
             this.tsmiSetting.Text = "设置(&S)";
             this.tsmiSetting.Click += new System.EventHandler(this.tsmiSetting_Click);
             // 
@@ -688,6 +714,8 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiSetting;
         private System.Windows.Forms.ToolStripMenuItem tsmiDeleteChar;
         private System.Windows.Forms.OpenFileDialog ofdOpenMugenExe;
+        private System.Windows.Forms.ToolStripMenuItem tsmiOpenSelectDef;
+        private System.Windows.Forms.ComboBox cbbReadCharType;
     }
 }
 

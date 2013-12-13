@@ -28,7 +28,9 @@ namespace MUGENCharsSet
         public const string MUGEN_PATH_ITEM = "MugenPath";  //MUGEN程序绝对路径配置项
         public const string AUTO_SORT_ITEM = "AutoSort";    //自动排序配置项
         public const string EDIT_PROGRAM_ITEM = "EditProgram";  //文本编辑器配置项
+        public const string READ_CHAR_TYPE_ITEM = "ReadCharType";   //读取人物列表类型配置项
         public const string DEF_EDIT_PROGRAM = "notepad.exe";   //默认文本编辑器路径
+        public const string SELECT_DEF_PATH = @"data\select.def";   //select.def文件相对路径
 
         #endregion
 
@@ -167,27 +169,12 @@ namespace MUGENCharsSet
             {
                 if (value)
                 {
-                    if (!_multiModified)
-                    {
-                        ResetControl();
-                        foreach (Control ctlTemp in grpProperty.Controls)
-                        {
-                            if (ctlTemp is TextBox) ((TextBox)ctlTemp).Text = MULTI_VALUE;
-                        }
-                    }
+                    ResetControl();
                     txtName.ReadOnly = true;
                     txtDisplayName.ReadOnly = true;
                     grpPal.Enabled = false;
                     btnRestore.Enabled = true;
                     lblDefPath.Text = MULTI_VALUE;
-                    ttpCommon.SetToolTip(lblDefPath, MULTI_VALUE);
-                    CurDefList.Clear();
-                    foreach (int i in lstChars.SelectedIndices)
-                    {
-                        CurDefList.Add(((CharFile)lstChars.Items[i]).DefPath);
-                    }
-                    SetMutliDefPathLabel();
-                    CurChar = new Character();
                 }
                 else
                 {
@@ -273,10 +260,12 @@ namespace MUGENCharsSet
                 IniFiles ini = new IniFiles(IniFilePath);
                 txtMugenExePath.Text = ini.ReadString(DATA_SECTION, MUGEN_PATH_ITEM, "");
                 if (ini.ReadInteger(DATA_SECTION, AUTO_SORT_ITEM, 0) == 1)
-                {
                     chkAutoSort.Checked = true;
-                }
                 EditProgram = ini.ReadString(DATA_SECTION, EDIT_PROGRAM_ITEM, DEF_EDIT_PROGRAM);
+                if (ini.ReadInteger(DATA_SECTION, READ_CHAR_TYPE_ITEM, 0) == 1)
+                    cbbReadCharType.SelectedIndex = 1;
+                else
+                    cbbReadCharType.SelectedIndex = 0;
             }
             catch (Exception) { }
         }
@@ -423,7 +412,37 @@ namespace MUGENCharsSet
         private void ReadMultiCharSet()
         {
             if (lstChars.SelectedIndices.Count <= 1) return;
+            CurDefList.Clear();
+            ArrayList multiCharList = new ArrayList();
+            foreach (int i in lstChars.SelectedIndices)
+            {
+                string defPath = ((CharFile)lstChars.Items[i]).DefPath;
+                CurDefList.Add(defPath);
+                multiCharList.Add(new CharacterBase(defPath));
+            }
+            SetMutliDefPathLabel();
             MultiModified = true;
+            string name = ((CharacterBase)multiCharList[0]).Name,
+                displayName = ((CharacterBase)multiCharList[0]).DisplayName;
+            int life = ((CharacterBase)multiCharList[0]).Life,
+                attack = ((CharacterBase)multiCharList[0]).Attack,
+                defence = ((CharacterBase)multiCharList[0]).Defence,
+                power = ((CharacterBase)multiCharList[0]).Power;
+            txtName.Text = name;
+            txtDisplayName.Text = displayName;
+            txtLife.Text = life.ToString();
+            txtAttack.Text = attack.ToString();
+            txtDefence.Text = defence.ToString();
+            txtPower.Text = power.ToString();
+            foreach (CharacterBase singleChar in multiCharList)
+            {
+                if (name != singleChar.Name) txtName.Text = MULTI_VALUE;
+                if (displayName != singleChar.DisplayName) txtDisplayName.Text = MULTI_VALUE;
+                if (life != singleChar.Life) txtLife.Text = MULTI_VALUE;
+                if (attack != singleChar.Attack) txtAttack.Text = MULTI_VALUE;
+                if (defence != singleChar.Defence) txtDefence.Text = MULTI_VALUE;
+                if (power != singleChar.Power) txtPower.Text = MULTI_VALUE;
+            }
         }
 
         /// <summary>
@@ -768,10 +787,13 @@ namespace MUGENCharsSet
         {
             if (lstChars.Items.Count > 0)
             {
+                IsLstCharPreparing = true;
                 for (int i = 0; i < lstChars.Items.Count; i++)
                 {
                     lstChars.SetSelected(i, true);
                 }
+                IsLstCharPreparing = false;
+                lstChars_SelectedIndexChanged(null, null);
             }
         }
 
@@ -779,6 +801,7 @@ namespace MUGENCharsSet
         {
             if (lstChars.Items.Count > 0)
             {
+                IsLstCharPreparing = true;
                 bool isAllSelect = true;
                 for (int i = 0; i < lstChars.Items.Count; i++)
                 {
@@ -786,6 +809,8 @@ namespace MUGENCharsSet
                     lstChars.SetSelected(i, blnTemp);
                     if (blnTemp) isAllSelect = false;
                 }
+                IsLstCharPreparing = false;
+                lstChars_SelectedIndexChanged(null, null);
                 if (isAllSelect) ModifyEnabled = false;
             }
         }
@@ -842,6 +867,11 @@ namespace MUGENCharsSet
             {
                 SendKeys.Send("{Tab}");
             }
+        }
+
+        private void cbbReadCharType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            WriteIniSet(DATA_SECTION, READ_CHAR_TYPE_ITEM, cbbReadCharType.SelectedIndex.ToString());
         }
 
         #endregion
@@ -984,6 +1014,24 @@ namespace MUGENCharsSet
             SettingForm settingForm = new SettingForm();
             settingForm.Owner = this;
             settingForm.ShowDialog();
+        }
+
+        private void tsmiOpenSelectDef_Click(object sender, EventArgs e)
+        {
+            string path = MugenDirPath + SELECT_DEF_PATH;
+            if (File.Exists(path))
+            {
+                try
+                {
+                    Process.Start(EditProgram, path);
+                }
+                catch (Exception)
+                {
+                    ShowErrorMsg("未找到文本编辑器！");
+                    return;
+                }
+            }
+            else ShowErrorMsg("select.def文件不存在！");
         }
 
         #endregion
