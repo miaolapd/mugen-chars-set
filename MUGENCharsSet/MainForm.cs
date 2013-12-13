@@ -21,7 +21,9 @@ namespace MUGENCharsSet
     {
         #region 类常量
 
-        public const string CHARS_DIR = @"chars\";  //人物文件夹名
+        public const string CHARS_DIR = @"chars\";  //人物文件夹相对路径
+        public const string DATA_DIR = @"data\";  //data文件夹相对路径
+        public const string MUGEN_CFG_PATH = @"data\mugen.cfg";  //mugen.cfg文件相对路径
         public const string MULTI_VALUE = "(多值)";   //多值的显示值
         public const int PAL_NO_COLUMN_NO = 0;  //序号的列数
         public const int PAL_VAL_COLUMN_NO = 1; //Pal值的列数
@@ -30,14 +32,18 @@ namespace MUGENCharsSet
         public const string AUTO_SORT_ITEM = "AutoSort";    //自动排序配置项
         public const string EDIT_PROGRAM_ITEM = "EditProgram";  //文本编辑器配置项
         public const string READ_CHAR_TYPE_ITEM = "ReadCharType";   //读取人物列表类型配置项
+        public const string OPTIONS_SECTION = "Options";  //Options配置分段
+        public const string MOTIF_ITEM = "motif"; //system.def文件相对路径配置项
+        public const string SELECT_ITEM = "select"; //select.def文件相对路径配置项
         public const string DEF_EDIT_PROGRAM = "notepad.exe";   //默认文本编辑器路径
-        public const string SELECT_DEF_PATH = @"data\select.def";   //select.def文件相对路径
 
         #endregion
 
         #region 类私有变量
 
         private string _mugenExePath = "";
+        private string _systemDefPath = "";
+        private string _selectDefPath = "";
         private bool _modifyEnabled = false;
         private bool _multiModified = false;
         private string _editProgram = DEF_EDIT_PROGRAM;
@@ -84,6 +90,24 @@ namespace MUGENCharsSet
         private string MugenCharsDirPath
         {
             get { return MugenDirPath + CHARS_DIR; }
+        }
+
+        /// <summary>
+        /// 获取或设置system.def文件绝对路径
+        /// </summary>
+        private string SystemDefPath
+        {
+            get { return _systemDefPath; }
+            set { _systemDefPath = value; }
+        }
+
+        /// <summary>
+        /// 获取或设置select.def文件绝对路径
+        /// </summary>
+        private string SelectDefPath
+        {
+            get { return _selectDefPath; }
+            set { _selectDefPath = value; }
         }
 
         /// <summary>
@@ -282,14 +306,21 @@ namespace MUGENCharsSet
                 txtMugenExePath.Focus();
                 return;
             }
-            else
+            try
             {
-                try { MugenExePath = txtMugenExePath.Text.Trim(); }
-                catch(ApplicationException ex)
-                {
-                    ShowErrorMsg(ex.Message);
-                    return;
-                }
+                MugenExePath = txtMugenExePath.Text.Trim();
+                if (!File.Exists(MugenDirPath + MUGEN_CFG_PATH)) throw (new ApplicationException("无法找到mugen.cfg文件！"));
+                IniFiles ini = new IniFiles(MugenDirPath + MUGEN_CFG_PATH);
+                SystemDefPath = MugenDirPath + ini.ReadString(OPTIONS_SECTION, MOTIF_ITEM, "");
+                if (!File.Exists(SystemDefPath)) throw (new ApplicationException("无法找到system.def文件！"));
+                ini = new IniFiles(SystemDefPath);
+                SelectDefPath = MugenDirPath + DATA_DIR + ini.ReadString(Character.FILES_SECTION, SELECT_ITEM, "");
+                if (!File.Exists(SelectDefPath)) throw (new ApplicationException("无法找到select.def文件！"));
+            }
+            catch (ApplicationException ex)
+            {
+                ShowErrorMsg(ex.Message);
+                return;
             }
             ModifyEnabled = false;
             MultiModified = false;
@@ -306,7 +337,7 @@ namespace MUGENCharsSet
                 if (cbbReadCharType.SelectedIndex == 1)
                     ScanCharDir(CharList, MugenCharsDirPath);
                 else
-                    ReadSelectDef(CharList, MugenDirPath + SELECT_DEF_PATH);
+                    ReadSelectDef(CharList);
             }
             catch(ApplicationException ex)
             {
@@ -359,13 +390,12 @@ namespace MUGENCharsSet
         /// 读取select.def文件中的人物列表
         /// </summary>
         /// <param name="charList">人物列表</param>
-        private void ReadSelectDef(ArrayList charList, string path)
+        private void ReadSelectDef(ArrayList charList)
         {
-            if (!File.Exists(MugenDirPath + SELECT_DEF_PATH)) throw (new ApplicationException("无法找到slect.def文件！"));
             string[] charLines = null;
             try
             {
-                string defContent = File.ReadAllText(path, Encoding.Default);
+                string defContent = File.ReadAllText(SelectDefPath, Encoding.Default);
                 Regex regex = new Regex(@"\[Characters\](.*)\r\n\[ExtraStages\]", RegexOptions.IgnoreCase | RegexOptions.Singleline);
                 charLines = regex.Match(defContent).Groups[1].Value.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
             }
@@ -731,7 +761,6 @@ namespace MUGENCharsSet
             if (ofdOpenMugenExe.ShowDialog() == DialogResult.OK)
             {
                 txtMugenExePath.Text = ofdOpenMugenExe.FileName;
-                ReadCharList();
             }
         }
 
@@ -1100,7 +1129,7 @@ namespace MUGENCharsSet
 
         private void tsmiOpenSelectDef_Click(object sender, EventArgs e)
         {
-            string path = MugenDirPath + SELECT_DEF_PATH;
+            string path = SelectDefPath;
             if (File.Exists(path))
             {
                 try
