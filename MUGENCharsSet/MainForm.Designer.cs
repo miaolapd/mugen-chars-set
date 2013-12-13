@@ -150,10 +150,10 @@
             this.cbbReadCharType.Items.AddRange(new object[] {
             "select.def",
             "人物文件夹"});
-            this.cbbReadCharType.Location = new System.Drawing.Point(97, 427);
+            this.cbbReadCharType.Location = new System.Drawing.Point(6, 425);
             this.cbbReadCharType.Name = "cbbReadCharType";
-            this.cbbReadCharType.Size = new System.Drawing.Size(117, 20);
-            this.cbbReadCharType.TabIndex = 6;
+            this.cbbReadCharType.Size = new System.Drawing.Size(208, 20);
+            this.cbbReadCharType.TabIndex = 7;
             this.cbbReadCharType.SelectedIndexChanged += new System.EventHandler(this.cbbReadCharType_SelectedIndexChanged);
             // 
             // btnSearchDown
@@ -188,7 +188,7 @@
             // btnSelectInvert
             // 
             this.btnSelectInvert.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSelectInvert.Location = new System.Drawing.Point(49, 425);
+            this.btnSelectInvert.Location = new System.Drawing.Point(49, 396);
             this.btnSelectInvert.Name = "btnSelectInvert";
             this.btnSelectInvert.Size = new System.Drawing.Size(42, 23);
             this.btnSelectInvert.TabIndex = 5;
@@ -199,7 +199,7 @@
             // btnSelectAll
             // 
             this.btnSelectAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSelectAll.Location = new System.Drawing.Point(6, 425);
+            this.btnSelectAll.Location = new System.Drawing.Point(6, 396);
             this.btnSelectAll.Name = "btnSelectAll";
             this.btnSelectAll.Size = new System.Drawing.Size(42, 23);
             this.btnSelectAll.TabIndex = 4;
@@ -211,10 +211,10 @@
             // 
             this.chkAutoSort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.chkAutoSort.AutoSize = true;
-            this.chkAutoSort.Location = new System.Drawing.Point(142, 458);
+            this.chkAutoSort.Location = new System.Drawing.Point(142, 400);
             this.chkAutoSort.Name = "chkAutoSort";
             this.chkAutoSort.Size = new System.Drawing.Size(72, 16);
-            this.chkAutoSort.TabIndex = 8;
+            this.chkAutoSort.TabIndex = 6;
             this.chkAutoSort.Text = "自动排序";
             this.chkAutoSort.UseVisualStyleBackColor = true;
             this.chkAutoSort.CheckedChanged += new System.EventHandler(this.chkAutoSort_CheckedChanged);
@@ -231,7 +231,7 @@
             this.lstChars.Location = new System.Drawing.Point(6, 53);
             this.lstChars.Name = "lstChars";
             this.lstChars.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lstChars.Size = new System.Drawing.Size(208, 364);
+            this.lstChars.Size = new System.Drawing.Size(208, 340);
             this.lstChars.TabIndex = 3;
             this.lstChars.SelectedIndexChanged += new System.EventHandler(this.lstChars_SelectedIndexChanged);
             // 
@@ -280,8 +280,8 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnReadChars.Location = new System.Drawing.Point(6, 451);
             this.btnReadChars.Name = "btnReadChars";
-            this.btnReadChars.Size = new System.Drawing.Size(130, 28);
-            this.btnReadChars.TabIndex = 7;
+            this.btnReadChars.Size = new System.Drawing.Size(208, 28);
+            this.btnReadChars.TabIndex = 8;
             this.btnReadChars.Text = "读取人物列表";
             this.btnReadChars.UseVisualStyleBackColor = true;
             this.btnReadChars.Click += new System.EventHandler(this.btnReadChars_Click);

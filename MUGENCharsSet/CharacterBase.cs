@@ -314,6 +314,31 @@ namespace MUGENCharsSet
             return total;
         }
 
+        /// <summary>
+        /// 批量删除人物
+        /// </summary>
+        /// <param name="defList">def文件绝对路径列表</param>
+        /// <returns>删除成功总数</returns>
+        public static int DeleteMultiChar(StringCollection defList)
+        {
+            int total = 0;
+            foreach (string path in defList)
+            {
+                try
+                {
+                    if (!File.Exists(path)) continue;
+                    File.Copy(path, path + DEL_EXT, true);
+                    File.Delete(path);
+                    total++;
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+            return total;
+        }
+
         #endregion
     }
 }

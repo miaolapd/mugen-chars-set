@@ -500,7 +500,7 @@ namespace MUGENCharsSet
             try
             {
                 ReadValues();
-                total = Character.WriteMultiCharSet(CurDefList, CurChar);
+                total = CharacterBase.WriteMultiCharSet(CurDefList, CurChar);
             }
             catch (Exception ex)
             {
@@ -687,10 +687,7 @@ namespace MUGENCharsSet
         {
             if (MultiModified)
             {
-                foreach (Control ctlTemp in grpProperty.Controls)
-                {
-                    if (ctlTemp is TextBox) ((TextBox)ctlTemp).Text = MULTI_VALUE;
-                }
+                ReadMultiCharSet();
             }
             else
             {
@@ -702,7 +699,7 @@ namespace MUGENCharsSet
         {
             if (MultiModified)
             {
-                int total = Character.BackupMultiCharSet(CurDefList);
+                int total = CharacterBase.BackupMultiCharSet(CurDefList);
                 if (total > 0) ShowSuccessMsg(total + "条项目备份成功！");
                 else ShowErrorMsg("备份失败！");
             }
@@ -718,7 +715,7 @@ namespace MUGENCharsSet
                     return;
                 }
                 ShowSuccessMsg("备份成功！");
-                if (File.Exists(CurDefList[0] + Character.BAK_EXT)) btnRestore.Enabled = true;
+                if (File.Exists(CurDefList[0] + CharacterBase.BAK_EXT)) btnRestore.Enabled = true;
             }
         }
 
@@ -726,7 +723,7 @@ namespace MUGENCharsSet
         {
             if (MultiModified)
             {
-                int total = Character.RestoreMultiCharSet(CurDefList);
+                int total = CharacterBase.RestoreMultiCharSet(CurDefList);
                 if (total > 0)
                 {
                     ShowSuccessMsg(total + "条项目还原成功！");
@@ -943,7 +940,13 @@ namespace MUGENCharsSet
             if (lstChars.SelectedIndices.Count <= 0) return;
             if(MultiModified)
             {
-
+                if (CurDefList.Count == 0) return;
+                int total = CharacterBase.DeleteMultiChar(CurDefList);
+                if (total == 0)
+                {
+                    ShowErrorMsg("删除失败！");
+                    return;
+                }
             }
             else
             {
@@ -957,17 +960,27 @@ namespace MUGENCharsSet
                     ShowErrorMsg(ex.Message);
                     return;
                 }
-                int index = lstChars.SelectedIndex;
-                CharList.Remove((CharFile)lstChars.SelectedItem);
-                BindingSource bs = new BindingSource();
-                bs.DataSource = CharList;
-                IsLstCharPreparing = true;
-                lstChars.DataSource = bs;
-                IsLstCharPreparing = false;
-                lstChars.ClearSelected();
-                if (index < lstChars.Items.Count) lstChars.SelectedIndex = index;
-                else lstChars.SelectedIndex = lstChars.Items.Count - 1;
             }
+            int index = lstChars.SelectedIndex;
+            if (MultiModified)
+            {
+                foreach(CharFile item in lstChars.SelectedItems)
+                {
+                    CharList.Remove(item);
+                }
+            }
+            else
+            {
+                CharList.Remove((CharFile)lstChars.SelectedItem);
+            }
+            BindingSource bs = new BindingSource();
+            bs.DataSource = CharList;
+            IsLstCharPreparing = true;
+            lstChars.DataSource = bs;
+            IsLstCharPreparing = false;
+            lstChars.ClearSelected();
+            if (index < lstChars.Items.Count) lstChars.SelectedIndex = index;
+            else lstChars.SelectedIndex = lstChars.Items.Count - 1;
         }
 
         #endregion
