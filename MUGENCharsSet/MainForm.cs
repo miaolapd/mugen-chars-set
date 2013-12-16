@@ -969,6 +969,16 @@ namespace MUGENCharsSet
             WriteIniSet(DATA_SECTION, READ_CHAR_TYPE_ITEM, cbbReadCharType.SelectedIndex.ToString());
         }
 
+        private void txtMugenExePath_DragDrop(object sender, DragEventArgs e)
+        {
+            txtMugenExePath.Text = ((string[])e.Data.GetData(DataFormats.FileDrop))[0];
+        }
+
+        private void txtMugenExePath_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
+        }
+
         #endregion
 
         #region 人物列表右键菜单
@@ -1146,6 +1156,7 @@ namespace MUGENCharsSet
         }
 
         #endregion
+
     }
 
     #region 人物文件类

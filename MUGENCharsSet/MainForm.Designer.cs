@@ -102,12 +102,15 @@
             // 
             // txtMugenExePath
             // 
+            this.txtMugenExePath.AllowDrop = true;
             this.txtMugenExePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtMugenExePath.Location = new System.Drawing.Point(107, 15);
             this.txtMugenExePath.Name = "txtMugenExePath";
             this.txtMugenExePath.Size = new System.Drawing.Size(383, 21);
             this.txtMugenExePath.TabIndex = 1;
+            this.txtMugenExePath.DragDrop += new System.Windows.Forms.DragEventHandler(this.txtMugenExePath_DragDrop);
+            this.txtMugenExePath.DragEnter += new System.Windows.Forms.DragEventHandler(this.txtMugenExePath_DragEnter);
             this.txtMugenExePath.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMugenDir_KeyDown);
             // 
             // btnOpenMugenExe
@@ -168,7 +171,7 @@
             // 
             // btnSearchUp
             // 
-            this.btnSearchUp.Location = new System.Drawing.Point(168, 18);
+            this.btnSearchUp.Location = new System.Drawing.Point(167, 18);
             this.btnSearchUp.Name = "btnSearchUp";
             this.btnSearchUp.Size = new System.Drawing.Size(23, 23);
             this.btnSearchUp.TabIndex = 1;
@@ -181,7 +184,7 @@
             this.txtKeyword.Location = new System.Drawing.Point(6, 20);
             this.txtKeyword.MaxLength = 255;
             this.txtKeyword.Name = "txtKeyword";
-            this.txtKeyword.Size = new System.Drawing.Size(156, 21);
+            this.txtKeyword.Size = new System.Drawing.Size(155, 21);
             this.txtKeyword.TabIndex = 0;
             this.txtKeyword.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyDown);
             // 
