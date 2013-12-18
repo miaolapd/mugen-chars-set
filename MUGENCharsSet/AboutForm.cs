@@ -25,7 +25,6 @@ namespace MUGENCharsSet
         private void AboutForm_Load(object sender, EventArgs e)
         {
             lblAppName.Text = "M.U.G.E.N人物设置 " + Application.ProductVersion;
-            lblAuthor.Text = "程序设计：" + Application.CompanyName;
         }
 
         /// <summary>

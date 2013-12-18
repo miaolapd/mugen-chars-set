@@ -219,7 +219,6 @@ namespace MUGENCharsSet
         public Character(string defPath)
         {
             DefPath = Tools.GetBackSlashPath(defPath);
-            if (!File.Exists(DefPath)) throw new ApplicationException("人物def文件不存在！");
             ReadCharacterSetting();
             PalList = null;
         }
@@ -232,6 +231,7 @@ namespace MUGENCharsSet
         /// <exception cref="System.ApplicationException"></exception>
         public void ReadCharacterSetting()
         {
+            if (!File.Exists(DefPath)) throw new ApplicationException("人物def文件不存在！");
             IniFiles ini = new IniFiles(DefPath);
             Name = GetTrimName(ini.ReadString(SettingInfo.InfoSection, SettingInfo.NameItem, ""));
             DisplayName = GetTrimName(ini.ReadString(SettingInfo.InfoSection, SettingInfo.DisplayNameItem, ""));

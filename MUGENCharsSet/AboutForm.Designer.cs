@@ -83,8 +83,9 @@
             this.lblAuthor.AutoSize = true;
             this.lblAuthor.Location = new System.Drawing.Point(82, 39);
             this.lblAuthor.Name = "lblAuthor";
-            this.lblAuthor.Size = new System.Drawing.Size(0, 12);
+            this.lblAuthor.Size = new System.Drawing.Size(113, 12);
             this.lblAuthor.TabIndex = 2;
+            this.lblAuthor.Text = "程序设计：喵拉布丁";
             // 
             // AboutForm
             // 

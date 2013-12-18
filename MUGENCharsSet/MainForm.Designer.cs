@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.ctxmnuCharList = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ctxmnuCharacterList = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ctxTsmiOpenDefFile = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxTsmiOpenCnsFile = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxTsmiOpenDefDir = new System.Windows.Forms.ToolStripMenuItem();
@@ -48,7 +48,9 @@
             this.btnSearchAll = new System.Windows.Forms.Button();
             this.mnuMain = new System.Windows.Forms.MenuStrip();
             this.tsmiApp = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiSetSystemDefPath = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiReload = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tsmiLaunchMugenExe = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiSetting = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiEdit = new System.Windows.Forms.ToolStripMenuItem();
@@ -84,7 +86,9 @@
             this.btnSelectAll = new System.Windows.Forms.Button();
             this.lstCharacterList = new System.Windows.Forms.ListBox();
             this.btnRefreshCharacterList = new System.Windows.Forms.Button();
-            this.ctxmnuCharList.SuspendLayout();
+            this.fswCharacterCns = new System.IO.FileSystemWatcher();
+            this.ofdSystemDefPath = new System.Windows.Forms.OpenFileDialog();
+            this.ctxmnuCharacterList.SuspendLayout();
             this.mnuMain.SuspendLayout();
             this.tabMain.SuspendLayout();
             this.pageCharacter.SuspendLayout();
@@ -93,18 +97,19 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvPal)).BeginInit();
             this.grpProperty.SuspendLayout();
             this.grpChars.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.fswCharacterCns)).BeginInit();
             this.SuspendLayout();
             // 
-            // ctxmnuCharList
+            // ctxmnuCharacterList
             // 
-            this.ctxmnuCharList.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ctxmnuCharacterList.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ctxTsmiOpenDefFile,
             this.ctxTsmiOpenCnsFile,
             this.ctxTsmiOpenDefDir,
             this.ctxTsmiCopyDefPath,
             this.ctxTsmiDeleteCharacter});
-            this.ctxmnuCharList.Name = "contextMenuStrip1";
-            this.ctxmnuCharList.Size = new System.Drawing.Size(213, 114);
+            this.ctxmnuCharacterList.Name = "contextMenuStrip1";
+            this.ctxmnuCharacterList.Size = new System.Drawing.Size(213, 114);
             // 
             // ctxTsmiOpenDefFile
             // 
@@ -207,7 +212,7 @@
             this.cboReadCharacterType.Location = new System.Drawing.Point(6, 425);
             this.cboReadCharacterType.Name = "cboReadCharacterType";
             this.cboReadCharacterType.Size = new System.Drawing.Size(208, 20);
-            this.cboReadCharacterType.TabIndex = 7;
+            this.cboReadCharacterType.TabIndex = 8;
             this.ttpCommon.SetToolTip(this.cboReadCharacterType, "选择读取人物列表类型");
             this.cboReadCharacterType.SelectedIndexChanged += new System.EventHandler(this.cboReadCharacterType_SelectedIndexChanged);
             // 
@@ -242,7 +247,7 @@
             this.chkAutoSort.Location = new System.Drawing.Point(142, 400);
             this.chkAutoSort.Name = "chkAutoSort";
             this.chkAutoSort.Size = new System.Drawing.Size(72, 16);
-            this.chkAutoSort.TabIndex = 6;
+            this.chkAutoSort.TabIndex = 7;
             this.chkAutoSort.Text = "自动排序";
             this.ttpCommon.SetToolTip(this.chkAutoSort, "按照人物名称自动排序");
             this.chkAutoSort.UseVisualStyleBackColor = true;
@@ -254,7 +259,7 @@
             this.btnSearchAll.Location = new System.Drawing.Point(186, 19);
             this.btnSearchAll.Name = "btnSearchAll";
             this.btnSearchAll.Size = new System.Drawing.Size(28, 23);
-            this.btnSearchAll.TabIndex = 9;
+            this.btnSearchAll.TabIndex = 3;
             this.btnSearchAll.Text = "All";
             this.ttpCommon.SetToolTip(this.btnSearchAll, "全部搜索");
             this.btnSearchAll.UseVisualStyleBackColor = true;
@@ -274,32 +279,46 @@
             // tsmiApp
             // 
             this.tsmiApp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiSetSystemDefPath,
             this.tsmiReload,
+            this.toolStripSeparator1,
             this.tsmiLaunchMugenExe,
             this.tsmiSetting});
             this.tsmiApp.Name = "tsmiApp";
             this.tsmiApp.Size = new System.Drawing.Size(60, 21);
             this.tsmiApp.Text = "程序(&A)";
             // 
+            // tsmiSetSystemDefPath
+            // 
+            this.tsmiSetSystemDefPath.Name = "tsmiSetSystemDefPath";
+            this.tsmiSetSystemDefPath.Size = new System.Drawing.Size(201, 22);
+            this.tsmiSetSystemDefPath.Text = "选择system.def文件(&T)";
+            this.tsmiSetSystemDefPath.Click += new System.EventHandler(this.tsmiSetSystemDefPath_Click);
+            // 
             // tsmiReload
             // 
             this.tsmiReload.Name = "tsmiReload";
             this.tsmiReload.ShortcutKeys = System.Windows.Forms.Keys.F5;
-            this.tsmiReload.Size = new System.Drawing.Size(185, 22);
+            this.tsmiReload.Size = new System.Drawing.Size(201, 22);
             this.tsmiReload.Text = "重新载入";
             this.tsmiReload.Click += new System.EventHandler(this.tsmiReload_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(198, 6);
             // 
             // tsmiLaunchMugenExe
             // 
             this.tsmiLaunchMugenExe.Name = "tsmiLaunchMugenExe";
-            this.tsmiLaunchMugenExe.Size = new System.Drawing.Size(185, 22);
+            this.tsmiLaunchMugenExe.Size = new System.Drawing.Size(201, 22);
             this.tsmiLaunchMugenExe.Text = "运行MUGEN程序(&L)";
             this.tsmiLaunchMugenExe.Click += new System.EventHandler(this.tsmiLaunchMugenExe_Click);
             // 
             // tsmiSetting
             // 
             this.tsmiSetting.Name = "tsmiSetting";
-            this.tsmiSetting.Size = new System.Drawing.Size(185, 22);
+            this.tsmiSetting.Size = new System.Drawing.Size(201, 22);
             this.tsmiSetting.Text = "设置(&S)";
             this.tsmiSetting.Click += new System.EventHandler(this.tsmiSetting_Click);
             // 
@@ -624,7 +643,7 @@
             this.btnSelectInvert.Location = new System.Drawing.Point(49, 396);
             this.btnSelectInvert.Name = "btnSelectInvert";
             this.btnSelectInvert.Size = new System.Drawing.Size(42, 23);
-            this.btnSelectInvert.TabIndex = 5;
+            this.btnSelectInvert.TabIndex = 6;
             this.btnSelectInvert.Text = "反选";
             this.btnSelectInvert.UseVisualStyleBackColor = true;
             this.btnSelectInvert.Click += new System.EventHandler(this.btnSelectInvert_Click);
@@ -635,7 +654,7 @@
             this.btnSelectAll.Location = new System.Drawing.Point(6, 396);
             this.btnSelectAll.Name = "btnSelectAll";
             this.btnSelectAll.Size = new System.Drawing.Size(42, 23);
-            this.btnSelectAll.TabIndex = 4;
+            this.btnSelectAll.TabIndex = 5;
             this.btnSelectAll.Text = "全选";
             this.btnSelectAll.UseVisualStyleBackColor = true;
             this.btnSelectAll.Click += new System.EventHandler(this.btnSelectAll_Click);
@@ -645,7 +664,7 @@
             this.lstCharacterList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lstCharacterList.ContextMenuStrip = this.ctxmnuCharList;
+            this.lstCharacterList.ContextMenuStrip = this.ctxmnuCharacterList;
             this.lstCharacterList.FormattingEnabled = true;
             this.lstCharacterList.HorizontalScrollbar = true;
             this.lstCharacterList.ItemHeight = 12;
@@ -653,7 +672,7 @@
             this.lstCharacterList.Name = "lstCharacterList";
             this.lstCharacterList.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.lstCharacterList.Size = new System.Drawing.Size(208, 340);
-            this.lstCharacterList.TabIndex = 3;
+            this.lstCharacterList.TabIndex = 4;
             this.lstCharacterList.SelectedIndexChanged += new System.EventHandler(this.lstCharacterList_SelectedIndexChanged);
             // 
             // btnRefreshCharacterList
@@ -663,10 +682,23 @@
             this.btnRefreshCharacterList.Location = new System.Drawing.Point(6, 451);
             this.btnRefreshCharacterList.Name = "btnRefreshCharacterList";
             this.btnRefreshCharacterList.Size = new System.Drawing.Size(208, 28);
-            this.btnRefreshCharacterList.TabIndex = 8;
+            this.btnRefreshCharacterList.TabIndex = 9;
             this.btnRefreshCharacterList.Text = "刷新人物列表";
             this.btnRefreshCharacterList.UseVisualStyleBackColor = true;
             this.btnRefreshCharacterList.Click += new System.EventHandler(this.btnRefreshCharacterList_Click);
+            // 
+            // fswCharacterCns
+            // 
+            this.fswCharacterCns.EnableRaisingEvents = true;
+            this.fswCharacterCns.Filter = "*.cns";
+            this.fswCharacterCns.IncludeSubdirectories = true;
+            this.fswCharacterCns.SynchronizingObject = this;
+            this.fswCharacterCns.Changed += new System.IO.FileSystemEventHandler(this.fswCharacterCns_Changed);
+            // 
+            // ofdSystemDefPath
+            // 
+            this.ofdSystemDefPath.FileName = "system.def";
+            this.ofdSystemDefPath.Filter = "def文件|*.def";
             // 
             // MainForm
             // 
@@ -683,7 +715,7 @@
             this.Text = "M.U.G.E.N人物设置";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
-            this.ctxmnuCharList.ResumeLayout(false);
+            this.ctxmnuCharacterList.ResumeLayout(false);
             this.mnuMain.ResumeLayout(false);
             this.mnuMain.PerformLayout();
             this.tabMain.ResumeLayout(false);
@@ -695,6 +727,7 @@
             this.grpProperty.PerformLayout();
             this.grpChars.ResumeLayout(false);
             this.grpChars.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.fswCharacterCns)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -702,7 +735,7 @@
 
         #endregion
 
-        private System.Windows.Forms.ContextMenuStrip ctxmnuCharList;
+        private System.Windows.Forms.ContextMenuStrip ctxmnuCharacterList;
         private System.Windows.Forms.ToolStripMenuItem ctxTsmiOpenDefFile;
         private System.Windows.Forms.ToolTip ttpCommon;
         private System.Windows.Forms.ToolStripMenuItem ctxTsmiOpenDefDir;
@@ -756,6 +789,10 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiOpenSelectDef;
         private System.Windows.Forms.ToolStripMenuItem tsmiOpenSystemDef;
         private System.Windows.Forms.ToolStripMenuItem tsmiOpenMugenCfg;
+        private System.IO.FileSystemWatcher fswCharacterCns;
+        private System.Windows.Forms.ToolStripMenuItem tsmiSetSystemDefPath;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.OpenFileDialog ofdSystemDefPath;
     }
 }
 
