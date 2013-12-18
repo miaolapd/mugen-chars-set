@@ -38,8 +38,6 @@ namespace MUGENCharsSet
 
         private readonly string _mugenExePath;
         private readonly string _mugenCfgPath;
-        private string _systemDefPath;
-        private string _selectDefPath;
 
         #endregion
 
@@ -85,24 +83,6 @@ namespace MUGENCharsSet
             get { return _mugenCfgPath; }
         }
 
-        /// <summary>
-        /// 获取或设置system.def文件绝对路径
-        /// </summary>
-        public string SystemDefPath
-        {
-            get { return _systemDefPath; }
-            set { _systemDefPath = value; }
-        }
-
-        /// <summary>
-        /// 获取或设置select.def文件绝对路径
-        /// </summary>
-        public string SelectDefPath
-        {
-            get { return _selectDefPath; }
-            set { _selectDefPath = value; }
-        }
-
         #endregion
 
         /// <summary>
@@ -112,39 +92,124 @@ namespace MUGENCharsSet
         /// <exception cref="System.ApplicationException"></exception>
         public MUGENSetting(string mugenExePath)
         {
-            if (!File.Exists(mugenExePath)) throw new ApplicationException("无法找到MUGEN程序！");
+            if (!File.Exists(mugenExePath)) throw new ApplicationException("MUGEN程序不存在！");
             _mugenExePath = mugenExePath;
             _mugenCfgPath = MugenDataDirPath + MugenCfgFileName;
-            if (!File.Exists(MugenCfgPath)) throw new ApplicationException("无法找到mugen.cfg文件！");
-            IniFiles ini = new IniFiles(MugenCfgPath);
-            _systemDefPath = MugenDirPath + ini.ReadString(SettingInfo.OptionsSection, SettingInfo.MotifItem, "");
-            if (!File.Exists(SystemDefPath)) throw new ApplicationException("无法找到system.def文件！");
-            ini = new IniFiles(SystemDefPath);
-            _selectDefPath = Tools.GetFileDirName(SystemDefPath) + ini.ReadString(SettingInfo.FilesSection, SettingInfo.SelectItem, "");
-            if (!File.Exists(SelectDefPath)) throw new ApplicationException("无法找到select.def文件！");
+            if (!File.Exists(MugenCfgPath)) throw new ApplicationException("mugen.cfg文件不存在！");
         }
 
+        #region 类方法
+
         /// <summary>
-        /// 设置system.def路径
+        /// 获取system.def文件绝对路径
         /// </summary>
-        /// <param name="mugenExePath">MUGEN程序绝对路径</param>
-        /// <param name="systemDefPath">system.def文件绝对路径</param>
+        /// <returns>system.def文件绝对路径</returns>
         /// <exception cref="System.ApplicationException"></exception>
-        public static void SetSystemDefPath(string mugenExePath, string systemDefPath)
+        public string GetSystemDefPath()
         {
-            string mugenDirPath = Tools.GetFileDirName(mugenExePath);
-            string mugenCfgPath = mugenDirPath + DataDir + MugenCfgFileName;
-            if (!File.Exists(mugenCfgPath)) throw new ApplicationException("无法找到mugen.cfg文件！");
+            if (!File.Exists(MugenCfgPath)) throw new ApplicationException("mugen.cfg文件不存在！");
             try
             {
-                IniFiles ini = new IniFiles(mugenCfgPath);
-                ini.WriteString(SettingInfo.OptionsSection, SettingInfo.MotifItem, Tools.GetSlashPath(systemDefPath.Substring(mugenDirPath.Length)));
+                IniFiles ini = new IniFiles(MugenCfgPath);
+                return MugenDirPath + ini.ReadString(SettingInfo.OptionsSection, SettingInfo.MotifItem, "");
             }
             catch (ApplicationException)
             {
-                throw new ApplicationException("mugen.cfg文件写入失败！");
+                throw new ApplicationException("mugen.cfg文件读取失败！");
             }
         }
+
+        /// <summary>
+        /// 设置system.def文件绝对路径
+        /// </summary>
+        /// <param name="systemDefPath">system.def文件绝对路径</param>
+        /// <exception cref="System.ApplicationException"></exception>
+        public void SetSystemDefPath(string systemDefPath)
+        {
+            if (!File.Exists(MugenCfgPath)) throw new ApplicationException("mugen.cfg文件不存在！");
+            try
+            {
+                IniFiles ini = new IniFiles(MugenCfgPath);
+                ini.WriteString(SettingInfo.OptionsSection, SettingInfo.MotifItem, Tools.GetSlashPath(systemDefPath.Substring(MugenDirPath.Length)));
+            }
+            catch (ApplicationException)
+            {
+                throw new ApplicationException("mugen.cfg文件读取失败！");
+            }
+        }
+
+        /// <summary>
+        /// 获取select.def文件绝对路径
+        /// </summary>
+        /// <returns>select.def文件绝对路径</returns>
+        /// <exception cref="System.ApplicationException"></exception>
+        public string GetSelectDefPath()
+        {
+            string systemDefPath;
+            try
+            {
+                systemDefPath = GetSystemDefPath();
+            }
+            catch (ApplicationException ex)
+            {
+                throw ex;
+            }
+            if (!File.Exists(systemDefPath)) throw new ApplicationException("system.def文件不存在！");
+            try
+            {
+                IniFiles ini = new IniFiles(systemDefPath);
+                return Tools.GetFileDirName(systemDefPath) + ini.ReadString(SettingInfo.FilesSection, SettingInfo.SelectItem, "");
+            }
+            catch (ApplicationException)
+            {
+                throw new ApplicationException("system.def文件读取失败！");
+            }
+        }
+
+        /// <summary>
+        /// 设置select.def文件绝对路径
+        /// </summary>
+        /// <param name="selectDefPath">select.def文件绝对路径</param>
+        /// <exception cref="System.ApplicationException"></exception>
+        public void SetSelectDefPath(string selectDefPath)
+        {
+            string systemDefPath;
+            try
+            {
+                systemDefPath = GetSystemDefPath();
+            }
+            catch (ApplicationException ex)
+            {
+                throw ex;
+            }
+            if (!File.Exists(systemDefPath)) throw new ApplicationException("system.def文件不存在！");
+            try
+            {
+                IniFiles ini = new IniFiles(systemDefPath);
+                int length = Tools.GetFileDirName(systemDefPath).Length;
+                ini.WriteString(SettingInfo.FilesSection, SettingInfo.SelectItem, Tools.GetSlashPath(selectDefPath.Substring(length)));
+            }
+            catch (ApplicationException)
+            {
+                throw new ApplicationException("mugen.cfg文件读取失败！");
+            }
+        }
+
+        #endregion
+
+        #region 类静态方法
+
+        /// <summary>
+        /// 获取mugen.cfg文件绝对路径
+        /// </summary>
+        /// <param name="mugenExePath">MUGEN程序绝对路径</param>
+        /// <returns>mugen.cfg文件绝对路径</returns>
+        public static string GetMugenCfgPath(string mugenExePath)
+        {
+            return Tools.GetFileDirName(mugenExePath) + DataDir + MugenCfgFileName;
+        }
+
+        #endregion
 
     }
 }

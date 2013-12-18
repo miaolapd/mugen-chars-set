@@ -204,15 +204,6 @@ namespace MUGENCharsSet
             MultiModified = false;
             lstCharacterList.DataSource = null;
             txtKeyword.Clear();
-            try
-            {
-                MugenSetting = new MUGENSetting(AppSetting.MugenExePath);
-            }
-            catch (ApplicationException ex)
-            {
-                ShowErrorMsg(ex.Message);
-                return;
-            }
             if (!Directory.Exists(MugenSetting.MugenCharsDirPath))
             {
                 ShowErrorMsg("无法找到MUGEN人物文件夹！");
@@ -280,9 +271,19 @@ namespace MUGENCharsSet
         private void ReadSelectDef(ArrayList characterList)
         {
             string[] characterLines = null;
+            string selectDefPath;
             try
             {
-                string defContent = File.ReadAllText(MugenSetting.SelectDefPath, Encoding.Default);
+                selectDefPath = MugenSetting.GetSelectDefPath();
+            }
+            catch(ApplicationException ex)
+            {
+                throw ex;
+            }
+            if (!File.Exists(selectDefPath)) throw new ApplicationException("select.def文件不存在！");
+            try
+            {
+                string defContent = File.ReadAllText(selectDefPath, Encoding.Default);
                 Regex regex = new Regex(@"\[Characters\](.*)\r\n\[ExtraStages\]", RegexOptions.IgnoreCase | RegexOptions.Singleline);
                 characterLines = regex.Match(defContent).Groups[1].Value.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
             }
@@ -734,7 +735,8 @@ namespace MUGENCharsSet
         private void MainForm_Load(object sender, EventArgs e)
         {
             ReadIniSetting();
-            if (AppSetting.MugenExePath == String.Empty || !File.Exists(AppSetting.MugenExePath))
+            string mugenCfgPath = MUGENSetting.GetMugenCfgPath(AppSetting.MugenExePath);
+            if (AppSetting.MugenExePath == String.Empty || !File.Exists(AppSetting.MugenExePath) || !File.Exists(mugenCfgPath))
             {
                 Visible = false;
                 StartUpForm startUpForm = new StartUpForm();
@@ -744,6 +746,16 @@ namespace MUGENCharsSet
                     Close();
                     return;
                 }
+            }
+            try
+            {
+                MugenSetting = new MUGENSetting(AppSetting.MugenExePath);
+            }
+            catch (ApplicationException ex)
+            {
+                ShowErrorMsg(ex.Message);
+                Close();
+                return;
             }
             ReadCharacterListProgressForm readCharListProgressForm = new ReadCharacterListProgressForm();
             readCharListProgressForm.Owner = this;
@@ -912,16 +924,14 @@ namespace MUGENCharsSet
         /// </summary>
         private void btnSelectAll_Click(object sender, EventArgs e)
         {
-            if (lstCharacterList.Items.Count > 0)
+            if (lstCharacterList.Items.Count == 0) return;
+            CharacterListControlPreparing = true;
+            for (int i = 0; i < lstCharacterList.Items.Count; i++)
             {
-                CharacterListControlPreparing = true;
-                for (int i = 0; i < lstCharacterList.Items.Count; i++)
-                {
-                    lstCharacterList.SetSelected(i, true);
-                }
-                CharacterListControlPreparing = false;
-                lstCharacterList_SelectedIndexChanged(null, null);
+                lstCharacterList.SetSelected(i, true);
             }
+            CharacterListControlPreparing = false;
+            lstCharacterList_SelectedIndexChanged(null, null);
         }
 
         /// <summary>
@@ -929,25 +939,28 @@ namespace MUGENCharsSet
         /// </summary>
         private void btnSelectInvert_Click(object sender, EventArgs e)
         {
-            if (lstCharacterList.Items.Count > 0)
+            if (lstCharacterList.Items.Count == 0) return;
+            if (lstCharacterList.SelectedIndices.Count == 0)
             {
-                CharacterListControlPreparing = true;
-                bool isAllSelect = true;
-                for (int i = 0; i < lstCharacterList.Items.Count; i++)
+                btnSelectAll_Click(null, null);
+                return;
+            }
+            CharacterListControlPreparing = true;
+            bool isAllSelect = true;
+            for (int i = 0; i < lstCharacterList.Items.Count; i++)
+            {
+                bool isSelected = !lstCharacterList.GetSelected(i);
+                lstCharacterList.SetSelected(i, isSelected);
+                if (isSelected)
                 {
-                    bool isSelected = !lstCharacterList.GetSelected(i);
-                    lstCharacterList.SetSelected(i, isSelected);
-                    if (isSelected)
-                    {
-                        isAllSelect = false;
-                    }
+                    isAllSelect = false;
                 }
-                CharacterListControlPreparing = false;
-                lstCharacterList_SelectedIndexChanged(null, null);
-                if (isAllSelect)
-                {
-                    ModifyEnabled = false;
-                }
+            }
+            CharacterListControlPreparing = false;
+            lstCharacterList_SelectedIndexChanged(null, null);
+            if (isAllSelect)
+            {
+                ModifyEnabled = false;
             }
         }
 
@@ -1265,15 +1278,35 @@ namespace MUGENCharsSet
         /// </summary>
         private void tsmiSetSystemDefPath_Click(object sender, EventArgs e)
         {
-            if (ofdSystemDefPath.ShowDialog() != DialogResult.OK) return;
-            if (!File.Exists(ofdSystemDefPath.FileName)) return;
+            ofdDefPath.InitialDirectory = MugenSetting.MugenDataDirPath;
+            if (ofdDefPath.ShowDialog() != DialogResult.OK) return;
             try
             {
-                MUGENSetting.SetSystemDefPath(AppSetting.MugenExePath, ofdSystemDefPath.FileName);
+                MugenSetting.SetSystemDefPath(ofdDefPath.FileName);
             }
             catch(ApplicationException ex)
             {
                 ShowErrorMsg(ex.Message);
+                return;
+            }
+            ReadCharacterList();
+        }
+
+        /// <summary>
+        /// 当单击选择select.def文件菜单项时发生
+        /// </summary>
+        private void tsmiSetSelectDefPath_Click(object sender, EventArgs e)
+        {
+            ofdDefPath.InitialDirectory = MugenSetting.MugenDataDirPath;
+            if (ofdDefPath.ShowDialog() != DialogResult.OK) return;
+            try
+            {
+                MugenSetting.SetSelectDefPath(ofdDefPath.FileName);
+            }
+            catch (ApplicationException ex)
+            {
+                ShowErrorMsg(ex.Message);
+                return;
             }
             ReadCharacterList();
         }
@@ -1327,11 +1360,21 @@ namespace MUGENCharsSet
         /// </summary>
         private void tsmiOpenSelectDef_Click(object sender, EventArgs e)
         {
-            if (File.Exists(MugenSetting.SelectDefPath))
+            string selectDefPath;
+            try
+            {
+                selectDefPath = MugenSetting.GetSelectDefPath();
+            }
+            catch(ApplicationException ex)
+            {
+                ShowErrorMsg(ex.Message);
+                return;
+            }
+            if (File.Exists(selectDefPath))
             {
                 try
                 {
-                    Process.Start(AppSetting.EditProgramPath, MugenSetting.SelectDefPath);
+                    Process.Start(AppSetting.EditProgramPath, selectDefPath);
                 }
                 catch (Exception)
                 {
@@ -1350,11 +1393,21 @@ namespace MUGENCharsSet
         /// </summary>
         private void tsmiOpenSystemDef_Click(object sender, EventArgs e)
         {
-            if (File.Exists(MugenSetting.SystemDefPath))
+            string systemDefPath;
+            try
+            {
+                systemDefPath = MugenSetting.GetSystemDefPath();
+            }
+            catch (ApplicationException ex)
+            {
+                ShowErrorMsg(ex.Message);
+                return;
+            }
+            if (File.Exists(systemDefPath))
             {
                 try
                 {
-                    Process.Start(AppSetting.EditProgramPath, MugenSetting.SystemDefPath);
+                    Process.Start(AppSetting.EditProgramPath, systemDefPath);
                 }
                 catch (Exception)
                 {

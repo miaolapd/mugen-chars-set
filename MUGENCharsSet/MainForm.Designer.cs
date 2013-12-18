@@ -50,7 +50,7 @@
             this.tsmiApp = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiSetSystemDefPath = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiReload = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tssTsmiApp1 = new System.Windows.Forms.ToolStripSeparator();
             this.tsmiLaunchMugenExe = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiSetting = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiEdit = new System.Windows.Forms.ToolStripMenuItem();
@@ -87,7 +87,8 @@
             this.lstCharacterList = new System.Windows.Forms.ListBox();
             this.btnRefreshCharacterList = new System.Windows.Forms.Button();
             this.fswCharacterCns = new System.IO.FileSystemWatcher();
-            this.ofdSystemDefPath = new System.Windows.Forms.OpenFileDialog();
+            this.ofdDefPath = new System.Windows.Forms.OpenFileDialog();
+            this.tsmiSetSelectDefPath = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxmnuCharacterList.SuspendLayout();
             this.mnuMain.SuspendLayout();
             this.tabMain.SuspendLayout();
@@ -280,8 +281,9 @@
             // 
             this.tsmiApp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiSetSystemDefPath,
+            this.tsmiSetSelectDefPath,
             this.tsmiReload,
-            this.toolStripSeparator1,
+            this.tssTsmiApp1,
             this.tsmiLaunchMugenExe,
             this.tsmiSetting});
             this.tsmiApp.Name = "tsmiApp";
@@ -291,7 +293,7 @@
             // tsmiSetSystemDefPath
             // 
             this.tsmiSetSystemDefPath.Name = "tsmiSetSystemDefPath";
-            this.tsmiSetSystemDefPath.Size = new System.Drawing.Size(201, 22);
+            this.tsmiSetSystemDefPath.Size = new System.Drawing.Size(220, 22);
             this.tsmiSetSystemDefPath.Text = "选择system.def文件(&T)";
             this.tsmiSetSystemDefPath.Click += new System.EventHandler(this.tsmiSetSystemDefPath_Click);
             // 
@@ -299,26 +301,27 @@
             // 
             this.tsmiReload.Name = "tsmiReload";
             this.tsmiReload.ShortcutKeys = System.Windows.Forms.Keys.F5;
-            this.tsmiReload.Size = new System.Drawing.Size(201, 22);
+            this.tsmiReload.Size = new System.Drawing.Size(220, 22);
             this.tsmiReload.Text = "重新载入";
             this.tsmiReload.Click += new System.EventHandler(this.tsmiReload_Click);
             // 
-            // toolStripSeparator1
+            // tssTsmiApp1
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(198, 6);
+            this.tssTsmiApp1.Name = "tssTsmiApp1";
+            this.tssTsmiApp1.Size = new System.Drawing.Size(217, 6);
             // 
             // tsmiLaunchMugenExe
             // 
             this.tsmiLaunchMugenExe.Name = "tsmiLaunchMugenExe";
-            this.tsmiLaunchMugenExe.Size = new System.Drawing.Size(201, 22);
-            this.tsmiLaunchMugenExe.Text = "运行MUGEN程序(&L)";
+            this.tsmiLaunchMugenExe.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
+            this.tsmiLaunchMugenExe.Size = new System.Drawing.Size(220, 22);
+            this.tsmiLaunchMugenExe.Text = "运行MUGEN程序";
             this.tsmiLaunchMugenExe.Click += new System.EventHandler(this.tsmiLaunchMugenExe_Click);
             // 
             // tsmiSetting
             // 
             this.tsmiSetting.Name = "tsmiSetting";
-            this.tsmiSetting.Size = new System.Drawing.Size(201, 22);
+            this.tsmiSetting.Size = new System.Drawing.Size(220, 22);
             this.tsmiSetting.Text = "设置(&S)";
             this.tsmiSetting.Click += new System.EventHandler(this.tsmiSetting_Click);
             // 
@@ -364,7 +367,7 @@
             // tsmiAbout
             // 
             this.tsmiAbout.Name = "tsmiAbout";
-            this.tsmiAbout.Size = new System.Drawing.Size(116, 22);
+            this.tsmiAbout.Size = new System.Drawing.Size(152, 22);
             this.tsmiAbout.Text = "关于(&A)";
             this.tsmiAbout.Click += new System.EventHandler(this.tsmiAbout_Click);
             // 
@@ -695,10 +698,17 @@
             this.fswCharacterCns.SynchronizingObject = this;
             this.fswCharacterCns.Changed += new System.IO.FileSystemEventHandler(this.fswCharacterCns_Changed);
             // 
-            // ofdSystemDefPath
+            // ofdDefPath
             // 
-            this.ofdSystemDefPath.FileName = "system.def";
-            this.ofdSystemDefPath.Filter = "def文件|*.def";
+            this.ofdDefPath.FileName = "*.def";
+            this.ofdDefPath.Filter = "def文件|*.def";
+            // 
+            // tsmiSetSelectDefPath
+            // 
+            this.tsmiSetSelectDefPath.Name = "tsmiSetSelectDefPath";
+            this.tsmiSetSelectDefPath.Size = new System.Drawing.Size(220, 22);
+            this.tsmiSetSelectDefPath.Text = "选择select.def文件(&L)";
+            this.tsmiSetSelectDefPath.Click += new System.EventHandler(this.tsmiSetSelectDefPath_Click);
             // 
             // MainForm
             // 
@@ -791,8 +801,9 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiOpenMugenCfg;
         private System.IO.FileSystemWatcher fswCharacterCns;
         private System.Windows.Forms.ToolStripMenuItem tsmiSetSystemDefPath;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.OpenFileDialog ofdSystemDefPath;
+        private System.Windows.Forms.ToolStripSeparator tssTsmiApp1;
+        private System.Windows.Forms.OpenFileDialog ofdDefPath;
+        private System.Windows.Forms.ToolStripMenuItem tsmiSetSelectDefPath;
     }
 }
 

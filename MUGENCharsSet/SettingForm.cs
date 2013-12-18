@@ -79,6 +79,10 @@ namespace MUGENCharsSet
             try
             {
                 owner.AppSetting.EditProgramPath = txtEditProgramPath.Text.Trim();
+                if (!File.Exists(MUGENSetting.GetMugenCfgPath(txtMugenExePath.Text.Trim())))
+                {
+                    throw new ApplicationException("mugen.cfg文件不存在！");
+                }
                 if (owner.AppSetting.MugenExePath != txtMugenExePath.Text.Trim())
                 {
                     owner.AppSetting.MugenExePath = txtMugenExePath.Text.Trim();

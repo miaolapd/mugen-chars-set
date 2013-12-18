@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
 
 namespace MUGENCharsSet
 {
@@ -36,6 +37,10 @@ namespace MUGENCharsSet
             try
             {
                 owner.AppSetting.MugenExePath = txtMugenExePath.Text.Trim();
+                if (!File.Exists(MUGENSetting.GetMugenCfgPath(owner.AppSetting.MugenExePath)))
+                {
+                    throw new ApplicationException("mugen.cfg文件不存在！");
+                }
             }
             catch (ApplicationException ex)
             {
