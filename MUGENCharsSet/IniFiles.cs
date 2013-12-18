@@ -13,7 +13,7 @@ namespace MUGENCharsSet
     /// </summary>
     public class IniFiles
     {
-        public const string COMMENT_MARK = ";";    //注释分隔符
+        public const string CommentMark = ";";    //注释分隔符
         public string FileName; //INI文件名
 
         // 声明读写INI文件的API函数
@@ -26,6 +26,7 @@ namespace MUGENCharsSet
         /// 类构造函数
         /// </summary>
         /// <param name="AFileName">ini文件路径</param>
+        /// <exception cref="System.ApplicationException"></exception>
         public IniFiles(string AFileName)
         {
             // 判断文件是否存在
@@ -43,7 +44,7 @@ namespace MUGENCharsSet
 
                 catch
                 {
-                    throw (new ApplicationException("配置文件不存在！"));
+                    throw new ApplicationException("配置文件不存在！");
                 }
             }
             //必须是完全路径，不能是相对路径
@@ -56,12 +57,13 @@ namespace MUGENCharsSet
         /// <param name="Section">配置分段</param>
         /// <param name="Ident">配置项</param>
         /// <param name="Value">配置值</param>
+        /// <exception cref="System.ApplicationException"></exception>
         public void WriteString(string Section, string Ident, string Value)
         {
             if (!WritePrivateProfileString(Section, Ident, " " + Value.TrimStart(), FileName))
             {
 
-                throw (new ApplicationException("配置文件写入失败！"));
+                throw new ApplicationException("配置文件写入失败！");
             }
         }
         
@@ -79,8 +81,8 @@ namespace MUGENCharsSet
             //必须设定0（系统默认的代码页）的编码方式，否则无法支持中文
             string s = Encoding.Default.GetString(Buffer);
             s = s.Substring(0, bufLen);
-            if (s.IndexOf(COMMENT_MARK) >= 0) s = s.Substring(0, s.IndexOf(COMMENT_MARK));
-            return s.Trim();
+            if (s.IndexOf(CommentMark) >= 0) s = s.Substring(0, s.IndexOf(CommentMark));
+            return s.Trim('\0').Trim();
         }
 
         /// <summary>
@@ -129,9 +131,9 @@ namespace MUGENCharsSet
             {
                 return Convert.ToBoolean(ReadString(Section, Ident, Convert.ToString(Default)));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine(ex.Message);
+                //Console.WriteLine(ex.Message);
                 return Default;
             }
         }
@@ -218,6 +220,7 @@ namespace MUGENCharsSet
 
             }
         }
+
         ////读取指定的Section的所有Value到列表中，
         //public void ReadSectionValues(string Section, NameValueCollection Values,char splitString)
         //{　 string sectionValue;
@@ -238,13 +241,12 @@ namespace MUGENCharsSet
         /// 删除指定的配置分段
         /// </summary>
         /// <param name="Section">配置分段</param>
+        /// <exception cref="System.ApplicationException"></exception>
         public void EraseSection(string Section)
         {
-            //
             if (!WritePrivateProfileString(Section, null, null, FileName))
             {
-
-                throw (new ApplicationException("无法清除配置文件中的Section！"));
+                throw new ApplicationException("无法清除配置文件中的Section！");
             }
         }
         

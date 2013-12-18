@@ -46,5 +46,38 @@ namespace MUGENCharsSet
         {
             return path.Replace('\\', '/');
         }
+
+        /// <summary>
+        /// 获取反斜杠(\)的文件(夹)路径
+        /// </summary>
+        /// <param name="path">文件(夹)路径</param>
+        /// <returns>文件(夹)路径</returns>
+        public static string GetBackSlashPath(string path)
+        {
+            return path.Replace('/', '\\');
+        }
+
+        /// <summary>
+        /// 取消指定文件只读属性
+        /// </summary>
+        /// <param name="path">文件路径</param>
+        /// <returns>是否修改成功</returns>
+        public static bool SetFileNotReadOnly(string path)
+        {
+            if (!File.Exists(path)) return true;
+            try
+            {
+                FileInfo fileInfo = new FileInfo(path);
+                if (fileInfo.IsReadOnly)
+                {
+                    fileInfo.IsReadOnly = false;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }

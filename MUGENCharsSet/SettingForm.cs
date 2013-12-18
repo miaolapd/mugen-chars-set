@@ -20,53 +20,6 @@ namespace MUGENCharsSet
             InitializeComponent();
         }
 
-        private void SettingForm_Load(object sender, EventArgs e)
-        {
-            txtEditProgram.Text = ((MainForm)Owner).EditProgram;
-        }
-
-        private void btnOpenEditProgram_Click(object sender, EventArgs e)
-        {
-            if (ofdEditProgram.ShowDialog() == DialogResult.OK)
-            {
-                txtEditProgram.Text = ofdEditProgram.FileName;
-            }
-        }
-
-        private void btnOK_Click(object sender, EventArgs e)
-        {
-            string editProgram = txtEditProgram.Text.Trim();
-            if (editProgram == String.Empty)
-            {
-                ShowErrorMsg("字段不得为空！");
-                txtEditProgram.SelectAll();
-                txtEditProgram.Focus();
-                return;
-            }
-            if (Path.GetExtension(editProgram) != ".exe")
-            {
-                ShowErrorMsg("必须为可执行程序！");
-                txtEditProgram.SelectAll();
-                txtEditProgram.Focus();
-                return;
-            }
-            MainForm owner = (MainForm)Owner;
-            owner.EditProgram = editProgram;
-            owner.WriteIniSet(MainForm.DATA_SECTION, MainForm.EDIT_PROGRAM_ITEM, editProgram);
-            this.DialogResult = DialogResult.OK;
-            this.Close();
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private void btnDefault_Click(object sender, EventArgs e)
-        {
-            txtEditProgram.Text = MainForm.DEF_EDIT_PROGRAM;
-        }
-
         /// <summary>
         /// 显示操作成功消息
         /// </summary>
@@ -83,6 +36,88 @@ namespace MUGENCharsSet
         private void ShowErrorMsg(string msg)
         {
             MessageBox.Show(msg, "操作失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        /// <summary>
+        /// 当窗口加载时发生
+        /// </summary>
+        private void SettingForm_Load(object sender, EventArgs e)
+        {
+            MainForm owner = (MainForm)Owner;
+            txtMugenExePath.Text = owner.AppSetting.MugenExePath;
+            txtEditProgramPath.Text = owner.AppSetting.EditProgramPath;
+        }
+
+        /// <summary>
+        /// 当单击打开MUGEN程序路径按钮时发生
+        /// </summary>
+        private void btnOpenMugenExePath_Click(object sender, EventArgs e)
+        {
+            if (ofdExePath.ShowDialog() == DialogResult.OK)
+            {
+                txtMugenExePath.Text = ofdExePath.FileName;
+            }
+        }
+
+        /// <summary>
+        /// 当单击打开文本编辑器程序路径按钮时发生
+        /// </summary>
+        private void btnOpenEditProgramPath_Click(object sender, EventArgs e)
+        {
+            if (ofdExePath.ShowDialog() == DialogResult.OK)
+            {
+                txtEditProgramPath.Text = ofdExePath.FileName;
+            }
+        }
+
+        /// <summary>
+        /// 当单击确定按钮时发生
+        /// </summary>
+        private void btnOK_Click(object sender, EventArgs e)
+        {
+            MainForm owner = (MainForm)Owner;
+            try
+            {
+                owner.AppSetting.EditProgramPath = txtEditProgramPath.Text.Trim();
+                if (owner.AppSetting.MugenExePath != txtMugenExePath.Text.Trim())
+                {
+                    owner.AppSetting.MugenExePath = txtMugenExePath.Text.Trim();
+                    owner.ReadCharacterList();
+                }
+            }
+            catch(ApplicationException ex)
+            {
+                ShowErrorMsg(ex.Message);
+                return;
+            }
+            DialogResult = DialogResult.OK;
+            Close();
+        }
+
+        /// <summary>
+        /// 当单击取消按钮时发生
+        /// </summary>
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        /// <summary>
+        /// 当单击默认值按钮时发生
+        /// </summary>
+        private void btnDefault_Click(object sender, EventArgs e)
+        {
+            txtEditProgramPath.Text = ApplicationSetting.DefaultEditProgramPath;
+        }
+
+        private void txtPath_DragDrop(object sender, DragEventArgs e)
+        {
+            ((TextBox)sender).Text = ((string[])e.Data.GetData(DataFormats.FileDrop))[0];
+        }
+
+        private void txtPath_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
         }
     }
 }
