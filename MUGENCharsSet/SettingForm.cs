@@ -114,6 +114,9 @@ namespace MUGENCharsSet
             txtEditProgramPath.Text = ApplicationSetting.DefaultEditProgramPath;
         }
 
+        /// <summary>
+        /// 当文件拖拽到程序路径文本框时发生
+        /// </summary>
         private void txtPath_DragDrop(object sender, DragEventArgs e)
         {
             ((TextBox)sender).Text = ((string[])e.Data.GetData(DataFormats.FileDrop))[0];

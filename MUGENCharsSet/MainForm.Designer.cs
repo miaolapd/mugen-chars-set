@@ -49,6 +49,7 @@
             this.mnuMain = new System.Windows.Forms.MenuStrip();
             this.tsmiApp = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiSetSystemDefPath = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiSetSelectDefPath = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiReload = new System.Windows.Forms.ToolStripMenuItem();
             this.tssTsmiApp1 = new System.Windows.Forms.ToolStripSeparator();
             this.tsmiLaunchMugenExe = new System.Windows.Forms.ToolStripMenuItem();
@@ -88,7 +89,6 @@
             this.btnRefreshCharacterList = new System.Windows.Forms.Button();
             this.fswCharacterCns = new System.IO.FileSystemWatcher();
             this.ofdDefPath = new System.Windows.Forms.OpenFileDialog();
-            this.tsmiSetSelectDefPath = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxmnuCharacterList.SuspendLayout();
             this.mnuMain.SuspendLayout();
             this.tabMain.SuspendLayout();
@@ -297,6 +297,13 @@
             this.tsmiSetSystemDefPath.Text = "选择system.def文件(&T)";
             this.tsmiSetSystemDefPath.Click += new System.EventHandler(this.tsmiSetSystemDefPath_Click);
             // 
+            // tsmiSetSelectDefPath
+            // 
+            this.tsmiSetSelectDefPath.Name = "tsmiSetSelectDefPath";
+            this.tsmiSetSelectDefPath.Size = new System.Drawing.Size(220, 22);
+            this.tsmiSetSelectDefPath.Text = "选择select.def文件(&L)";
+            this.tsmiSetSelectDefPath.Click += new System.EventHandler(this.tsmiSetSelectDefPath_Click);
+            // 
             // tsmiReload
             // 
             this.tsmiReload.Name = "tsmiReload";
@@ -367,7 +374,7 @@
             // tsmiAbout
             // 
             this.tsmiAbout.Name = "tsmiAbout";
-            this.tsmiAbout.Size = new System.Drawing.Size(152, 22);
+            this.tsmiAbout.Size = new System.Drawing.Size(116, 22);
             this.tsmiAbout.Text = "关于(&A)";
             this.tsmiAbout.Click += new System.EventHandler(this.tsmiAbout_Click);
             // 
@@ -383,6 +390,7 @@
             // 
             // pageCharacter
             // 
+            this.pageCharacter.AllowDrop = true;
             this.pageCharacter.BackColor = System.Drawing.SystemColors.Control;
             this.pageCharacter.Controls.Add(this.grpDefPath);
             this.pageCharacter.Controls.Add(this.btnRestore);
@@ -398,6 +406,9 @@
             this.pageCharacter.Size = new System.Drawing.Size(551, 500);
             this.pageCharacter.TabIndex = 0;
             this.pageCharacter.Text = "人物属性";
+            this.ttpCommon.SetToolTip(this.pageCharacter, "可将人物def文件拖拽至此处");
+            this.pageCharacter.DragDrop += new System.Windows.Forms.DragEventHandler(this.pageCharacter_DragDrop);
+            this.pageCharacter.DragEnter += new System.Windows.Forms.DragEventHandler(this.pageCharacter_DragEnter);
             // 
             // grpDefPath
             // 
@@ -702,13 +713,6 @@
             // 
             this.ofdDefPath.FileName = "*.def";
             this.ofdDefPath.Filter = "def文件|*.def";
-            // 
-            // tsmiSetSelectDefPath
-            // 
-            this.tsmiSetSelectDefPath.Name = "tsmiSetSelectDefPath";
-            this.tsmiSetSelectDefPath.Size = new System.Drawing.Size(220, 22);
-            this.tsmiSetSelectDefPath.Text = "选择select.def文件(&L)";
-            this.tsmiSetSelectDefPath.Click += new System.EventHandler(this.tsmiSetSelectDefPath_Click);
             // 
             // MainForm
             // 

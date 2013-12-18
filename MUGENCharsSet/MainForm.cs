@@ -1067,6 +1067,34 @@ namespace MUGENCharsSet
             }
         }
 
+        /// <summary>
+        /// 当人物def文件拖拽到人物属性标签页时发生
+        /// </summary>
+        private void pageCharacter_DragDrop(object sender, DragEventArgs e)
+        {
+            lstCharacterList.ClearSelected();
+            ModifyEnabled = false;
+            CharacterListControlPreparing = true;
+            foreach (string defPath in (string[])e.Data.GetData(DataFormats.FileDrop))
+            {
+                if (Path.GetExtension(defPath) != Character.DefExt) continue;
+                for (int i = 0; i < lstCharacterList.Items.Count; i++)
+                {
+                    if (((Character)lstCharacterList.Items[i]).DefPath.ToLower() == defPath.ToLower())
+                    {
+                        lstCharacterList.SetSelected(i, true);
+                    }
+                }
+            }
+            CharacterListControlPreparing = false;
+            lstCharacterList_SelectedIndexChanged(null, null);
+        }
+
+        private void pageCharacter_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
+        }
+
         #endregion
 
         #region 人物列表右键菜单
