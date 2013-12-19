@@ -19,7 +19,10 @@ namespace MUGENCharsSet
         /// <summary>默认文本编辑器路径</summary>
         public const string DefaultEditProgramPath = "notepad.exe";
 
-        public static class SettingInfo
+        /// <summary>
+        /// 程序配置信息结构
+        /// </summary>
+        public struct SettingInfo
         {
             /// <summary>Data配置分段</summary>
             public const string DataSection = "Data";

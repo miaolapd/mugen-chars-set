@@ -206,6 +206,15 @@ namespace MUGENCharsSet
             txtKeyword.Clear();
             lblCharacterCount.Text = "";
             lblCharacterSelectCount.Text = "";
+            try
+            {
+                MugenSetting.ReadMugenSetting();
+            }
+            catch(ApplicationException ex)
+            {
+                ShowErrorMsg(ex.Message);
+                return;
+            }
             if (!Directory.Exists(MugenSetting.MugenCharsDirPath))
             {
                 ShowErrorMsg("无法找到MUGEN人物文件夹！");
@@ -232,7 +241,10 @@ namespace MUGENCharsSet
             {
                 CharacterList.Sort(new CharacterCompare());
             }
-            RefreshCharacterListDataSource(CharacterList);
+            if (CharacterList.Count != 0)
+            {
+                RefreshCharacterListDataSource(CharacterList);
+            }
             lblCharacterCount.Text = String.Format("共{0}项", lstCharacterList.Items.Count);
             fswCharacterCns.Path = MugenSetting.MugenCharsDirPath;
             fswCharacterCns.EnableRaisingEvents = true;
@@ -274,19 +286,10 @@ namespace MUGENCharsSet
         private void ReadSelectDef(ArrayList characterList)
         {
             string[] characterLines = null;
-            string selectDefPath;
+            if (!File.Exists(MugenSetting.SelectDefPath)) throw new ApplicationException("select.def文件不存在！");
             try
             {
-                selectDefPath = MugenSetting.GetSelectDefPath();
-            }
-            catch(ApplicationException ex)
-            {
-                throw ex;
-            }
-            if (!File.Exists(selectDefPath)) throw new ApplicationException("select.def文件不存在！");
-            try
-            {
-                string defContent = File.ReadAllText(selectDefPath, Encoding.Default);
+                string defContent = File.ReadAllText(MugenSetting.SelectDefPath, Encoding.Default);
                 Regex regex = new Regex(@"\[Characters\](.*)\r\n\[ExtraStages\]", RegexOptions.IgnoreCase | RegexOptions.Singleline);
                 characterLines = regex.Match(defContent).Groups[1].Value.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
             }
@@ -342,7 +345,7 @@ namespace MUGENCharsSet
         /// </summary>
         private void ReadCharacter()
         {
-            if (lstCharacterList.SelectedIndices.Count != 1) return;
+            if (lstCharacterList.SelectedItems.Count != 1) return;
             ModifyEnabled = false;
             MultiModified = false;
             Character character = (Character)lstCharacterList.SelectedItem;
@@ -402,7 +405,7 @@ namespace MUGENCharsSet
         /// </summary>
         private void MultiReadCharacter()
         {
-            if (lstCharacterList.SelectedIndices.Count <= 1) return;
+            if (lstCharacterList.SelectedItems.Count <= 1) return;
             Character[] characterList = new Character[lstCharacterList.SelectedItems.Count];
             lstCharacterList.SelectedItems.CopyTo(characterList, 0);
             SetMutliDefPathLabel(characterList);
@@ -463,7 +466,7 @@ namespace MUGENCharsSet
         /// </summary>
         private void ModifyCharacter()
         {
-            if (lstCharacterList.SelectedIndices.Count != 1) return;
+            if (lstCharacterList.SelectedItems.Count != 1) return;
             Character character = ((Character)lstCharacterList.SelectedItem);
             string oriName = character.Name;
             try
@@ -516,7 +519,7 @@ namespace MUGENCharsSet
         /// </summary>
         private void MultiModifyCharacter()
         {
-            if (lstCharacterList.SelectedIndices.Count <= 1) return;
+            if (lstCharacterList.SelectedItems.Count <= 1) return;
             Character[] characterList = new Character[lstCharacterList.SelectedItems.Count];
             lstCharacterList.SelectedItems.CopyTo(characterList, 0);
             int total = 0;
@@ -779,7 +782,7 @@ namespace MUGENCharsSet
         /// </summary>
         private void btnModify_Click(object sender, EventArgs e)
         {
-            if (lstCharacterList.SelectedIndices.Count == 0) return;
+            if (lstCharacterList.SelectedItems.Count == 0) return;
             if (MultiModified)
             {
                 MultiModifyCharacter();
@@ -795,7 +798,7 @@ namespace MUGENCharsSet
         /// </summary>
         private void btnReset_Click(object sender, EventArgs e)
         {
-            if (lstCharacterList.SelectedIndices.Count == 0) return;
+            if (lstCharacterList.SelectedItems.Count == 0) return;
             if (MultiModified)
             {
                 MultiReadCharacter();
@@ -811,7 +814,7 @@ namespace MUGENCharsSet
         /// </summary>
         private void btnBackup_Click(object sender, EventArgs e)
         {
-            if (lstCharacterList.SelectedIndices.Count == 0) return;
+            if (lstCharacterList.SelectedItems.Count == 0) return;
             if (MultiModified)
             {
                 Character[] characterList = new Character[lstCharacterList.SelectedItems.Count];
@@ -849,7 +852,7 @@ namespace MUGENCharsSet
         /// </summary>
         private void btnRestore_Click(object sender, EventArgs e)
         {
-            if (lstCharacterList.SelectedIndices.Count == 0) return;
+            if (lstCharacterList.SelectedItems.Count == 0) return;
             fswCharacterCns.EnableRaisingEvents = false;
             if (MultiModified)
             {
@@ -892,8 +895,8 @@ namespace MUGENCharsSet
         private void lstCharacterList_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (CharacterListControlPreparing) return;
-            lblCharacterSelectCount.Text = String.Format("已选{0}项", lstCharacterList.SelectedIndices.Count);
-            if (lstCharacterList.SelectedIndices.Count > 1)
+            lblCharacterSelectCount.Text = String.Format("已选{0}项", lstCharacterList.SelectedItems.Count);
+            if (lstCharacterList.SelectedItems.Count > 1)
             {
                 MultiReadCharacter();
             }
@@ -944,7 +947,7 @@ namespace MUGENCharsSet
         private void btnSelectInvert_Click(object sender, EventArgs e)
         {
             if (lstCharacterList.Items.Count == 0) return;
-            if (lstCharacterList.SelectedIndices.Count == 0)
+            if (lstCharacterList.SelectedItems.Count == 0)
             {
                 btnSelectAll_Click(null, null);
                 return;
@@ -1108,7 +1111,7 @@ namespace MUGENCharsSet
         /// </summary>
         private void ctxTsmiOpenDefFile_Click(object sender, EventArgs e)
         {
-            if (lstCharacterList.SelectedIndices.Count == 0) return;
+            if (lstCharacterList.SelectedItems.Count == 0) return;
             Character[] characterList = new Character[lstCharacterList.SelectedItems.Count];
             lstCharacterList.SelectedItems.CopyTo(characterList, 0);
             if (characterList.Length > 1)
@@ -1153,7 +1156,7 @@ namespace MUGENCharsSet
         /// </summary>
         private void ctxTsmiOpenCnsFile_Click(object sender, EventArgs e)
         {
-            if (lstCharacterList.SelectedIndices.Count == 0) return;
+            if (lstCharacterList.SelectedItems.Count == 0) return;
             Character[] characterList = new Character[lstCharacterList.SelectedItems.Count];
             lstCharacterList.SelectedItems.CopyTo(characterList, 0);
             if (characterList.Length > 1)
@@ -1198,7 +1201,7 @@ namespace MUGENCharsSet
         /// </summary>
         private void ctxTsmiOpenDefDir_Click(object sender, EventArgs e)
         {
-            if (lstCharacterList.SelectedIndices.Count == 0) return;
+            if (lstCharacterList.SelectedItems.Count == 0) return;
             Character[] characterList = new Character[lstCharacterList.SelectedItems.Count];
             lstCharacterList.SelectedItems.CopyTo(characterList, 0);
             if (characterList.Length > 1)
@@ -1243,7 +1246,7 @@ namespace MUGENCharsSet
         /// </summary>
         private void ctxTsmiDeleteCharacter_Click(object sender, EventArgs e)
         {
-            if (lstCharacterList.SelectedIndices.Count == 0) return;
+            if (lstCharacterList.SelectedItems.Count == 0) return;
             if (MessageBox.Show("是否删除人物？", "操作确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
             if(MultiModified)
             {
@@ -1284,6 +1287,12 @@ namespace MUGENCharsSet
             {
                 lstCharacterList.SelectedIndex = lstCharacterList.Items.Count - 1;
             }
+            lblCharacterCount.Text = String.Format("共{0}项", lstCharacterList.Items.Count);
+            if (lstCharacterList.Items.Count == 0)
+            {
+                lblCharacterSelectCount.Text = "";
+                ModifyEnabled = false;
+            }
         }
 
         /// <summary>
@@ -1291,7 +1300,7 @@ namespace MUGENCharsSet
         /// </summary>
         private void ctxTsmiCopyDefPath_Click(object sender, EventArgs e)
         {
-            if (lstCharacterList.SelectedIndices.Count == 0) return;
+            if (lstCharacterList.SelectedItems.Count == 0) return;
             string copyContent = "";
             for (int i = 0; i < lstCharacterList.SelectedItems.Count; i++)
             {
@@ -1326,7 +1335,7 @@ namespace MUGENCharsSet
             if (ofdDefPath.ShowDialog() != DialogResult.OK) return;
             try
             {
-                MugenSetting.SetSystemDefPath(ofdDefPath.FileName);
+                MugenSetting.SystemDefPath = ofdDefPath.FileName;
             }
             catch(ApplicationException ex)
             {
@@ -1345,7 +1354,7 @@ namespace MUGENCharsSet
             if (ofdDefPath.ShowDialog() != DialogResult.OK) return;
             try
             {
-                MugenSetting.SetSelectDefPath(ofdDefPath.FileName);
+                MugenSetting.SelectDefPath = ofdDefPath.FileName;
             }
             catch (ApplicationException ex)
             {
@@ -1404,21 +1413,11 @@ namespace MUGENCharsSet
         /// </summary>
         private void tsmiOpenSelectDef_Click(object sender, EventArgs e)
         {
-            string selectDefPath;
-            try
-            {
-                selectDefPath = MugenSetting.GetSelectDefPath();
-            }
-            catch(ApplicationException ex)
-            {
-                ShowErrorMsg(ex.Message);
-                return;
-            }
-            if (File.Exists(selectDefPath))
+            if (File.Exists(MugenSetting.SelectDefPath))
             {
                 try
                 {
-                    Process.Start(AppSetting.EditProgramPath, selectDefPath);
+                    Process.Start(AppSetting.EditProgramPath, MugenSetting.SelectDefPath);
                 }
                 catch (Exception)
                 {
@@ -1437,21 +1436,11 @@ namespace MUGENCharsSet
         /// </summary>
         private void tsmiOpenSystemDef_Click(object sender, EventArgs e)
         {
-            string systemDefPath;
-            try
-            {
-                systemDefPath = MugenSetting.GetSystemDefPath();
-            }
-            catch (ApplicationException ex)
-            {
-                ShowErrorMsg(ex.Message);
-                return;
-            }
-            if (File.Exists(systemDefPath))
+            if (File.Exists(MugenSetting.SystemDefPath))
             {
                 try
                 {
-                    Process.Start(AppSetting.EditProgramPath, systemDefPath);
+                    Process.Start(AppSetting.EditProgramPath, MugenSetting.SystemDefPath);
                 }
                 catch (Exception)
                 {

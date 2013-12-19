@@ -26,6 +26,9 @@ namespace MUGENCharsSet
         /// <summary>人物名界定符</summary>
         public const char NameDelimeter = '"';
 
+        /// <summary>
+        /// 人物配置信息类
+        /// </summary>
         public static class SettingInfo
         {
             /// <summary>Info配置分段</summary>
