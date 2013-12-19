@@ -204,6 +204,8 @@ namespace MUGENCharsSet
             MultiModified = false;
             lstCharacterList.DataSource = null;
             txtKeyword.Clear();
+            lblCharacterCount.Text = "";
+            lblCharacterSelectCount.Text = "";
             if (!Directory.Exists(MugenSetting.MugenCharsDirPath))
             {
                 ShowErrorMsg("无法找到MUGEN人物文件夹！");
@@ -231,6 +233,7 @@ namespace MUGENCharsSet
                 CharacterList.Sort(new CharacterCompare());
             }
             RefreshCharacterListDataSource(CharacterList);
+            lblCharacterCount.Text = String.Format("共{0}项", lstCharacterList.Items.Count);
             fswCharacterCns.Path = MugenSetting.MugenCharsDirPath;
             fswCharacterCns.EnableRaisingEvents = true;
         }
@@ -889,6 +892,7 @@ namespace MUGENCharsSet
         private void lstCharacterList_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (CharacterListControlPreparing) return;
+            lblCharacterSelectCount.Text = String.Format("已选{0}项", lstCharacterList.SelectedIndices.Count);
             if (lstCharacterList.SelectedIndices.Count > 1)
             {
                 MultiReadCharacter();
@@ -1107,6 +1111,10 @@ namespace MUGENCharsSet
             if (lstCharacterList.SelectedIndices.Count == 0) return;
             Character[] characterList = new Character[lstCharacterList.SelectedItems.Count];
             lstCharacterList.SelectedItems.CopyTo(characterList, 0);
+            if (characterList.Length > 1)
+            {
+                if (MessageBox.Show("是否要打开多个文件？", "操作确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+            }
             foreach (Character character in characterList)
             {
                 if (!File.Exists(character.DefPath))
@@ -1148,6 +1156,10 @@ namespace MUGENCharsSet
             if (lstCharacterList.SelectedIndices.Count == 0) return;
             Character[] characterList = new Character[lstCharacterList.SelectedItems.Count];
             lstCharacterList.SelectedItems.CopyTo(characterList, 0);
+            if (characterList.Length > 1)
+            {
+                if (MessageBox.Show("是否要打开多个文件？", "操作确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+            }
             foreach (Character character in characterList)
             {
                 if (!File.Exists(character.CnsFullPath))
@@ -1189,6 +1201,10 @@ namespace MUGENCharsSet
             if (lstCharacterList.SelectedIndices.Count == 0) return;
             Character[] characterList = new Character[lstCharacterList.SelectedItems.Count];
             lstCharacterList.SelectedItems.CopyTo(characterList, 0);
+            if (characterList.Length > 1)
+            {
+                if (MessageBox.Show("是否要打开多个文件夹？", "操作确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+            }
             foreach (Character character in characterList)
             {
                 if (!File.Exists(character.DefPath))
@@ -1228,7 +1244,7 @@ namespace MUGENCharsSet
         private void ctxTsmiDeleteCharacter_Click(object sender, EventArgs e)
         {
             if (lstCharacterList.SelectedIndices.Count == 0) return;
-            if (MessageBox.Show("确定删除人物？", "操作确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+            if (MessageBox.Show("是否删除人物？", "操作确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
             if(MultiModified)
             {
                 Character[] characterList = new Character[lstCharacterList.SelectedItems.Count];
