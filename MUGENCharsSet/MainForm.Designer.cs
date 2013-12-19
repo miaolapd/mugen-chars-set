@@ -67,6 +67,8 @@
             this.txtName = new System.Windows.Forms.TextBox();
             this.lblName = new System.Windows.Forms.Label();
             this.grpChars = new System.Windows.Forms.GroupBox();
+            this.lblCharacterSelectCount = new System.Windows.Forms.Label();
+            this.lblCharacterCount = new System.Windows.Forms.Label();
             this.txtKeyword = new System.Windows.Forms.TextBox();
             this.btnSelectInvert = new System.Windows.Forms.Button();
             this.btnSelectAll = new System.Windows.Forms.Button();
@@ -89,8 +91,6 @@
             this.tabMain = new System.Windows.Forms.TabControl();
             this.fswCharacterCns = new System.IO.FileSystemWatcher();
             this.ofdDefPath = new System.Windows.Forms.OpenFileDialog();
-            this.lblCharacterCount = new System.Windows.Forms.Label();
-            this.lblCharacterSelectCount = new System.Windows.Forms.Label();
             this.ctxmnuCharacterList.SuspendLayout();
             this.pageCharacter.SuspendLayout();
             this.grpDefPath.SuspendLayout();
@@ -106,10 +106,10 @@
             // ctxmnuCharacterList
             // 
             this.ctxmnuCharacterList.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ctxTsmiCopyDefPath,
             this.ctxTsmiOpenDefFile,
             this.ctxTsmiOpenCnsFile,
             this.ctxTsmiOpenDefDir,
-            this.ctxTsmiCopyDefPath,
             this.ctxTsmiDeleteCharacter});
             this.ctxmnuCharacterList.Name = "contextMenuStrip1";
             this.ctxmnuCharacterList.Size = new System.Drawing.Size(213, 114);
@@ -524,6 +524,24 @@
             this.grpChars.TabStop = false;
             this.grpChars.Text = "人物列表";
             // 
+            // lblCharacterSelectCount
+            // 
+            this.lblCharacterSelectCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCharacterSelectCount.Location = new System.Drawing.Point(87, 401);
+            this.lblCharacterSelectCount.Name = "lblCharacterSelectCount";
+            this.lblCharacterSelectCount.Size = new System.Drawing.Size(72, 18);
+            this.lblCharacterSelectCount.TabIndex = 7;
+            this.lblCharacterSelectCount.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // lblCharacterCount
+            // 
+            this.lblCharacterCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCharacterCount.Location = new System.Drawing.Point(155, 401);
+            this.lblCharacterCount.Name = "lblCharacterCount";
+            this.lblCharacterCount.Size = new System.Drawing.Size(59, 18);
+            this.lblCharacterCount.TabIndex = 8;
+            this.lblCharacterCount.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // txtKeyword
             // 
             this.txtKeyword.Location = new System.Drawing.Point(6, 20);
@@ -715,26 +733,7 @@
             // 
             // ofdDefPath
             // 
-            this.ofdDefPath.FileName = "*.def";
             this.ofdDefPath.Filter = "def文件|*.def";
-            // 
-            // lblCharacterCount
-            // 
-            this.lblCharacterCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblCharacterCount.Location = new System.Drawing.Point(155, 401);
-            this.lblCharacterCount.Name = "lblCharacterCount";
-            this.lblCharacterCount.Size = new System.Drawing.Size(59, 18);
-            this.lblCharacterCount.TabIndex = 8;
-            this.lblCharacterCount.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // lblCharacterSelectCount
-            // 
-            this.lblCharacterSelectCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblCharacterSelectCount.Location = new System.Drawing.Point(87, 401);
-            this.lblCharacterSelectCount.Name = "lblCharacterSelectCount";
-            this.lblCharacterSelectCount.Size = new System.Drawing.Size(72, 18);
-            this.lblCharacterSelectCount.TabIndex = 7;
-            this.lblCharacterSelectCount.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // MainForm
             // 

@@ -145,7 +145,7 @@ namespace MUGENCharsSet
             try
             {
                 IniFiles ini = new IniFiles(IniPath);
-                MugenExePath = ini.ReadString(SettingInfo.DataSection, SettingInfo.MugenPathItem, "");
+                MugenExePath = Tools.GetBackSlashPath(ini.ReadString(SettingInfo.DataSection, SettingInfo.MugenPathItem, ""));
                 if (ini.ReadInteger(SettingInfo.DataSection, SettingInfo.AutoSortItem, 0) == 1)
                 {
                     AutoSort = true;

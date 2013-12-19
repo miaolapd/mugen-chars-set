@@ -86,6 +86,7 @@ namespace MUGENCharsSet
                 if (owner.AppSetting.MugenExePath != txtMugenExePath.Text.Trim())
                 {
                     owner.AppSetting.MugenExePath = txtMugenExePath.Text.Trim();
+                    owner.MugenSetting = new MUGENSetting(owner.AppSetting.MugenExePath);
                     owner.ReadCharacterList();
                 }
             }

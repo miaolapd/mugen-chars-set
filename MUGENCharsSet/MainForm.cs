@@ -1331,7 +1331,15 @@ namespace MUGENCharsSet
         /// </summary>
         private void tsmiSetSystemDefPath_Click(object sender, EventArgs e)
         {
-            ofdDefPath.InitialDirectory = MugenSetting.MugenDataDirPath;
+            ofdDefPath.FileName = "";
+            if (File.Exists(MugenSetting.SystemDefPath))
+            {
+                ofdDefPath.InitialDirectory = Tools.GetFileDirName(MugenSetting.SystemDefPath);
+            }
+            else
+            {
+                ofdDefPath.InitialDirectory = MugenSetting.MugenDataDirPath;
+            }
             if (ofdDefPath.ShowDialog() != DialogResult.OK) return;
             try
             {
@@ -1350,7 +1358,15 @@ namespace MUGENCharsSet
         /// </summary>
         private void tsmiSetSelectDefPath_Click(object sender, EventArgs e)
         {
-            ofdDefPath.InitialDirectory = MugenSetting.MugenDataDirPath;
+            ofdDefPath.FileName = "";
+            if (File.Exists(MugenSetting.SelectDefPath))
+            {
+                ofdDefPath.InitialDirectory = Tools.GetFileDirName(MugenSetting.SelectDefPath);
+            }
+            else
+            {
+                ofdDefPath.InitialDirectory = MugenSetting.MugenDataDirPath;
+            }
             if (ofdDefPath.ShowDialog() != DialogResult.OK) return;
             try
             {
