@@ -36,8 +36,9 @@ namespace MUGENCharsSet
             MainForm owner = (MainForm)Owner;
             try
             {
-                owner.AppSetting.MugenExePath = txtMugenExePath.Text.Trim();
-                if (!File.Exists(MUGENSetting.GetMugenCfgPath(owner.AppSetting.MugenExePath)))
+                AppSetting.MugenExePath = txtMugenExePath.Text.Trim();
+                string mugenCfgPath = Tools.GetFileDirName(AppSetting.MugenExePath) + MugenSetting.DataDir + MugenSetting.MugenCfgFileName;
+                if (!File.Exists(mugenCfgPath))
                 {
                     throw new ApplicationException("mugen.cfg文件不存在！");
                 }

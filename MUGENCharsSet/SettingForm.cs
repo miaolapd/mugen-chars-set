@@ -43,9 +43,8 @@ namespace MUGENCharsSet
         /// </summary>
         private void SettingForm_Load(object sender, EventArgs e)
         {
-            MainForm owner = (MainForm)Owner;
-            txtMugenExePath.Text = owner.AppSetting.MugenExePath;
-            txtEditProgramPath.Text = owner.AppSetting.EditProgramPath;
+            txtMugenExePath.Text = AppSetting.MugenExePath;
+            txtEditProgramPath.Text = AppSetting.EditProgramPath;
         }
 
         /// <summary>
@@ -78,15 +77,16 @@ namespace MUGENCharsSet
             MainForm owner = (MainForm)Owner;
             try
             {
-                owner.AppSetting.EditProgramPath = txtEditProgramPath.Text.Trim();
-                if (!File.Exists(MUGENSetting.GetMugenCfgPath(txtMugenExePath.Text.Trim())))
+                AppSetting.EditProgramPath = txtEditProgramPath.Text.Trim();
+                string mugenCfgPath = Tools.GetFileDirName(txtMugenExePath.Text.Trim()) + MugenSetting.DataDir + MugenSetting.MugenCfgFileName;
+                if (!File.Exists(mugenCfgPath))
                 {
                     throw new ApplicationException("mugen.cfg文件不存在！");
                 }
-                if (owner.AppSetting.MugenExePath != txtMugenExePath.Text.Trim())
+                if (AppSetting.MugenExePath != txtMugenExePath.Text.Trim())
                 {
-                    owner.AppSetting.MugenExePath = txtMugenExePath.Text.Trim();
-                    owner.MugenSetting = new MUGENSetting(owner.AppSetting.MugenExePath);
+                    AppSetting.MugenExePath = txtMugenExePath.Text.Trim();
+                    MugenSetting.Init(AppSetting.MugenExePath);
                     owner.ReadCharacterList();
                 }
             }
@@ -112,7 +112,7 @@ namespace MUGENCharsSet
         /// </summary>
         private void btnDefault_Click(object sender, EventArgs e)
         {
-            txtEditProgramPath.Text = ApplicationSetting.DefaultEditProgramPath;
+            txtEditProgramPath.Text = AppSetting.DefaultEditProgramPath;
         }
 
         /// <summary>

@@ -47,6 +47,21 @@ namespace MUGENCharsSet
                     throw new ApplicationException("配置文件不存在！");
                 }
             }
+            else
+            {
+                try
+                {
+                    StreamReader sr = new StreamReader(AFileName, Encoding.Default);
+                    char firstChar = (char)sr.Read();
+                    sr.Close();
+                    if (firstChar == '[')
+                    {
+                        string content= File.ReadAllText(AFileName, Encoding.Default);
+                        File.WriteAllText(AFileName, "\r\n" + content, Encoding.Default);
+                    }
+                }
+                catch (Exception) { }
+            }
             //必须是完全路径，不能是相对路径
             FileName = fileInfo.FullName;
         }

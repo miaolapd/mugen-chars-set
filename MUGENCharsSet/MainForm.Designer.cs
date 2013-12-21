@@ -31,10 +31,10 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.ctxmnuCharacterList = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.ctxTsmiCopyDefPath = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxTsmiOpenDefFile = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxTsmiOpenCnsFile = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxTsmiOpenDefDir = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxTsmiCopyDefPath = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxTsmiDeleteCharacter = new System.Windows.Forms.ToolStripMenuItem();
             this.ttpCommon = new System.Windows.Forms.ToolTip(this.components);
             this.btnRestore = new System.Windows.Forms.Button();
@@ -47,6 +47,8 @@
             this.chkAutoSort = new System.Windows.Forms.CheckBox();
             this.btnSearchAll = new System.Windows.Forms.Button();
             this.pageCharacter = new System.Windows.Forms.TabPage();
+            this.grpIsWideScreen = new System.Windows.Forms.GroupBox();
+            this.lblIsWideScreen = new System.Windows.Forms.Label();
             this.grpDefPath = new System.Windows.Forms.GroupBox();
             this.lblDefPath = new System.Windows.Forms.Label();
             this.grpPal = new System.Windows.Forms.GroupBox();
@@ -91,9 +93,11 @@
             this.tabMain = new System.Windows.Forms.TabControl();
             this.fswCharacterCns = new System.IO.FileSystemWatcher();
             this.ofdDefPath = new System.Windows.Forms.OpenFileDialog();
-            this.lblIsWideScreen = new System.Windows.Forms.Label();
+            this.ctxTsmiConvertToWideScreen = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxTsmiConvertToNormalScreen = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxmnuCharacterList.SuspendLayout();
             this.pageCharacter.SuspendLayout();
+            this.grpIsWideScreen.SuspendLayout();
             this.grpDefPath.SuspendLayout();
             this.grpPal.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPal)).BeginInit();
@@ -111,17 +115,11 @@
             this.ctxTsmiOpenCnsFile,
             this.ctxTsmiOpenDefDir,
             this.ctxTsmiCopyDefPath,
+            this.ctxTsmiConvertToWideScreen,
+            this.ctxTsmiConvertToNormalScreen,
             this.ctxTsmiDeleteCharacter});
             this.ctxmnuCharacterList.Name = "contextMenuStrip1";
-            this.ctxmnuCharacterList.Size = new System.Drawing.Size(213, 114);
-            // 
-            // ctxTsmiCopyDefPath
-            // 
-            this.ctxTsmiCopyDefPath.Name = "ctxTsmiCopyDefPath";
-            this.ctxTsmiCopyDefPath.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.ctxTsmiCopyDefPath.Size = new System.Drawing.Size(212, 22);
-            this.ctxTsmiCopyDefPath.Text = "复制def文件路径";
-            this.ctxTsmiCopyDefPath.Click += new System.EventHandler(this.ctxTsmiCopyDefPath_Click);
+            this.ctxmnuCharacterList.Size = new System.Drawing.Size(213, 180);
             // 
             // ctxTsmiOpenDefFile
             // 
@@ -143,6 +141,14 @@
             this.ctxTsmiOpenDefDir.Size = new System.Drawing.Size(212, 22);
             this.ctxTsmiOpenDefDir.Text = "打开文件夹(&O)";
             this.ctxTsmiOpenDefDir.Click += new System.EventHandler(this.ctxTsmiOpenDefDir_Click);
+            // 
+            // ctxTsmiCopyDefPath
+            // 
+            this.ctxTsmiCopyDefPath.Name = "ctxTsmiCopyDefPath";
+            this.ctxTsmiCopyDefPath.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+            this.ctxTsmiCopyDefPath.Size = new System.Drawing.Size(212, 22);
+            this.ctxTsmiCopyDefPath.Text = "复制def文件路径";
+            this.ctxTsmiCopyDefPath.Click += new System.EventHandler(this.ctxTsmiCopyDefPath_Click);
             // 
             // ctxTsmiDeleteCharacter
             // 
@@ -213,7 +219,7 @@
             this.cboReadCharacterType.Items.AddRange(new object[] {
             "select.def",
             "人物文件夹"});
-            this.cboReadCharacterType.Location = new System.Drawing.Point(6, 425);
+            this.cboReadCharacterType.Location = new System.Drawing.Point(6, 381);
             this.cboReadCharacterType.Name = "cboReadCharacterType";
             this.cboReadCharacterType.Size = new System.Drawing.Size(130, 20);
             this.cboReadCharacterType.TabIndex = 9;
@@ -248,7 +254,7 @@
             // 
             this.chkAutoSort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.chkAutoSort.AutoSize = true;
-            this.chkAutoSort.Location = new System.Drawing.Point(142, 427);
+            this.chkAutoSort.Location = new System.Drawing.Point(142, 383);
             this.chkAutoSort.Name = "chkAutoSort";
             this.chkAutoSort.Size = new System.Drawing.Size(72, 16);
             this.chkAutoSort.TabIndex = 10;
@@ -273,6 +279,7 @@
             // 
             this.pageCharacter.AllowDrop = true;
             this.pageCharacter.BackColor = System.Drawing.SystemColors.Control;
+            this.pageCharacter.Controls.Add(this.grpIsWideScreen);
             this.pageCharacter.Controls.Add(this.grpDefPath);
             this.pageCharacter.Controls.Add(this.btnRestore);
             this.pageCharacter.Controls.Add(this.btnBackup);
@@ -291,15 +298,32 @@
             this.pageCharacter.DragDrop += new System.Windows.Forms.DragEventHandler(this.pageCharacter_DragDrop);
             this.pageCharacter.DragEnter += new System.Windows.Forms.DragEventHandler(this.pageCharacter_DragEnter);
             // 
+            // grpIsWideScreen
+            // 
+            this.grpIsWideScreen.Controls.Add(this.lblIsWideScreen);
+            this.grpIsWideScreen.Location = new System.Drawing.Point(8, 6);
+            this.grpIsWideScreen.Name = "grpIsWideScreen";
+            this.grpIsWideScreen.Size = new System.Drawing.Size(220, 38);
+            this.grpIsWideScreen.TabIndex = 8;
+            this.grpIsWideScreen.TabStop = false;
+            this.grpIsWideScreen.Text = "画面包状态";
+            // 
+            // lblIsWideScreen
+            // 
+            this.lblIsWideScreen.AutoSize = true;
+            this.lblIsWideScreen.Location = new System.Drawing.Point(6, 17);
+            this.lblIsWideScreen.Name = "lblIsWideScreen";
+            this.lblIsWideScreen.Size = new System.Drawing.Size(0, 12);
+            this.lblIsWideScreen.TabIndex = 0;
+            // 
             // grpDefPath
             // 
             this.grpDefPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpDefPath.Controls.Add(this.lblIsWideScreen);
             this.grpDefPath.Controls.Add(this.lblDefPath);
             this.grpDefPath.Location = new System.Drawing.Point(234, 6);
             this.grpDefPath.Name = "grpDefPath";
-            this.grpDefPath.Size = new System.Drawing.Size(307, 55);
+            this.grpDefPath.Size = new System.Drawing.Size(307, 38);
             this.grpDefPath.TabIndex = 1;
             this.grpDefPath.TabStop = false;
             this.grpDefPath.Text = "人物配置文件";
@@ -320,9 +344,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.grpPal.Controls.Add(this.dgvPal);
-            this.grpPal.Location = new System.Drawing.Point(234, 260);
+            this.grpPal.Location = new System.Drawing.Point(234, 243);
             this.grpPal.Name = "grpPal";
-            this.grpPal.Size = new System.Drawing.Size(307, 196);
+            this.grpPal.Size = new System.Drawing.Size(307, 213);
             this.grpPal.TabIndex = 3;
             this.grpPal.TabStop = false;
             this.grpPal.Text = "色表设置";
@@ -342,7 +366,7 @@
             this.dgvPal.Name = "dgvPal";
             this.dgvPal.RowHeadersVisible = false;
             this.dgvPal.RowTemplate.Height = 23;
-            this.dgvPal.Size = new System.Drawing.Size(301, 176);
+            this.dgvPal.Size = new System.Drawing.Size(301, 193);
             this.dgvPal.TabIndex = 0;
             this.dgvPal.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dgvPal_EditingControlShowing);
             // 
@@ -376,7 +400,7 @@
             this.grpProperty.Controls.Add(this.lblDisplayName);
             this.grpProperty.Controls.Add(this.txtName);
             this.grpProperty.Controls.Add(this.lblName);
-            this.grpProperty.Location = new System.Drawing.Point(234, 67);
+            this.grpProperty.Location = new System.Drawing.Point(234, 50);
             this.grpProperty.Name = "grpProperty";
             this.grpProperty.Size = new System.Drawing.Size(307, 187);
             this.grpProperty.TabIndex = 2;
@@ -519,9 +543,9 @@
             this.grpChars.Controls.Add(this.chkAutoSort);
             this.grpChars.Controls.Add(this.lstCharacterList);
             this.grpChars.Controls.Add(this.btnRefreshCharacterList);
-            this.grpChars.Location = new System.Drawing.Point(8, 6);
+            this.grpChars.Location = new System.Drawing.Point(8, 50);
             this.grpChars.Name = "grpChars";
-            this.grpChars.Size = new System.Drawing.Size(220, 485);
+            this.grpChars.Size = new System.Drawing.Size(220, 441);
             this.grpChars.TabIndex = 0;
             this.grpChars.TabStop = false;
             this.grpChars.Text = "人物列表";
@@ -529,7 +553,7 @@
             // lblCharacterSelectCount
             // 
             this.lblCharacterSelectCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblCharacterSelectCount.Location = new System.Drawing.Point(87, 401);
+            this.lblCharacterSelectCount.Location = new System.Drawing.Point(87, 357);
             this.lblCharacterSelectCount.Name = "lblCharacterSelectCount";
             this.lblCharacterSelectCount.Size = new System.Drawing.Size(72, 18);
             this.lblCharacterSelectCount.TabIndex = 7;
@@ -538,7 +562,7 @@
             // lblCharacterCount
             // 
             this.lblCharacterCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblCharacterCount.Location = new System.Drawing.Point(155, 401);
+            this.lblCharacterCount.Location = new System.Drawing.Point(155, 357);
             this.lblCharacterCount.Name = "lblCharacterCount";
             this.lblCharacterCount.Size = new System.Drawing.Size(59, 18);
             this.lblCharacterCount.TabIndex = 8;
@@ -556,7 +580,7 @@
             // btnSelectInvert
             // 
             this.btnSelectInvert.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSelectInvert.Location = new System.Drawing.Point(44, 396);
+            this.btnSelectInvert.Location = new System.Drawing.Point(44, 352);
             this.btnSelectInvert.Name = "btnSelectInvert";
             this.btnSelectInvert.Size = new System.Drawing.Size(37, 23);
             this.btnSelectInvert.TabIndex = 6;
@@ -567,7 +591,7 @@
             // btnSelectAll
             // 
             this.btnSelectAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSelectAll.Location = new System.Drawing.Point(6, 396);
+            this.btnSelectAll.Location = new System.Drawing.Point(6, 352);
             this.btnSelectAll.Name = "btnSelectAll";
             this.btnSelectAll.Size = new System.Drawing.Size(37, 23);
             this.btnSelectAll.TabIndex = 5;
@@ -587,7 +611,7 @@
             this.lstCharacterList.Location = new System.Drawing.Point(6, 53);
             this.lstCharacterList.Name = "lstCharacterList";
             this.lstCharacterList.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lstCharacterList.Size = new System.Drawing.Size(208, 340);
+            this.lstCharacterList.Size = new System.Drawing.Size(208, 292);
             this.lstCharacterList.TabIndex = 4;
             this.lstCharacterList.SelectedIndexChanged += new System.EventHandler(this.lstCharacterList_SelectedIndexChanged);
             // 
@@ -595,7 +619,7 @@
             // 
             this.btnRefreshCharacterList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRefreshCharacterList.Location = new System.Drawing.Point(6, 451);
+            this.btnRefreshCharacterList.Location = new System.Drawing.Point(6, 407);
             this.btnRefreshCharacterList.Name = "btnRefreshCharacterList";
             this.btnRefreshCharacterList.Size = new System.Drawing.Size(208, 28);
             this.btnRefreshCharacterList.TabIndex = 11;
@@ -737,13 +761,19 @@
             // 
             this.ofdDefPath.Filter = "def文件|*.def";
             // 
-            // lblIsWideScreen
+            // ctxTsmiConvertToWideScreen
             // 
-            this.lblIsWideScreen.AutoSize = true;
-            this.lblIsWideScreen.Location = new System.Drawing.Point(6, 35);
-            this.lblIsWideScreen.Name = "lblIsWideScreen";
-            this.lblIsWideScreen.Size = new System.Drawing.Size(0, 12);
-            this.lblIsWideScreen.TabIndex = 1;
+            this.ctxTsmiConvertToWideScreen.Name = "ctxTsmiConvertToWideScreen";
+            this.ctxTsmiConvertToWideScreen.Size = new System.Drawing.Size(212, 22);
+            this.ctxTsmiConvertToWideScreen.Text = "转换为宽屏人物包";
+            this.ctxTsmiConvertToWideScreen.Click += new System.EventHandler(this.ctxTsmiConvertToWideScreen_Click);
+            // 
+            // ctxTsmiConvertToNormalScreen
+            // 
+            this.ctxTsmiConvertToNormalScreen.Name = "ctxTsmiConvertToNormalScreen";
+            this.ctxTsmiConvertToNormalScreen.Size = new System.Drawing.Size(212, 22);
+            this.ctxTsmiConvertToNormalScreen.Text = "转换为普屏人物包";
+            this.ctxTsmiConvertToNormalScreen.Click += new System.EventHandler(this.ctxTsmiConvertToNormalScreen_Click);
             // 
             // MainForm
             // 
@@ -762,8 +792,9 @@
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             this.ctxmnuCharacterList.ResumeLayout(false);
             this.pageCharacter.ResumeLayout(false);
+            this.grpIsWideScreen.ResumeLayout(false);
+            this.grpIsWideScreen.PerformLayout();
             this.grpDefPath.ResumeLayout(false);
-            this.grpDefPath.PerformLayout();
             this.grpPal.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvPal)).EndInit();
             this.grpProperty.ResumeLayout(false);
@@ -842,7 +873,10 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiSetSelectDefPath;
         private System.Windows.Forms.Label lblCharacterSelectCount;
         private System.Windows.Forms.Label lblCharacterCount;
+        private System.Windows.Forms.GroupBox grpIsWideScreen;
         private System.Windows.Forms.Label lblIsWideScreen;
+        private System.Windows.Forms.ToolStripMenuItem ctxTsmiConvertToWideScreen;
+        private System.Windows.Forms.ToolStripMenuItem ctxTsmiConvertToNormalScreen;
     }
 }
 

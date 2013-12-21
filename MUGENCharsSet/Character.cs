@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace MUGENCharsSet
 {
@@ -53,8 +55,10 @@ namespace MUGENCharsSet
             public const string PowerItem = "power";
             /// <summary>pal配置项前缀名</summary>
             public const string PalItemPrefix = "pal";
-            /// <summary>人物分辨率配置项</summary>
+            /// <summary>人物localcoord配置项</summary>
             public const string LocalcoordItem = "localcoord";
+            /// <summary>stcommon相对路径配置项</summary>
+            public const string StcommonItem = "stcommon";
         }
 
         #endregion
@@ -65,12 +69,14 @@ namespace MUGENCharsSet
         private string _cns;
         private string _name;
         private string _displayName;
+        private string _itemName;
         private int _life;
         private int _attack;
         private int _defence;
         private int _power;
         private NameValueCollection _palList;
         private bool _isWideScreen;
+        private string _stcommon;
 
         #endregion
 
@@ -134,6 +140,28 @@ namespace MUGENCharsSet
                 if (value == String.Empty) throw new ApplicationException("显示名不得为空！");
                 if (value == MainForm.MultiValue) return;
                 _displayName = value;
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置在人物列表控件上显示的名称
+        /// </summary>
+        /// <exception cref="System.ApplicationException"></exception>
+        public string ItemName
+        {
+            get { return _itemName; }
+            set
+            {
+                if (value == String.Empty) throw new ApplicationException("人物名称不得为空！");
+                _itemName = value;
+                if (MugenSetting.IsWideScreen)
+                {
+                    if (!IsWideScreen) _itemName += " (普)";
+                }
+                else
+                {
+                    if (IsWideScreen) _itemName += " (宽)";
+                }
             }
         }
 
@@ -216,12 +244,51 @@ namespace MUGENCharsSet
         }
 
         /// <summary>
-        /// 获取或设置是否为宽屏人物包
+        /// 获取或设置人物包是否为宽屏
         /// </summary>
+        /// <exception cref="System.ApplicationException"></exception>
         public bool IsWideScreen
         {
             get { return _isWideScreen; }
-            private set { _isWideScreen = value; }
+            set
+            {
+                if (value)
+                {
+                    try
+                    {
+                        IniFiles ini = new IniFiles(DefPath);
+                        int width = MugenSetting.Localcoord.Width / 2;
+                        int height = MugenSetting.Localcoord.Height / 2;
+                        ini.WriteString(SettingInfo.InfoSection, SettingInfo.LocalcoordItem, String.Format("{0},{1}", width, height));
+                    }
+                    catch (ApplicationException)
+                    {
+                        throw new ApplicationException("宽屏人物包转换失败！");
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        IniFiles ini = new IniFiles(DefPath);
+                        ini.DeleteKey(SettingInfo.InfoSection, SettingInfo.LocalcoordItem);
+                    }
+                    catch(ApplicationException)
+                    {
+                        throw new ApplicationException("普屏人物包转换失败！");
+                    }
+                }
+                _isWideScreen = value;
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置stcommon相对路径
+        /// </summary>
+        public string Stcommon
+        {
+            get { return _stcommon; }
+            set { _stcommon = value; }
         }
 
         #endregion
@@ -251,7 +318,9 @@ namespace MUGENCharsSet
             Name = GetTrimName(ini.ReadString(SettingInfo.InfoSection, SettingInfo.NameItem, ""));
             DisplayName = GetTrimName(ini.ReadString(SettingInfo.InfoSection, SettingInfo.DisplayNameItem, ""));
             Cns = Tools.GetBackSlashPath(ini.ReadString(SettingInfo.FilesSection, SettingInfo.CnsItem, ""));
-            IsWideScreen = ini.ValueExists(SettingInfo.InfoSection, SettingInfo.LocalcoordItem);
+            _isWideScreen = ini.ReadString(SettingInfo.InfoSection, SettingInfo.LocalcoordItem, "") != String.Empty;
+            ItemName = Name;
+            Stcommon = ini.ReadString(SettingInfo.FilesSection, SettingInfo.StcommonItem, "");
             if (!File.Exists(CnsFullPath)) throw new ApplicationException("人物cns文件不存在！");
             ini = new IniFiles(CnsFullPath);
             Life = ini.ReadInteger(SettingInfo.DataSection, SettingInfo.LifeItem, 0);
@@ -375,6 +444,28 @@ namespace MUGENCharsSet
             if (!File.Exists(DefPath)) throw new ApplicationException("人物def文件不存在！");
             int total = MultiDelete(new Character[] { this });
             if (total == 0) throw new ApplicationException("人物删除失败！");
+        }
+
+        /// <summary>
+        /// 转换为宽屏人物包
+        /// </summary>
+        /// <exception cref="System.ApplicationException"></exception>
+        public void ConvertToWideScreen()
+        {
+            if (!File.Exists(DefPath)) throw new ApplicationException("人物def文件不存在！");
+            int total = MultiConvertToWideScreen(new Character[] { this });
+            if (total == 0) throw new ApplicationException("宽屏人物包转换失败！");
+        }
+
+        /// <summary>
+        /// 转换为普屏人物包
+        /// </summary>
+        /// <exception cref="System.ApplicationException"></exception>
+        public void ConvertToNormalScreen()
+        {
+            if (!File.Exists(DefPath)) throw new ApplicationException("人物def文件不存在！");
+            int total = MultiConvertToNormalScreen(new Character[] { this });
+            if (total == 0) throw new ApplicationException("普屏人物包转换失败！");
         }
 
         #endregion
@@ -530,6 +621,127 @@ namespace MUGENCharsSet
                 }
             }
             return total;
+        }
+
+        /// <summary>
+        /// 批量转换为宽屏人物包
+        /// </summary>
+        /// <param name="characterList">人物列表</param>
+        /// <returns>转换成功总数</returns>
+        public static int MultiConvertToWideScreen(Character[] characterList)
+        {
+            int total = 0;
+            foreach (Character character in characterList)
+            {
+                try
+                {
+                    if (!File.Exists(character.DefPath)) continue;
+                    character.IsWideScreen = true;
+                    character.ItemName = character.Name;
+                    string stcommonPath = Tools.GetBackSlashPath(Tools.GetFileDirName(character.DefPath) + character.Stcommon);
+                    if (File.Exists(stcommonPath))
+                    {
+                        StcommonConvertToWideScreen(stcommonPath);
+                    }
+                    total++;
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+            return total;
+        }
+
+        /// <summary>
+        /// 批量转换为普屏人物包
+        /// </summary>
+        /// <param name="characterList">人物列表</param>
+        /// <returns>转换成功总数</returns>
+        public static int MultiConvertToNormalScreen(Character[] characterList)
+        {
+            int total = 0;
+            foreach (Character character in characterList)
+            {
+                try
+                {
+                    if (!File.Exists(character.DefPath)) continue;
+                    character.IsWideScreen = false;
+                    character.ItemName = character.Name;
+                    string stcommonPath = Tools.GetBackSlashPath(Tools.GetFileDirName(character.DefPath) + character.Stcommon);
+                    if (File.Exists(stcommonPath))
+                    {
+                        StcommonConvertToNormalScreen(stcommonPath);
+                    }
+                    total++;
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+            return total;
+        }
+
+        /// <summary>
+        /// 将stcommon文件里的重力修改成适合宽屏的状态
+        /// </summary>
+        /// <param name="stcommonPath">stcommon文件绝对路径</param>
+        /// <exception cref="System.ApplicationException"></exception>
+        public static void StcommonConvertToWideScreen(string stcommonPath)
+        {
+            if (!File.Exists(stcommonPath)) throw new ApplicationException("stcommon文件不存在！");
+            try
+            {
+                string content = File.ReadAllText(stcommonPath, Encoding.Default);
+                Regex regex = new Regex(@"yaccel\s*(\*\d+)?(\.\d+)?\s*\)", RegexOptions.IgnoreCase);
+                content = regex.Replace(content, "yaccel*1.2)");
+                File.WriteAllText(stcommonPath, content, Encoding.Default);
+            }
+            catch(Exception)
+            {
+                throw new ApplicationException("stcommon文件转换宽屏失败！");
+            }
+        }
+
+        /// <summary>
+        /// 将stcommon文件里的重力修改成适合普屏的状态
+        /// </summary>
+        /// <param name="stcommonPath">stcommon文件绝对路径</param>
+        /// <exception cref="System.ApplicationException"></exception>
+        public static void StcommonConvertToNormalScreen(string stcommonPath)
+        {
+            if (!File.Exists(stcommonPath)) throw new ApplicationException("stcommon文件不存在！");
+            try
+            {
+                string content = File.ReadAllText(stcommonPath, Encoding.Default);
+                Regex regex = new Regex(@"yaccel\s*\*\d+(\.\d+)?\s*\)", RegexOptions.IgnoreCase);
+                content = regex.Replace(content, "yaccel)");
+                File.WriteAllText(stcommonPath, content, Encoding.Default);
+            }
+            catch (Exception)
+            {
+                throw new ApplicationException("stcommon文件转换普屏失败！");
+            }
+        }
+
+        /// <summary>
+        /// 获取stcommon文件里的重力是否为适合宽屏的状态
+        /// </summary>
+        /// <param name="stcommonContent">stcommon文件内容</param>
+        /// <returns>状态值(-1：未找到相关项, 0：普屏, 1：宽屏)</returns>
+        public static int IsStcommonWideScreen(string stcommonContent)
+        {
+            try
+            {
+                if ((new Regex(@"yaccel\s*\)", RegexOptions.IgnoreCase)).IsMatch(stcommonContent)) return 0;
+                else if ((new Regex(@"yaccel\s*\*\d+(\.\d+)?", RegexOptions.IgnoreCase)).IsMatch(stcommonContent)) return 1;
+                else return -1;
+            }
+            catch(Exception)
+            {
+                return -1;
+            }
         }
 
         #endregion

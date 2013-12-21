@@ -79,5 +79,23 @@ namespace MUGENCharsSet
             }
             return true;
         }
+
+        /// <summary>
+        /// 获取MUGEN中可用的配置文件绝对路径
+        /// </summary>
+        /// <param name="parentFilePath">父配置文件绝对路径</param>
+        /// <param name="fileName">配置文件相对路径</param>
+        /// <returns>配置文件绝对路径</returns>
+        public static string GetIniFileExistPath(string parentFilePath, string fileName)
+        {
+            if (parentFilePath == String.Empty) return "";
+            string path = Tools.GetBackSlashPath(Tools.GetFileDirName(parentFilePath) + fileName);
+            if (File.Exists(path)) return path;
+            path = Tools.GetBackSlashPath(MugenSetting.MugenDataDirPath + fileName);
+            if (File.Exists(path)) return path;
+            path = Tools.GetBackSlashPath(MugenSetting.MugenDirPath + fileName);
+            if (File.Exists(path)) return path;
+            else return "";
+        }
     }
 }

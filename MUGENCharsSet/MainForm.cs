@@ -31,9 +31,6 @@ namespace MUGENCharsSet
         #endregion
 
         #region 类私有变量
-
-        private ApplicationSetting _appSetting;
-        private MUGENSetting _mugenSetting;
         private bool _modifyEnabled = false;
         private bool _multiModified = false;
         private ArrayList _characterList;
@@ -43,24 +40,6 @@ namespace MUGENCharsSet
         #endregion
 
         #region 类属性
-
-        /// <summary>
-        /// 获取或设置当前程序配置
-        /// </summary>
-        public ApplicationSetting AppSetting
-        {
-            get { return _appSetting; }
-            set { _appSetting = value; }
-        }
-
-        /// <summary>
-        /// 获取或设置当前MUGEN程序配置
-        /// </summary>
-        public MUGENSetting MugenSetting
-        {
-            get { return _mugenSetting; }
-            set { _mugenSetting = value; }
-        }
 
         /// <summary>
         /// 获取或设置MUGEN人物列表
@@ -187,7 +166,6 @@ namespace MUGENCharsSet
         {
             lblDefPath.Text = "";
             ttpCommon.SetToolTip(lblDefPath, "");
-            lblIsWideScreen.Text = "";
             foreach (Control ctlTemp in grpProperty.Controls)
             {
                 if (ctlTemp is TextBox)
@@ -202,7 +180,7 @@ namespace MUGENCharsSet
         /// </summary>
         private void ReadIniSetting()
         {
-            AppSetting = new ApplicationSetting();
+            AppSetting.Init();
             chkAutoSort.Checked = AppSetting.AutoSort;
             cboReadCharacterType.SelectedIndex = (int)AppSetting.ReadCharacterType;
         }
@@ -216,6 +194,7 @@ namespace MUGENCharsSet
             MultiModified = false;
             lstCharacterList.DataSource = null;
             txtKeyword.Clear();
+            lblIsWideScreen.Text = "";
             lblCharacterCount.Text = "";
             lblCharacterSelectCount.Text = "";
             try
@@ -235,7 +214,7 @@ namespace MUGENCharsSet
             CharacterList = new ArrayList();
             try
             {
-                if (AppSetting.ReadCharacterType == ApplicationSetting.ReadCharTypeEnum.CharsDir)
+                if (AppSetting.ReadCharacterType == AppSetting.ReadCharTypeEnum.CharsDir)
                 {
                     ScanCharacterDir(CharacterList, MugenSetting.MugenCharsDirPath);
                 }
@@ -257,6 +236,7 @@ namespace MUGENCharsSet
             {
                 RefreshCharacterListDataSource(CharacterList);
             }
+            lblIsWideScreen.Text = String.Format("当前画面包为{0}屏", MugenSetting.IsWideScreen ? "宽" : "普");
             lblCharacterCount.Text = String.Format("共{0}项", lstCharacterList.Items.Count);
             fswCharacterCns.Path = MugenSetting.MugenCharsDirPath;
             fswCharacterCns.EnableRaisingEvents = true;
@@ -346,7 +326,7 @@ namespace MUGENCharsSet
             bs.DataSource = characterList;
             CharacterListControlPreparing = true;
             lstCharacterList.DataSource = bs;
-            lstCharacterList.DisplayMember = "Name";
+            lstCharacterList.DisplayMember = "ItemName";
             lstCharacterList.ValueMember = "DefPath";
             lstCharacterList.ClearSelected();
             CharacterListControlPreparing = false;
@@ -455,9 +435,8 @@ namespace MUGENCharsSet
         private void SetSingleCharacterLabel(Character character)
         {
             string path = character.DefPath.Substring(MugenSetting.MugenCharsDirPath.Length);
-            lblDefPath.Text = "文件路径：" + path;
+            lblDefPath.Text = path;
             ttpCommon.SetToolTip(lblDefPath, path);
-            lblIsWideScreen.Text = "宽屏状态：" + (character.IsWideScreen ? "宽屏" : "普通");
         }
 
         /// <summary>
@@ -466,19 +445,12 @@ namespace MUGENCharsSet
         private void SetMutliCharacterLabel(Character[] characterList)
         {
             string msg = "";
-            bool isMultiValue = false;
-            bool isWideScreen = ((Character)characterList[0]).IsWideScreen;
             foreach (Character character in characterList)
             {
                 msg += character.DefPath.Substring(MugenSetting.MugenCharsDirPath.Length) + "\r\n";
-                if (character.IsWideScreen != isWideScreen)
-                {
-                    isMultiValue = true;
-                }
             }
-            lblDefPath.Text = "文件路径：" + MultiValue;
+            lblDefPath.Text = MultiValue;
             ttpCommon.SetToolTip(lblDefPath, msg);
-            lblIsWideScreen.Text = "宽屏状态：" + (isMultiValue ? MultiValue : (isWideScreen ? "宽屏" : "普通"));
         }
 
         /// <summary>
@@ -559,7 +531,7 @@ namespace MUGENCharsSet
             total = Character.MultiSave(characterList);
             if (total > 0)
             {
-                ShowSuccessMsg(String.Format("共选择{0}项，其中{1}条项目修改成功！", characterList.Length, total));
+                ShowSuccessMsg(String.Format("共{0}条项目修改成功！", total));
             }
             else
             {
@@ -745,6 +717,102 @@ namespace MUGENCharsSet
             lstCharacterList_SelectedIndexChanged(null, null);
         }
 
+        /// <summary>
+        /// 转换为宽/普屏人物包
+        /// </summary>
+        /// <param name="isWideScreen">是否宽屏</param>
+        private void ConvertToFitScreen(bool isWideScreen)
+        {
+            if (lstCharacterList.SelectedItems.Count == 0) return;
+            string stcommonPath = MugenSetting.MugenDataDirPath + MugenSetting.StcommonFileName;
+            if (!File.Exists(stcommonPath))
+            {
+                ShowErrorMsg("公共common1.cns文件不存在！");
+                return;
+            }
+            try
+            {
+                string stcommonContent = File.ReadAllText(stcommonPath);
+                string msg = String.Format("公共common1.cns文件不适合{0}屏画面包，是否要转换？", isWideScreen ? "宽" : "普");
+                if (isWideScreen)
+                {
+                    if (Character.IsStcommonWideScreen(stcommonContent) == 0)
+                    {
+                        if (MessageBox.Show(msg, "操作确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        {
+                            Character.StcommonConvertToWideScreen(stcommonPath);
+                        }
+                    }
+                }
+                else
+                {
+                    if (Character.IsStcommonWideScreen(stcommonContent) == 1)
+                    {
+                        if (MessageBox.Show(msg, "操作确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        {
+                            Character.StcommonConvertToNormalScreen(stcommonPath);
+                        }
+                    }
+                }
+            }
+            catch (ApplicationException ex)
+            {
+                ShowErrorMsg(ex.Message);
+                return;
+            }
+            if (MultiModified)
+            {
+                Character[] characterList = new Character[lstCharacterList.SelectedItems.Count];
+                lstCharacterList.SelectedItems.CopyTo(characterList, 0);
+                int total = 0;
+                if (isWideScreen)
+                {
+                    total = Character.MultiConvertToWideScreen(characterList);
+                }
+                else
+                {
+                    total = Character.MultiConvertToNormalScreen(characterList);
+                }
+                if (total > 0)
+                {
+                    ShowSuccessMsg(String.Format("共{0}条项目转换成功！", total));
+                }
+                else
+                {
+                    ShowErrorMsg("转换失败！");
+                    return;
+                }
+            }
+            else
+            {
+                Character character = (Character)lstCharacterList.SelectedItem;
+                try
+                {
+                    if (isWideScreen)
+                    {
+                        character.ConvertToWideScreen();
+                    }
+                    else
+                    {
+                        character.ConvertToNormalScreen();
+                    }
+                }
+                catch (ApplicationException ex)
+                {
+                    ShowErrorMsg(ex.Message);
+                    return;
+                }
+                ShowSuccessMsg("转换成功！");
+            }
+            int[] selectedIndices = new int[lstCharacterList.SelectedIndices.Count];
+            lstCharacterList.SelectedIndices.CopyTo(selectedIndices, 0);
+            RefreshCharacterListDataSource(CharacterList);
+            foreach (int index in selectedIndices)
+            {
+                lstCharacterList.SetSelected(index, true);
+            }
+        }
+
         #endregion
 
         #region 类事件
@@ -755,7 +823,7 @@ namespace MUGENCharsSet
         private void MainForm_Load(object sender, EventArgs e)
         {
             ReadIniSetting();
-            string mugenCfgPath = MUGENSetting.GetMugenCfgPath(AppSetting.MugenExePath);
+            string mugenCfgPath = Tools.GetFileDirName(AppSetting.MugenExePath) + MugenSetting.DataDir + MugenSetting.MugenCfgFileName;
             if (AppSetting.MugenExePath == String.Empty || !File.Exists(AppSetting.MugenExePath) || !File.Exists(mugenCfgPath))
             {
                 Visible = false;
@@ -769,7 +837,7 @@ namespace MUGENCharsSet
             }
             try
             {
-                MugenSetting = new MUGENSetting(AppSetting.MugenExePath);
+                MugenSetting.Init(AppSetting.MugenExePath);
             }
             catch (ApplicationException ex)
             {
@@ -836,7 +904,7 @@ namespace MUGENCharsSet
                 int total = Character.MultiBackup(characterList);
                 if (total > 0)
                 {
-                    ShowSuccessMsg(String.Format("共选择{0}项，其中{1}条项目备份成功！", characterList.Length, total));
+                    ShowSuccessMsg(String.Format("共{0}条项目备份成功！", total));
                 }
                 else
                 {
@@ -875,7 +943,7 @@ namespace MUGENCharsSet
                 int total = Character.MultiRestore(characterList);
                 if (total > 0)
                 {
-                    ShowSuccessMsg(String.Format("共选择{0}项，其中{1}条项目还原成功！", characterList.Length, total));
+                    ShowSuccessMsg(String.Format("共{0}条项目还原成功！", total));
                     MultiReadCharacter();
                 }
                 else
@@ -1070,7 +1138,7 @@ namespace MUGENCharsSet
         /// </summary>
         private void cboReadCharacterType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            AppSetting.ReadCharacterType = (ApplicationSetting.ReadCharTypeEnum)cboReadCharacterType.SelectedIndex;
+            AppSetting.ReadCharacterType = (AppSetting.ReadCharTypeEnum)cboReadCharacterType.SelectedIndex;
         }
 
         /// <summary>
@@ -1258,6 +1326,49 @@ namespace MUGENCharsSet
         }
 
         /// <summary>
+        /// 当单击复制def文件路径右键菜单项时发生
+        /// </summary>
+        private void ctxTsmiCopyDefPath_Click(object sender, EventArgs e)
+        {
+            if (lstCharacterList.SelectedItems.Count == 0) return;
+            string copyContent = "";
+            for (int i = 0; i < lstCharacterList.SelectedItems.Count; i++)
+            {
+                copyContent += ((Character)lstCharacterList.SelectedItems[i]).DefPath.Substring(MugenSetting.MugenCharsDirPath.Length);
+                if (i < lstCharacterList.SelectedItems.Count - 1)
+                {
+                    copyContent += "\r\n";
+                }
+            }
+            try
+            {
+                Clipboard.SetDataObject(copyContent, true, 2, 200);
+            }
+            catch (Exception)
+            {
+                ShowErrorMsg("复制失败！");
+                return;
+            }
+            ShowSuccessMsg(String.Format("{0}条项目已复制到剪贴板！", lstCharacterList.SelectedItems.Count));
+        }
+
+        /// <summary>
+        /// 当单击转换为宽屏人物包右键菜单项时发生
+        /// </summary>
+        private void ctxTsmiConvertToWideScreen_Click(object sender, EventArgs e)
+        {
+            ConvertToFitScreen(true);
+        }
+
+        /// <summary>
+        /// 当单击转换为普屏人物包右键菜单项时发生
+        /// </summary>
+        private void ctxTsmiConvertToNormalScreen_Click(object sender, EventArgs e)
+        {
+            ConvertToFitScreen(false);
+        }
+
+        /// <summary>
         /// 当单击删除人物右键菜单项时发生
         /// </summary>
         private void ctxTsmiDeleteCharacter_Click(object sender, EventArgs e)
@@ -1309,33 +1420,6 @@ namespace MUGENCharsSet
                 lblCharacterSelectCount.Text = "";
                 ModifyEnabled = false;
             }
-        }
-
-        /// <summary>
-        /// 当单击复制def文件路径右键菜单项时发生
-        /// </summary>
-        private void ctxTsmiCopyDefPath_Click(object sender, EventArgs e)
-        {
-            if (lstCharacterList.SelectedItems.Count == 0) return;
-            string copyContent = "";
-            for (int i = 0; i < lstCharacterList.SelectedItems.Count; i++)
-            {
-                copyContent += ((Character)lstCharacterList.SelectedItems[i]).DefPath.Substring(MugenSetting.MugenCharsDirPath.Length);
-                if (i < lstCharacterList.SelectedItems.Count - 1)
-                {
-                    copyContent += "\r\n";
-                }
-            }
-            try
-            {
-                Clipboard.SetDataObject(copyContent, true, 2, 200);
-            }
-            catch(Exception)
-            {
-                ShowErrorMsg("复制失败！");
-                return;
-            }
-            ShowSuccessMsg(String.Format("{0}条项目已复制到剪贴板！", lstCharacterList.SelectedItems.Count));
         }
 
         #endregion

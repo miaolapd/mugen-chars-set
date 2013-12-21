@@ -10,7 +10,7 @@ namespace MUGENCharsSet
     /// <summary>
     /// 程序设置类
     /// </summary>
-    public class ApplicationSetting
+    public static class AppSetting
     {
         #region 类常量
 
@@ -45,11 +45,11 @@ namespace MUGENCharsSet
 
         #region 类私有成员
 
-        private readonly string _iniPath;
-        private string _mugenExePath = "";
-        private bool _autoSort = false;
-        private ReadCharTypeEnum _readCharacterType = ReadCharTypeEnum.SelectDef;
-        private string _editProgramPath = DefaultEditProgramPath;
+        private static string _iniPath;
+        private static string _mugenExePath = "";
+        private static bool _autoSort = false;
+        private static ReadCharTypeEnum _readCharacterType = ReadCharTypeEnum.SelectDef;
+        private static string _editProgramPath = DefaultEditProgramPath;
 
         #endregion
 
@@ -58,7 +58,7 @@ namespace MUGENCharsSet
         /// <summary>
         /// 获取程序配置文件绝对路径
         /// </summary>
-        public string IniPath
+        public static string IniPath
         {
             get
             {
@@ -70,7 +70,7 @@ namespace MUGENCharsSet
         /// 获取或设置MUGEN程序绝对路径
         /// </summary>
         /// <exception cref="System.ApplicationException"></exception>
-        public string MugenExePath
+        public static string MugenExePath
         {
             get { return _mugenExePath; }
             set
@@ -85,7 +85,7 @@ namespace MUGENCharsSet
         /// <summary>
         /// 获取或设置人物列表是否自动排列
         /// </summary>
-        public bool AutoSort
+        public static bool AutoSort
         {
             get { return _autoSort; }
             set
@@ -98,7 +98,7 @@ namespace MUGENCharsSet
         /// <summary>
         /// 获取或设置人物列表读取方式
         /// </summary>
-        public ReadCharTypeEnum ReadCharacterType
+        public static ReadCharTypeEnum ReadCharacterType
         {
             get { return _readCharacterType; }
             set
@@ -112,7 +112,7 @@ namespace MUGENCharsSet
         /// 获取或设置文本编辑器路径
         /// </summary>
         /// <exception cref="System.ApplicationException"></exception>
-        public string EditProgramPath
+        public static string EditProgramPath
         {
             get { return _editProgramPath; }
             set
@@ -126,20 +126,21 @@ namespace MUGENCharsSet
 
         #endregion
 
+        #region 类方法
+
         /// <summary>
-        /// 类构造函数
+        /// 初始化方法
         /// </summary>
-        public ApplicationSetting()
-            : this(Tools.GetFormatDirPath(Directory.GetParent(Application.UserAppDataPath).FullName) + Application.ProductName + IniExt)
+        public static void Init()
         {
-            
+            Init(Tools.GetFormatDirPath(Directory.GetParent(Application.UserAppDataPath).FullName) + Application.ProductName + IniExt);
         }
 
         /// <summary>
-        /// 类构造方法
+        /// 初始化方法
         /// </summary>
         /// <param name="iniPath">程序配置文件绝对路径</param>
-        public ApplicationSetting(string iniPath)
+        public static void Init(string iniPath)
         {
             _iniPath = iniPath;
             try
@@ -174,7 +175,7 @@ namespace MUGENCharsSet
         /// <param name="item">配置项</param>
         /// <param name="value">配置值</param>
         /// <returns>是否写入成功</returns>
-        private bool WriteSetting(string section, string item, string value)
+        private static bool WriteSetting(string section, string item, string value)
         {
             try
             {
@@ -187,5 +188,7 @@ namespace MUGENCharsSet
             }
             return true;
         }
+
+        #endregion
     }
 }
