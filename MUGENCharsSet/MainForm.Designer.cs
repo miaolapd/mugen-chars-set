@@ -31,10 +31,10 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.ctxmnuCharacterList = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ctxTsmiCopyDefPath = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxTsmiOpenDefFile = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxTsmiOpenCnsFile = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxTsmiOpenDefDir = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxTsmiCopyDefPath = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxTsmiDeleteCharacter = new System.Windows.Forms.ToolStripMenuItem();
             this.ttpCommon = new System.Windows.Forms.ToolTip(this.components);
             this.btnRestore = new System.Windows.Forms.Button();
@@ -91,6 +91,7 @@
             this.tabMain = new System.Windows.Forms.TabControl();
             this.fswCharacterCns = new System.IO.FileSystemWatcher();
             this.ofdDefPath = new System.Windows.Forms.OpenFileDialog();
+            this.lblIsWideScreen = new System.Windows.Forms.Label();
             this.ctxmnuCharacterList.SuspendLayout();
             this.pageCharacter.SuspendLayout();
             this.grpDefPath.SuspendLayout();
@@ -106,13 +107,21 @@
             // ctxmnuCharacterList
             // 
             this.ctxmnuCharacterList.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ctxTsmiCopyDefPath,
             this.ctxTsmiOpenDefFile,
             this.ctxTsmiOpenCnsFile,
             this.ctxTsmiOpenDefDir,
+            this.ctxTsmiCopyDefPath,
             this.ctxTsmiDeleteCharacter});
             this.ctxmnuCharacterList.Name = "contextMenuStrip1";
             this.ctxmnuCharacterList.Size = new System.Drawing.Size(213, 114);
+            // 
+            // ctxTsmiCopyDefPath
+            // 
+            this.ctxTsmiCopyDefPath.Name = "ctxTsmiCopyDefPath";
+            this.ctxTsmiCopyDefPath.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+            this.ctxTsmiCopyDefPath.Size = new System.Drawing.Size(212, 22);
+            this.ctxTsmiCopyDefPath.Text = "复制def文件路径";
+            this.ctxTsmiCopyDefPath.Click += new System.EventHandler(this.ctxTsmiCopyDefPath_Click);
             // 
             // ctxTsmiOpenDefFile
             // 
@@ -134,14 +143,6 @@
             this.ctxTsmiOpenDefDir.Size = new System.Drawing.Size(212, 22);
             this.ctxTsmiOpenDefDir.Text = "打开文件夹(&O)";
             this.ctxTsmiOpenDefDir.Click += new System.EventHandler(this.ctxTsmiOpenDefDir_Click);
-            // 
-            // ctxTsmiCopyDefPath
-            // 
-            this.ctxTsmiCopyDefPath.Name = "ctxTsmiCopyDefPath";
-            this.ctxTsmiCopyDefPath.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.ctxTsmiCopyDefPath.Size = new System.Drawing.Size(212, 22);
-            this.ctxTsmiCopyDefPath.Text = "复制def文件路径";
-            this.ctxTsmiCopyDefPath.Click += new System.EventHandler(this.ctxTsmiCopyDefPath_Click);
             // 
             // ctxTsmiDeleteCharacter
             // 
@@ -294,10 +295,11 @@
             // 
             this.grpDefPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpDefPath.Controls.Add(this.lblIsWideScreen);
             this.grpDefPath.Controls.Add(this.lblDefPath);
             this.grpDefPath.Location = new System.Drawing.Point(234, 6);
             this.grpDefPath.Name = "grpDefPath";
-            this.grpDefPath.Size = new System.Drawing.Size(307, 37);
+            this.grpDefPath.Size = new System.Drawing.Size(307, 55);
             this.grpDefPath.TabIndex = 1;
             this.grpDefPath.TabStop = false;
             this.grpDefPath.Text = "人物配置文件";
@@ -318,9 +320,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.grpPal.Controls.Add(this.dgvPal);
-            this.grpPal.Location = new System.Drawing.Point(234, 242);
+            this.grpPal.Location = new System.Drawing.Point(234, 260);
             this.grpPal.Name = "grpPal";
-            this.grpPal.Size = new System.Drawing.Size(307, 214);
+            this.grpPal.Size = new System.Drawing.Size(307, 196);
             this.grpPal.TabIndex = 3;
             this.grpPal.TabStop = false;
             this.grpPal.Text = "色表设置";
@@ -340,7 +342,7 @@
             this.dgvPal.Name = "dgvPal";
             this.dgvPal.RowHeadersVisible = false;
             this.dgvPal.RowTemplate.Height = 23;
-            this.dgvPal.Size = new System.Drawing.Size(301, 194);
+            this.dgvPal.Size = new System.Drawing.Size(301, 176);
             this.dgvPal.TabIndex = 0;
             this.dgvPal.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dgvPal_EditingControlShowing);
             // 
@@ -374,7 +376,7 @@
             this.grpProperty.Controls.Add(this.lblDisplayName);
             this.grpProperty.Controls.Add(this.txtName);
             this.grpProperty.Controls.Add(this.lblName);
-            this.grpProperty.Location = new System.Drawing.Point(234, 49);
+            this.grpProperty.Location = new System.Drawing.Point(234, 67);
             this.grpProperty.Name = "grpProperty";
             this.grpProperty.Size = new System.Drawing.Size(307, 187);
             this.grpProperty.TabIndex = 2;
@@ -735,6 +737,14 @@
             // 
             this.ofdDefPath.Filter = "def文件|*.def";
             // 
+            // lblIsWideScreen
+            // 
+            this.lblIsWideScreen.AutoSize = true;
+            this.lblIsWideScreen.Location = new System.Drawing.Point(6, 35);
+            this.lblIsWideScreen.Name = "lblIsWideScreen";
+            this.lblIsWideScreen.Size = new System.Drawing.Size(0, 12);
+            this.lblIsWideScreen.TabIndex = 1;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -753,6 +763,7 @@
             this.ctxmnuCharacterList.ResumeLayout(false);
             this.pageCharacter.ResumeLayout(false);
             this.grpDefPath.ResumeLayout(false);
+            this.grpDefPath.PerformLayout();
             this.grpPal.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvPal)).EndInit();
             this.grpProperty.ResumeLayout(false);
@@ -831,6 +842,7 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiSetSelectDefPath;
         private System.Windows.Forms.Label lblCharacterSelectCount;
         private System.Windows.Forms.Label lblCharacterCount;
+        private System.Windows.Forms.Label lblIsWideScreen;
     }
 }
 

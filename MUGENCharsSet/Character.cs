@@ -29,7 +29,7 @@ namespace MUGENCharsSet
         /// <summary>
         /// 人物配置信息类
         /// </summary>
-        public static class SettingInfo
+        public struct SettingInfo
         {
             /// <summary>Info配置分段</summary>
             public const string InfoSection = "Info";
@@ -53,21 +53,24 @@ namespace MUGENCharsSet
             public const string PowerItem = "power";
             /// <summary>pal配置项前缀名</summary>
             public const string PalItemPrefix = "pal";
+            /// <summary>人物分辨率配置项</summary>
+            public const string LocalcoordItem = "localcoord";
         }
 
         #endregion
 
         #region 类私有成员
 
-        protected string _defPath;
-        protected string _cns;
-        protected string _name;
-        protected string _displayName;
-        protected int _life;
-        protected int _attack;
-        protected int _defence;
-        protected int _power;
-        protected NameValueCollection _palList;
+        private string _defPath;
+        private string _cns;
+        private string _name;
+        private string _displayName;
+        private int _life;
+        private int _attack;
+        private int _defence;
+        private int _power;
+        private NameValueCollection _palList;
+        private bool _isWideScreen;
 
         #endregion
 
@@ -80,7 +83,7 @@ namespace MUGENCharsSet
         public string DefPath
         {
             get { return _defPath; }
-            set
+            private set
             {
                 if (value == String.Empty) throw new ApplicationException("def路径不得为空！");
                 _defPath = value;
@@ -93,7 +96,7 @@ namespace MUGENCharsSet
         public string Cns
         {
             get { return _cns; }
-            set { _cns = value; }
+            private set { _cns = value; }
         }
 
         /// <summary>
@@ -212,6 +215,15 @@ namespace MUGENCharsSet
             }
         }
 
+        /// <summary>
+        /// 获取或设置是否为宽屏人物包
+        /// </summary>
+        public bool IsWideScreen
+        {
+            get { return _isWideScreen; }
+            private set { _isWideScreen = value; }
+        }
+
         #endregion
 
         /// <summary>
@@ -239,7 +251,7 @@ namespace MUGENCharsSet
             Name = GetTrimName(ini.ReadString(SettingInfo.InfoSection, SettingInfo.NameItem, ""));
             DisplayName = GetTrimName(ini.ReadString(SettingInfo.InfoSection, SettingInfo.DisplayNameItem, ""));
             Cns = Tools.GetBackSlashPath(ini.ReadString(SettingInfo.FilesSection, SettingInfo.CnsItem, ""));
-
+            IsWideScreen = ini.ValueExists(SettingInfo.InfoSection, SettingInfo.LocalcoordItem);
             if (!File.Exists(CnsFullPath)) throw new ApplicationException("人物cns文件不存在！");
             ini = new IniFiles(CnsFullPath);
             Life = ini.ReadInteger(SettingInfo.DataSection, SettingInfo.LifeItem, 0);
@@ -273,7 +285,7 @@ namespace MUGENCharsSet
         /// </summary>
         /// <param name="actList">act文件相对路径列表</param>
         /// <param name="dir">act文件夹绝对路径</param>
-        protected void ScanActList(StringCollection actList, string dir)
+        private void ScanActList(StringCollection actList, string dir)
         {
             if (!Directory.Exists(dir)) return;
             string[] tempPalFiles = Directory.GetFiles(dir, "*" + ActExt);
@@ -308,24 +320,25 @@ namespace MUGENCharsSet
             {
                 throw new ApplicationException("人物def文件写入失败！");
             }
-            foreach (string key in PalList)
-            {
-                ini.WriteString(SettingInfo.FilesSection, key, PalList[key]);
-            }
-            if (!File.Exists(CnsFullPath)) throw new ApplicationException("人物cns文件不存在！");
             try
             {
-                if (!Tools.SetFileNotReadOnly(CnsFullPath)) throw new ApplicationException();
-                ini = new IniFiles(CnsFullPath);
-                if (Life != 0) ini.WriteInteger(SettingInfo.DataSection, SettingInfo.LifeItem, Life);
-                if (Attack != 0) ini.WriteInteger(SettingInfo.DataSection, SettingInfo.AttackItem, Attack);
-                if (Defence != 0) ini.WriteInteger(SettingInfo.DataSection, SettingInfo.DefenceItem, Defence);
-                if (Power != 0) ini.WriteInteger(SettingInfo.DataSection, SettingInfo.PowerItem, Power);
+                foreach (string key in PalList)
+                {
+                    ini.WriteString(SettingInfo.FilesSection, key, PalList[key]);
+                }
             }
-            catch(ApplicationException)
+            catch (ApplicationException)
             {
-                throw new ApplicationException("人物cns文件写入失败！");
+                try
+                {
+                    ReadPalSetting();
+                }
+                catch (ApplicationException) { }
+                throw new ApplicationException("Pal配置项写入失败！");
             }
+            if (!File.Exists(CnsFullPath)) throw new ApplicationException("人物cns文件不存在！");
+            int total = MultiSave(new Character[] { this });
+            if (total == 0) throw new ApplicationException("人物cns文件写入失败！");
         }
 
 
@@ -337,17 +350,8 @@ namespace MUGENCharsSet
         {
             if (!File.Exists(DefPath)) throw new ApplicationException("人物def文件不存在！");
             if (!File.Exists(CnsFullPath)) throw new ApplicationException("人物cns文件不存在！");
-            try
-            {
-                if (!Tools.SetFileNotReadOnly(DefPath + BakExt)) throw new ApplicationException();
-                File.Copy(DefPath, DefPath + BakExt, true);
-                if (!Tools.SetFileNotReadOnly(CnsFullPath + BakExt)) throw new ApplicationException();
-                File.Copy(CnsFullPath, CnsFullPath + BakExt, true);
-            }
-            catch (Exception)
-            {
-                throw new ApplicationException("人物备份失败！");
-            }
+            int total= MultiBackup(new Character[] { this });
+            if (total == 0) throw new ApplicationException("人物备份失败！");
         }
 
         /// <summary>
@@ -358,16 +362,8 @@ namespace MUGENCharsSet
         {
             if (!File.Exists(DefPath + BakExt)) throw new ApplicationException("人物def备份文件不存在！");
             if (!File.Exists(CnsFullPath + BakExt)) throw new ApplicationException("人物cns备份文件不存在！");
-            try
-            {
-                if (!Tools.SetFileNotReadOnly(DefPath)) throw new ApplicationException();
-                File.Copy(DefPath + BakExt, DefPath, true);
-                File.Copy(CnsFullPath + BakExt, CnsFullPath, true);
-            }
-            catch (Exception)
-            {
-                throw new ApplicationException("人物恢复失败！");
-            }
+            int total = MultiRestore(new Character[] { this });
+            if (total == 0) throw new ApplicationException("人物恢复失败！");
         }
 
         /// <summary>
@@ -377,17 +373,8 @@ namespace MUGENCharsSet
         public void Delete()
         {
             if (!File.Exists(DefPath)) throw new ApplicationException("人物def文件不存在！");
-            try
-            {
-                if (!Tools.SetFileNotReadOnly(DefPath + DelExt)) throw new ApplicationException();
-                File.Copy(DefPath, DefPath + DelExt, true);
-                if (!Tools.SetFileNotReadOnly(DefPath)) throw new ApplicationException();
-                File.Delete(DefPath);
-            }
-            catch(Exception)
-            {
-                throw new ApplicationException("人物删除失败！");
-            }
+            int total = MultiDelete(new Character[] { this });
+            if (total == 0) throw new ApplicationException("人物删除失败！");
         }
 
         #endregion

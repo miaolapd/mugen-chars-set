@@ -99,12 +99,11 @@ namespace MUGENCharsSet
             {
                 if (value)
                 {
-                    ResetCharacterControls();
                     txtName.ReadOnly = true;
                     txtDisplayName.ReadOnly = true;
                     grpPal.Enabled = false;
                     btnRestore.Enabled = false;
-                    lblDefPath.Text = MultiValue;
+                    ResetCharacterControls();
                 }
                 else
                 {
@@ -143,6 +142,17 @@ namespace MUGENCharsSet
             }
         }
 
+        /// <summary>
+        /// 无效人物名数组(用于过滤select.def中的人物列表)
+        /// </summary>
+        public string[] InvalidCharacterName
+        {
+            get
+            {
+                 return new string[] { String.Empty, "blank", "empty", "randomselect", "/-", "/" };
+            }
+        }
+
         #endregion
 
         public MainForm()
@@ -176,6 +186,8 @@ namespace MUGENCharsSet
         private void ResetCharacterControls()
         {
             lblDefPath.Text = "";
+            ttpCommon.SetToolTip(lblDefPath, "");
+            lblIsWideScreen.Text = "";
             foreach (Control ctlTemp in grpProperty.Controls)
             {
                 if (ctlTemp is TextBox)
@@ -304,8 +316,8 @@ namespace MUGENCharsSet
                 Application.DoEvents();
                 string line = tempLine.Trim();
                 line = line.Split(new string[] { IniFiles.CommentMark }, 2, StringSplitOptions.None)[0];
-                if (line == String.Empty || line.ToLower() == "blank" || line.ToLower() == "empty" || line == "/-" || line == "/") continue;
                 line = line.Split(new string[] { "," }, 2, StringSplitOptions.None)[0].Trim();
+                if (InvalidCharacterName.Contains(line.ToLower())) continue;
                 if (Path.GetExtension(line) != Character.DefExt) line = Tools.GetFormatDirPath(line) + line + Character.DefExt;
                 string defPath = MugenSetting.MugenCharsDirPath + line;
                 if (!File.Exists(defPath)) continue;
@@ -363,7 +375,7 @@ namespace MUGENCharsSet
                 ShowErrorMsg(ex.Message);
                 return;
             }
-            SetSingleDefPathLabel(character.DefPath);
+            SetSingleCharacterLabel(character);
             txtName.Text = character.Name;
             txtDisplayName.Text = character.DisplayName;
             txtLife.Text = character.Life.ToString();
@@ -408,8 +420,8 @@ namespace MUGENCharsSet
             if (lstCharacterList.SelectedItems.Count <= 1) return;
             Character[] characterList = new Character[lstCharacterList.SelectedItems.Count];
             lstCharacterList.SelectedItems.CopyTo(characterList, 0);
-            SetMutliDefPathLabel(characterList);
             MultiModified = true;
+            SetMutliCharacterLabel(characterList);
             string name = characterList[0].Name;
             string displayName = characterList[0].DisplayName;
             int life = characterList[0].Life;
@@ -440,25 +452,33 @@ namespace MUGENCharsSet
         /// 在标签上显示当前人物的def文件相对路径
         /// </summary>
         /// <param name="defFullPath">def文件绝对路径</param>
-        private void SetSingleDefPathLabel(string defFullPath)
+        private void SetSingleCharacterLabel(Character character)
         {
-            string msg = defFullPath.Substring(MugenSetting.MugenCharsDirPath.Length);
-            lblDefPath.Text = msg;
-            ttpCommon.SetToolTip(lblDefPath, msg);
+            string path = character.DefPath.Substring(MugenSetting.MugenCharsDirPath.Length);
+            lblDefPath.Text = "文件路径：" + path;
+            ttpCommon.SetToolTip(lblDefPath, path);
+            lblIsWideScreen.Text = "宽屏状态：" + (character.IsWideScreen ? "宽屏" : "普通");
         }
 
         /// <summary>
         /// 在标签上显示当前批量读取的人物的def文件相对路径
         /// </summary>
-        private void SetMutliDefPathLabel(Character[] characterList)
+        private void SetMutliCharacterLabel(Character[] characterList)
         {
             string msg = "";
+            bool isMultiValue = false;
+            bool isWideScreen = ((Character)characterList[0]).IsWideScreen;
             foreach (Character character in characterList)
             {
                 msg += character.DefPath.Substring(MugenSetting.MugenCharsDirPath.Length) + "\r\n";
+                if (character.IsWideScreen != isWideScreen)
+                {
+                    isMultiValue = true;
+                }
             }
-            lblDefPath.Text = MultiValue;
+            lblDefPath.Text = "文件路径：" + MultiValue;
             ttpCommon.SetToolTip(lblDefPath, msg);
+            lblIsWideScreen.Text = "宽屏状态：" + (isMultiValue ? MultiValue : (isWideScreen ? "宽屏" : "普通"));
         }
 
         /// <summary>
@@ -494,12 +514,6 @@ namespace MUGENCharsSet
             }
             catch(ApplicationException)
             {
-                try
-                {
-                    character.ReadCharacterSetting();
-                    character.ReadPalSetting();
-                }
-                catch (ApplicationException) { }
                 fswCharacterCns.EnableRaisingEvents = true;
                 ShowErrorMsg("修改失败！");
                 return;
@@ -1070,6 +1084,7 @@ namespace MUGENCharsSet
                 if (character.CnsFullPath.ToLower() == cnsPath.ToLower())
                 {
                     character.ReadCharacterSetting();
+                    break;
                 }
             }
         }
@@ -1090,6 +1105,7 @@ namespace MUGENCharsSet
                     if (((Character)lstCharacterList.Items[i]).DefPath.ToLower() == defPath.ToLower())
                     {
                         lstCharacterList.SetSelected(i, true);
+                        break;
                     }
                 }
             }
@@ -1331,7 +1347,7 @@ namespace MUGENCharsSet
         /// </summary>
         private void tsmiSetSystemDefPath_Click(object sender, EventArgs e)
         {
-            ofdDefPath.FileName = "";
+            ofdDefPath.FileName = MugenSetting.SystemDefPath;
             if (File.Exists(MugenSetting.SystemDefPath))
             {
                 ofdDefPath.InitialDirectory = Tools.GetFileDirName(MugenSetting.SystemDefPath);
@@ -1358,7 +1374,7 @@ namespace MUGENCharsSet
         /// </summary>
         private void tsmiSetSelectDefPath_Click(object sender, EventArgs e)
         {
-            ofdDefPath.FileName = "";
+            ofdDefPath.FileName = MugenSetting.SelectDefPath;
             if (File.Exists(MugenSetting.SelectDefPath))
             {
                 ofdDefPath.InitialDirectory = Tools.GetFileDirName(MugenSetting.SelectDefPath);
