@@ -144,25 +144,11 @@ namespace MUGENCharsSet
         }
 
         /// <summary>
-        /// 获取或设置在人物列表控件上显示的名称
+        /// 获取在人物列表控件上显示的名称
         /// </summary>
-        /// <exception cref="System.ApplicationException"></exception>
         public string ItemName
         {
             get { return _itemName; }
-            set
-            {
-                if (value == String.Empty) throw new ApplicationException("人物名称不得为空！");
-                _itemName = value;
-                if (MugenSetting.IsWideScreen)
-                {
-                    if (!IsWideScreen) _itemName += " (普)";
-                }
-                else
-                {
-                    if (IsWideScreen) _itemName += " (宽)";
-                }
-            }
         }
 
         /// <summary>
@@ -319,7 +305,7 @@ namespace MUGENCharsSet
             DisplayName = GetTrimName(ini.ReadString(SettingInfo.InfoSection, SettingInfo.DisplayNameItem, ""));
             Cns = Tools.GetBackSlashPath(ini.ReadString(SettingInfo.FilesSection, SettingInfo.CnsItem, ""));
             _isWideScreen = ini.ReadString(SettingInfo.InfoSection, SettingInfo.LocalcoordItem, "") != String.Empty;
-            ItemName = Name;
+            SetItemName(IsWideScreen);
             Stcommon = ini.ReadString(SettingInfo.FilesSection, SettingInfo.StcommonItem, "");
             if (!File.Exists(CnsFullPath)) throw new ApplicationException("人物cns文件不存在！");
             ini = new IniFiles(CnsFullPath);
@@ -466,6 +452,23 @@ namespace MUGENCharsSet
             if (!File.Exists(DefPath)) throw new ApplicationException("人物def文件不存在！");
             int total = MultiConvertToNormalScreen(new Character[] { this });
             if (total == 0) throw new ApplicationException("普屏人物包转换失败！");
+        }
+
+        /// <summary>
+        /// 设置在人物列表控件上显示的名称
+        /// </summary>
+        /// <param name="isWideScreen">是否宽屏</param>
+        public void SetItemName(bool isWideScreen)
+        {
+            _itemName = Name;
+            if (MugenSetting.IsWideScreen)
+            {
+                if (!isWideScreen) _itemName += " (普)";
+            }
+            else
+            {
+                if (isWideScreen) _itemName += " (宽)";
+            }
         }
 
         #endregion
@@ -637,7 +640,7 @@ namespace MUGENCharsSet
                 {
                     if (!File.Exists(character.DefPath)) continue;
                     character.IsWideScreen = true;
-                    character.ItemName = character.Name;
+                    character.SetItemName(character.IsWideScreen);
                     string stcommonPath = Tools.GetBackSlashPath(Tools.GetFileDirName(character.DefPath) + character.Stcommon);
                     if (File.Exists(stcommonPath))
                     {
@@ -667,7 +670,7 @@ namespace MUGENCharsSet
                 {
                     if (!File.Exists(character.DefPath)) continue;
                     character.IsWideScreen = false;
-                    character.ItemName = character.Name;
+                    character.SetItemName(character.IsWideScreen);
                     string stcommonPath = Tools.GetBackSlashPath(Tools.GetFileDirName(character.DefPath) + character.Stcommon);
                     if (File.Exists(stcommonPath))
                     {

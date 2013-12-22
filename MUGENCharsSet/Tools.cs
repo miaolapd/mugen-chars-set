@@ -97,5 +97,86 @@ namespace MUGENCharsSet
             if (File.Exists(path)) return path;
             else return "";
         }
+
+        /// <summary>
+        /// 判断指定字节流是否为UTF-8编码
+        /// </summary>
+        /// <param name="inputStream">字节流</param>
+        /// <returns>是否为UTF-8编码</returns>
+        public static bool IsUTF8(byte[] inputStream)
+        {
+            int encodingBytesCount = 0;
+            bool allTextsAreASCIIChars = true;
+
+            for (int i = 0; i < inputStream.Length; i++)
+            {
+                byte current = inputStream[i];
+
+                if ((current & 0x80) == 0x80)
+                {
+                    allTextsAreASCIIChars = false;
+                }
+                // First byte
+                if (encodingBytesCount == 0)
+                {
+                    if ((current & 0x80) == 0)
+                    {
+                        // ASCII chars, from 0x00-0x7F
+                        continue;
+                    }
+
+                    if ((current & 0xC0) == 0xC0)
+                    {
+                        encodingBytesCount = 1;
+                        current <<= 2;
+                        // More than two bytes used to encoding a unicode char.
+                        // Calculate the real length.
+                        while ((current & 0x80) == 0x80)
+                        {
+                            current <<= 1;
+                            encodingBytesCount++;
+                        }
+                    }
+                    else
+                    {
+                        // Invalid bits structure for UTF8 encoding rule.
+                        return false;
+                    }
+                }
+                else
+                {
+                    // Following bytes, must start with 10.
+                    if ((current & 0xC0) == 0x80)
+                    {
+                        encodingBytesCount--;
+                    }
+                    else
+                    {
+                        // Invalid bits structure for UTF8 encoding rule.
+                        return false;
+                    }
+                }
+            }
+            if (encodingBytesCount != 0)
+            {
+                // Invalid bits structure for UTF8 encoding rule.
+                // Wrong following bytes count.
+                return false;
+            }
+            // Although UTF8 supports encoding for ASCII chars, we regard as a input stream, whose contents are all ASCII as default encoding.
+            return !allTextsAreASCIIChars;
+        }
+
+        /// <summary>
+        /// 将字符串从UTF-8编码转换为默认编码
+        /// </summary>
+        /// <param name="content">要转换的字符串</param>
+        /// <returns>转换后的字符串</returns>
+        public static string ConvertUTF8ToDefault(string content)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(content);
+            bytes = Encoding.Convert(Encoding.UTF8, Encoding.Default, bytes);
+            return Encoding.Default.GetString(bytes);
+        }
     }
 }

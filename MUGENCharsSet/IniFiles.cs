@@ -51,13 +51,27 @@ namespace MUGENCharsSet
             {
                 try
                 {
-                    StreamReader sr = new StreamReader(AFileName, Encoding.Default);
-                    char firstChar = (char)sr.Read();
-                    sr.Close();
-                    if (firstChar == '[')
+                    FileStream fs = new FileStream(AFileName, FileMode.Open);
+                    byte[] bytes = new byte[fs.Length];
+                    fs.Read(bytes, 0, bytes.Length);
+                    fs.Close();
+                    if (Tools.IsUTF8(bytes))
                     {
-                        string content= File.ReadAllText(AFileName, Encoding.Default);
-                        File.WriteAllText(AFileName, "\r\n" + content, Encoding.Default);
+                        string content = File.ReadAllText(AFileName, Encoding.UTF8);
+                        content = Tools.ConvertUTF8ToDefault(content);
+                        if (content[0] == '[')
+                        {
+                            content = "\r\n" + content;
+                        }
+                        File.WriteAllText(AFileName, content, Encoding.Default);
+                    }
+                    else
+                    {
+                        if (bytes[0] == '[')
+                        {
+                            string content = File.ReadAllText(AFileName, Encoding.Default);
+                            File.WriteAllText(AFileName, "\r\n" + content, Encoding.Default);
+                        }
                     }
                 }
                 catch (Exception) { }

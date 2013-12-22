@@ -733,7 +733,7 @@ namespace MUGENCharsSet
             try
             {
                 string stcommonContent = File.ReadAllText(stcommonPath);
-                string msg = String.Format("公共common1.cns文件不适合{0}屏画面包，是否要转换？", isWideScreen ? "宽" : "普");
+                string msg = String.Format("公共common1.cns文件不适合{0}屏，是否要转换？", isWideScreen ? "宽" : "普");
                 if (isWideScreen)
                 {
                     if (Character.IsStcommonWideScreen(stcommonContent) == 0)
