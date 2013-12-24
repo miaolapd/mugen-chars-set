@@ -719,8 +719,8 @@ namespace MUGENCharsSet
             try
             {
                 string content = File.ReadAllText(stcommonPath, Encoding.Default);
-                Regex regex = new Regex(@"yaccel\s*(\*\d+)?(\.\d+)?\s*\)", RegexOptions.IgnoreCase);
-                content = regex.Replace(content, "yaccel*1.2)");
+                Regex regex = new Regex(@"yaccel\s*\)(\s*/\s*\d+)?(\.\d+)?", RegexOptions.IgnoreCase);
+                content = regex.Replace(content, "yaccel)/1.2");
                 File.WriteAllText(stcommonPath, content, Encoding.Default);
             }
             catch(Exception)
@@ -740,7 +740,7 @@ namespace MUGENCharsSet
             try
             {
                 string content = File.ReadAllText(stcommonPath, Encoding.Default);
-                Regex regex = new Regex(@"yaccel\s*\*\d+(\.\d+)?\s*\)", RegexOptions.IgnoreCase);
+                Regex regex = new Regex(@"yaccel\s*\)\s*/\s*\d+(\.\d+)?", RegexOptions.IgnoreCase);
                 content = regex.Replace(content, "yaccel)");
                 File.WriteAllText(stcommonPath, content, Encoding.Default);
             }
@@ -759,9 +759,9 @@ namespace MUGENCharsSet
         {
             try
             {
-                if ((new Regex(@"yaccel\s*\)", RegexOptions.IgnoreCase)).IsMatch(stcommonContent)) return 0;
-                else if ((new Regex(@"yaccel\s*\*\d+(\.\d+)?", RegexOptions.IgnoreCase)).IsMatch(stcommonContent)) return 1;
-                else return -1;
+                if (!(new Regex("yaccel", RegexOptions.IgnoreCase)).IsMatch(stcommonContent)) return -1;
+                if ((new Regex(@"yaccel\s*\)\s*/\s*\d+(\.\d+)?", RegexOptions.IgnoreCase)).IsMatch(stcommonContent)) return 1;
+                else return 0;
             }
             catch(Exception)
             {
