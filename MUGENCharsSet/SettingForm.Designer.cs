@@ -91,12 +91,13 @@
             this.lblEditProgram.AutoSize = true;
             this.lblEditProgram.Location = new System.Drawing.Point(6, 17);
             this.lblEditProgram.Name = "lblEditProgram";
-            this.lblEditProgram.Size = new System.Drawing.Size(77, 12);
+            this.lblEditProgram.Size = new System.Drawing.Size(65, 12);
             this.lblEditProgram.TabIndex = 0;
-            this.lblEditProgram.Text = "文本编辑器：";
+            this.lblEditProgram.Text = "文本编辑器";
             // 
             // btnOK
             // 
+            this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnOK.Location = new System.Drawing.Point(101, 110);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
@@ -149,9 +150,9 @@
             this.lblMugenExePath.AutoSize = true;
             this.lblMugenExePath.Location = new System.Drawing.Point(6, 18);
             this.lblMugenExePath.Name = "lblMugenExePath";
-            this.lblMugenExePath.Size = new System.Drawing.Size(95, 12);
+            this.lblMugenExePath.Size = new System.Drawing.Size(83, 12);
             this.lblMugenExePath.TabIndex = 0;
-            this.lblMugenExePath.Text = "MUGEN程序位置：";
+            this.lblMugenExePath.Text = "MUGEN程序位置";
             // 
             // txtMugenExePath
             // 

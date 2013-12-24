@@ -121,17 +121,6 @@ namespace MUGENCharsSet
             }
         }
 
-        /// <summary>
-        /// 无效人物名数组(用于过滤select.def中的人物列表)
-        /// </summary>
-        public string[] InvalidCharacterName
-        {
-            get
-            {
-                 return new string[] { String.Empty, "blank", "empty", "randomselect", "/-", "/" };
-            }
-        }
-
         #endregion
 
         public MainForm()
@@ -216,11 +205,11 @@ namespace MUGENCharsSet
             {
                 if (AppSetting.ReadCharacterType == AppSetting.ReadCharTypeEnum.CharsDir)
                 {
-                    ScanCharacterDir(CharacterList, MugenSetting.MugenCharsDirPath);
+                    Character.ScanCharacterDir(CharacterList, MugenSetting.MugenCharsDirPath);
                 }
                 else
                 {
-                    ReadSelectDef(CharacterList);
+                    Character.ReadSelectDefCharacterList(CharacterList);
                 }
             }
             catch(ApplicationException ex)
@@ -230,7 +219,7 @@ namespace MUGENCharsSet
             }
             if (AppSetting.AutoSort)
             {
-                CharacterList.Sort(new CharacterCompare());
+                CharacterList.Sort();
             }
             if (CharacterList.Count != 0)
             {
@@ -240,80 +229,6 @@ namespace MUGENCharsSet
             lblCharacterCount.Text = String.Format("共{0}项", lstCharacterList.Items.Count);
             fswCharacterCns.Path = MugenSetting.MugenCharsDirPath;
             fswCharacterCns.EnableRaisingEvents = true;
-        }
-
-        /// <summary>
-        /// 扫描人物文件夹以获取人物列表
-        /// </summary>
-        /// <param name="characterList">人物列表</param>
-        /// <param name="dir">人物文件夹</param>
-        private void ScanCharacterDir(ArrayList characterList, string dir)
-        {
-            string[] tempDefList = Directory.GetFiles(dir, "*" + Character.DefExt);
-            foreach (string tempDefPath in tempDefList)
-            {
-                Application.DoEvents();
-                try
-                {
-                    characterList.Add(new Character(tempDefPath));
-                }
-                catch (ApplicationException)
-                {
-                    continue;
-                }
-            }
-            string[] tempDirArr = Directory.GetDirectories(dir);
-            foreach (string tempDir in tempDirArr)
-            {
-                ScanCharacterDir(characterList, tempDir);
-            }
-        }
-
-
-        /// <summary>
-        /// 读取select.def文件中的人物列表
-        /// </summary>
-        /// <param name="characterList">人物列表</param>
-        /// <exception cref="System.ApplicationException"></exception>
-        private void ReadSelectDef(ArrayList characterList)
-        {
-            string[] characterLines = null;
-            if (!File.Exists(MugenSetting.SelectDefPath)) throw new ApplicationException("select.def文件不存在！");
-            try
-            {
-                string defContent = File.ReadAllText(MugenSetting.SelectDefPath, Encoding.Default);
-                Regex regex = new Regex(@"\[Characters\](.*)\r\n\[ExtraStages\]", RegexOptions.IgnoreCase | RegexOptions.Singleline);
-                characterLines = regex.Match(defContent).Groups[1].Value.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-            }
-            catch (Exception)
-            {
-                throw new ApplicationException("读取select.def文件失败！");
-            }
-            if (characterLines.Length == 0) throw new ApplicationException("读取select.def文件失败！");
-            ArrayList tempCharacterList = new ArrayList();
-            foreach (string tempLine in characterLines)
-            {
-                Application.DoEvents();
-                string line = tempLine.Trim();
-                line = line.Split(new string[] { IniFiles.CommentMark }, 2, StringSplitOptions.None)[0];
-                line = line.Split(new string[] { "," }, 2, StringSplitOptions.None)[0].Trim();
-                if (InvalidCharacterName.Contains(line.ToLower())) continue;
-                if (Path.GetExtension(line) != Character.DefExt) line = Tools.GetFormatDirPath(line) + line + Character.DefExt;
-                string defPath = MugenSetting.MugenCharsDirPath + line;
-                if (!File.Exists(defPath)) continue;
-                if (!tempCharacterList.Contains(defPath))
-                {
-                    tempCharacterList.Add(defPath);
-                    try
-                    {
-                        characterList.Add(new Character(defPath));
-                    }
-                    catch(ApplicationException)
-                    {
-                        continue;
-                    }
-                }
-            }
         }
 
         /// <summary>
@@ -465,7 +380,7 @@ namespace MUGENCharsSet
             {
                 string name, displayName;
                 int life, attack, defence, power;
-                ReadCharacterControlValues(out name, out displayName, out life, out attack, out defence, out power);
+                ReadCharacterControlsValue(out name, out displayName, out life, out attack, out defence, out power);
                 character.Name = name;
                 character.DisplayName = displayName;
                 character.Life = life;
@@ -474,7 +389,7 @@ namespace MUGENCharsSet
                 character.Power = power;
                 ReadPalValues(character.PalList);
             }
-            catch (Exception ex)
+            catch (ApplicationException ex)
             {
                 ShowErrorMsg(ex.Message);
                 return;
@@ -513,7 +428,7 @@ namespace MUGENCharsSet
             {
                 string name, displayName;
                 int life, attack, defence, power;
-                ReadCharacterControlValues(out name, out displayName, out life, out attack, out defence, out power);
+                ReadCharacterControlsValue(out name, out displayName, out life, out attack, out defence, out power);
                 for (int i = 0; i < characterList.Length; i++)
                 {
                     characterList[i].Life = life;
@@ -522,7 +437,7 @@ namespace MUGENCharsSet
                     characterList[i].Power = power;
                 }
             }
-            catch (Exception ex)
+            catch (ApplicationException ex)
             {
                 ShowErrorMsg(ex.Message);
                 return;
@@ -541,87 +456,57 @@ namespace MUGENCharsSet
         }
 
         /// <summary>
-        /// 读取人物属性相关控件上的字段
+        /// 读取人物属性控件的值
         /// </summary>
         /// <exception cref="System.ApplicationException"></exception>
-        private void ReadCharacterControlValues(out string name, out string displayName,
+        private void ReadCharacterControlsValue(out string name, out string displayName,
             out int life, out int attack, out int defence, out int power)
         {
-            name = "";
-            displayName = "";
-            life = 0;
-            attack = 0;
-            defence = 0;
-            power = 0;
-            foreach (Control ctlTemp in grpProperty.Controls)
+            name = ""; displayName = "";
+            life = 0; attack = 0; defence = 0; power = 0;
+            foreach (Control control in grpProperty.Controls)
             {
-                if (ctlTemp is TextBox)
+                if (control is TextBox)
                 {
-                    TextBox txtTemp = ((TextBox)ctlTemp);
-                    if (txtTemp.Text.Trim() == String.Empty)
+                    TextBox txtTemp = (TextBox)control;
+                    try
+                    {
+                        if (txtTemp.Text.Trim() == String.Empty) throw new ApplicationException("字段不得为空！");
+                        TextBox[] txtIntegerArray = { txtLife, txtAttack, txtDefence, txtPower };
+                        if (txtIntegerArray.Contains(txtTemp))
+                        {
+                            int value = 0;
+                            if (txtTemp.Text.Trim() == MultiValue) value = 0;
+                            else value = Convert.ToInt32(txtTemp.Text.Trim());
+                            if (value < 0) throw new ApplicationException("数值不得小于0！");
+                            if (txtTemp == txtLife) life = value;
+                            else if (txtTemp == txtAttack) attack = value;
+                            else if (txtTemp == txtDefence) defence = value;
+                            else if (txtTemp == txtPower) power = value;
+                        }
+                        else
+                        {
+                            if (txtTemp == txtName) name = txtTemp.Text.Trim();
+                            else if (txtTemp == txtDisplayName) displayName = txtTemp.Text.Trim();
+                        }
+                    }
+                    catch (FormatException)
                     {
                         txtTemp.SelectAll();
                         txtTemp.Focus();
-                        throw new ApplicationException("字段不得为空！");
+                        throw new ApplicationException("数值格式错误！");
                     }
-                    string[] txtIntNameArr = { txtLife.Name, txtAttack.Name, txtDefence.Name, txtPower.Name };
-                    if (txtIntNameArr.Contains(txtTemp.Name))
+                    catch (OverflowException)
                     {
-                        try
-                        {
-                            int value = 0;
-                            if (txtTemp.Text.Trim() == MultiValue)
-                            {
-                                value = 0;
-                            }
-                            else
-                            {
-                                value = Convert.ToInt32(txtTemp.Text.Trim());
-                            }
-                            if (value < 0)
-                            {
-                                throw new ApplicationException("数值不得小于0！");
-                            }
-                            if (txtTemp.Name == txtLife.Name)
-                            {
-                                life = value;
-                            }
-                            else if (txtTemp.Name == txtAttack.Name)
-                            {
-                                attack = value;
-                            }
-                            else if (txtTemp.Name == txtDefence.Name)
-                            {
-                                defence = value;
-                            }
-                            else if (txtTemp.Name == txtPower.Name)
-                            {
-                                power = value;
-                            }
-                        }
-                        catch (FormatException)
-                        {
-                            txtTemp.SelectAll();
-                            txtTemp.Focus();
-                            throw new ApplicationException("数值格式错误！");
-                        }
-                        catch (OverflowException)
-                        {
-                            txtTemp.SelectAll();
-                            txtTemp.Focus();
-                            throw new ApplicationException("数值超过范围！");
-                        }
+                        txtTemp.SelectAll();
+                        txtTemp.Focus();
+                        throw new ApplicationException("数值超过范围！");
                     }
-                    else
+                    catch (ApplicationException ex)
                     {
-                        if (txtTemp.Name == txtName.Name)
-                        {
-                            name = txtTemp.Text.Trim();
-                        }
-                        else if (txtTemp.Name == txtDisplayName.Name)
-                        {
-                            displayName = txtTemp.Text.Trim();
-                        }
+                        txtTemp.SelectAll();
+                        txtTemp.Focus();
+                        throw ex;
                     }
                 }
             }
@@ -849,6 +734,14 @@ namespace MUGENCharsSet
             readCharListProgressForm.Owner = this;
             readCharListProgressForm.ShowDialog();
             Visible = true;
+        }
+
+        /// <summary>
+        /// 当人物属性标签页获得焦点时发生
+        /// </summary>
+        private void pageCharacter_Enter(object sender, EventArgs e)
+        {
+            Size = new Size(575, 590);
         }
 
         /// <summary>
@@ -1093,32 +986,65 @@ namespace MUGENCharsSet
         /// </summary>
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
         {
-            switch (e.KeyValue)
+            if (pageCharacter.CanFocus)
             {
-                case (int)Keys.Enter:
-                    if (e.Control)
-                    {
-                        if (btnModify.Enabled) btnModify_Click(null, null);
-                    }
-                    break;
-                case (int)Keys.S:
-                    if (e.Control)
-                    {
-                        if (btnReset.Enabled) btnReset_Click(null, null);
-                    }
-                    break;
-                case (int)Keys.B:
-                    if (e.Control)
-                    {
-                        if (btnBackup.Enabled) btnBackup_Click(null, null);
-                    }
-                    break;
-                case (int)Keys.R:
-                    if (e.Control)
-                    {
-                        if (btnRestore.Enabled) btnRestore_Click(null, null);
-                    }
-                    break;
+                switch (e.KeyValue)
+                {
+                    case (int)Keys.Enter:
+                        if (e.Control)
+                        {
+                            if (btnModify.Enabled) btnModify_Click(null, null);
+                        }
+                        break;
+                    case (int)Keys.S:
+                        if (e.Control)
+                        {
+                            if (btnReset.Enabled) btnReset_Click(null, null);
+                        }
+                        break;
+                    case (int)Keys.B:
+                        if (e.Control)
+                        {
+                            if (btnBackup.Enabled) btnBackup_Click(null, null);
+                        }
+                        break;
+                    case (int)Keys.R:
+                        if (e.Control)
+                        {
+                            if (btnRestore.Enabled) btnRestore_Click(null, null);
+                        }
+                        break;
+                }
+            }
+            else if (pageMugenCfgSetting.CanFocus)
+            {
+                switch (e.KeyValue)
+                {
+                    case (int)Keys.Enter:
+                        if (e.Control)
+                        {
+                            if (btnMugenCfgModify.Enabled) btnMugenCfgModify_Click(null, null);
+                        }
+                        break;
+                    case (int)Keys.S:
+                        if (e.Control)
+                        {
+                            if (btnMugenCfgReset.Enabled) btnMugenCfgReset_Click(null, null);
+                        }
+                        break;
+                    case (int)Keys.B:
+                        if (e.Control)
+                        {
+                            if (btnMugenCfgBackup.Enabled) btnMugenCfgBackup_Click(null, null);
+                        }
+                        break;
+                    case (int)Keys.R:
+                        if (e.Control)
+                        {
+                            if (btnMugenCfgRestore.Enabled) btnMugenCfgRestore_Click(null, null);
+                        }
+                        break;
+                }
             }
         }
 
@@ -1200,7 +1126,8 @@ namespace MUGENCharsSet
             lstCharacterList.SelectedItems.CopyTo(characterList, 0);
             if (characterList.Length > 1)
             {
-                if (MessageBox.Show("是否要打开多个文件？", "操作确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+                if (MessageBox.Show("是否要打开多个文件？", "操作确认", MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question) != DialogResult.Yes) return;
             }
             foreach (Character character in characterList)
             {
@@ -1245,7 +1172,8 @@ namespace MUGENCharsSet
             lstCharacterList.SelectedItems.CopyTo(characterList, 0);
             if (characterList.Length > 1)
             {
-                if (MessageBox.Show("是否要打开多个文件？", "操作确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+                if (MessageBox.Show("是否要打开多个文件？", "操作确认", MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question) != DialogResult.Yes) return;
             }
             foreach (Character character in characterList)
             {
@@ -1290,7 +1218,8 @@ namespace MUGENCharsSet
             lstCharacterList.SelectedItems.CopyTo(characterList, 0);
             if (characterList.Length > 1)
             {
-                if (MessageBox.Show("是否要打开多个文件夹？", "操作确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+                if (MessageBox.Show("是否要打开多个文件夹？", "操作确认", MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question) != DialogResult.Yes) return;
             }
             foreach (Character character in characterList)
             {
@@ -1374,7 +1303,8 @@ namespace MUGENCharsSet
         private void ctxTsmiDeleteCharacter_Click(object sender, EventArgs e)
         {
             if (lstCharacterList.SelectedItems.Count == 0) return;
-            if (MessageBox.Show("是否删除人物？", "操作确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+            if (MessageBox.Show("是否删除人物？", "操作确认", MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question) != DialogResult.Yes) return;
             if(MultiModified)
             {
                 Character[] characterList = new Character[lstCharacterList.SelectedItems.Count];
@@ -1486,6 +1416,7 @@ namespace MUGENCharsSet
         private void tsmiReload_Click(object sender, EventArgs e)
         {
             ReadCharacterList();
+            ReadMugenCfgSetting();
         }
 
         /// <summary>
@@ -1600,6 +1531,315 @@ namespace MUGENCharsSet
         {
             AboutForm aboutForm = new AboutForm();
             aboutForm.ShowDialog();
+        }
+
+        #endregion
+
+        #region 主程序配置标签页
+
+        private bool _mugenCfgModifyEnabled = false;
+
+        /// <summary>
+        /// 获取或设置主程序配置标签页是否进入修改模式
+        /// </summary>
+        private bool MugenCfgModifyEnabled
+        {
+            get { return _mugenCfgModifyEnabled; }
+            set
+            {
+                if (value)
+                {
+                    btnMugenCfgModify.Enabled = true;
+                    btnMugenCfgReset.Enabled = true;
+                    btnMugenCfgBackup.Enabled = true;
+                    btnMugenCfgRestore.Enabled = false;
+                }
+                else
+                {
+                    btnMugenCfgModify.Enabled = false;
+                    btnMugenCfgReset.Enabled = false;
+                    btnMugenCfgBackup.Enabled = false;
+                    btnMugenCfgRestore.Enabled = false;
+                    ResetMugenCfgControls();
+                }
+                _mugenCfgModifyEnabled = value;
+            }
+        }
+
+        /// <summary>
+        /// 重置主程序配置标签页上的各个控件
+        /// </summary>
+        private void ResetMugenCfgControls()
+        {
+            foreach (Control groupBox in pageMugenCfgSetting.Controls)
+            {
+                if (groupBox is GroupBox)
+                {
+                    foreach (Control control in ((GroupBox)groupBox).Controls)
+                    {
+                        if (control is TextBox)
+                        {
+                            ((TextBox)control).Clear();
+                        }
+                        else if (control is ComboBox)
+                        {
+                            ((ComboBox)control).SelectedIndex = -1;
+                        }
+                    }
+                }
+            }
+            trbDifficulty.Value = 1;
+            trbGameSpeed.Value = 0;
+        }
+
+        /// <summary>
+        /// 读取mugen.cfg文件配置
+        /// </summary>
+        private void ReadMugenCfgSetting()
+        {
+            try
+            {
+                MugenSetting.ReadMugenCfgSetting();
+            }
+            catch(ApplicationException ex)
+            {
+                MugenCfgModifyEnabled = false;
+                ShowErrorMsg(ex.Message);
+                return;
+            }
+            try
+            {
+                trbDifficulty.Value = MugenSetting.Difficulty;
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                trbDifficulty.Value = 1;
+            }
+            txtMugenCfgLife.Text = MugenSetting.Life.ToString();
+            txtTime.Text = MugenSetting.Time.ToString();
+            try
+            {
+                trbGameSpeed.Value = MugenSetting.GameSpeed;
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                trbGameSpeed.Value = 0;
+            }
+            txtGameFrame.Text = MugenSetting.GameFrame.ToString();
+            txtTeam1VS2Life.Text = MugenSetting.Team1VS2Life.ToString();
+            cboTeamLoseOnKO.SelectedIndex = Convert.ToInt32(MugenSetting.TeamLoseOnKO);
+            txtGameWidth.Text = MugenSetting.GameWidth.ToString();
+            txtGameHeight.Text = MugenSetting.GameHeight.ToString();
+            cboRenderMode.SelectedIndex = Tools.GetComboBoxEqualValueIndex(cboRenderMode, MugenSetting.RenderMode);
+            cboFullScreen.SelectedIndex = Convert.ToInt32(MugenSetting.FullScreen);
+
+            txtP1Jump.Text = MugenSetting.KeyPressP1.Jump.ToString();
+            txtP1Crouch.Text = MugenSetting.KeyPressP1.Crouch.ToString();
+            txtP1Left.Text = MugenSetting.KeyPressP1.Left.ToString();
+            txtP1Right.Text = MugenSetting.KeyPressP1.Right.ToString();
+            txtP1A.Text = MugenSetting.KeyPressP1.A.ToString();
+            txtP1B.Text = MugenSetting.KeyPressP1.B.ToString();
+            txtP1C.Text = MugenSetting.KeyPressP1.C.ToString();
+            txtP1X.Text = MugenSetting.KeyPressP1.X.ToString();
+            txtP1Y.Text = MugenSetting.KeyPressP1.Y.ToString();
+            txtP1Z.Text = MugenSetting.KeyPressP1.Z.ToString();
+            txtP1Start.Text = MugenSetting.KeyPressP1.Start.ToString();
+
+            txtP2Jump.Text = MugenSetting.KeyPressP2.Jump.ToString();
+            txtP2Crouch.Text = MugenSetting.KeyPressP2.Crouch.ToString();
+            txtP2Left.Text = MugenSetting.KeyPressP2.Left.ToString();
+            txtP2Right.Text = MugenSetting.KeyPressP2.Right.ToString();
+            txtP2A.Text = MugenSetting.KeyPressP2.A.ToString();
+            txtP2B.Text = MugenSetting.KeyPressP2.B.ToString();
+            txtP2C.Text = MugenSetting.KeyPressP2.C.ToString();
+            txtP2X.Text = MugenSetting.KeyPressP2.X.ToString();
+            txtP2Y.Text = MugenSetting.KeyPressP2.Y.ToString();
+            txtP2Z.Text = MugenSetting.KeyPressP2.Z.ToString();
+            txtP2Start.Text = MugenSetting.KeyPressP2.Start.ToString();
+
+            MugenCfgModifyEnabled = true;
+            if (File.Exists(MugenSetting.MugenCfgPath + MugenSetting.BakExt))
+            {
+                btnMugenCfgRestore.Enabled = true;
+            }
+        }
+
+        /// <summary>
+        /// 读取主程序配置标签页上控件的值
+        /// </summary>
+        /// <exception cref="System.ApplicationException"></exception>
+        private void ReadMugenCfgControlsValue()
+        {
+            foreach (Control groupBox in pageMugenCfgSetting.Controls)
+            {
+                if (groupBox is GroupBox)
+                {
+                    foreach (Control control in ((GroupBox)groupBox).Controls)
+                    {
+                        try
+                        {
+                            if (control is TextBox)
+                            {
+                                if (((TextBox)control).Text.Trim() == String.Empty) throw new ApplicationException("字段不得为空！");
+                                if (groupBox == grpKeyPressSetting)
+                                {
+                                    if (Convert.ToUInt16(((TextBox)control).Text.Trim()) <= 0) throw new ApplicationException("键码必须大于0！");
+                                }
+                            }
+                            else if (control is ComboBox)
+                            {
+                                if (((ComboBox)control).SelectedIndex == -1) throw new ApplicationException("必须选择一项！");
+                            }
+                            if (control == trbDifficulty) MugenSetting.Difficulty = trbDifficulty.Value;
+                            else if (control == txtLife) MugenSetting.Life = Convert.ToInt32(txtLife.Text.Trim());
+                            else if (control == txtTime) MugenSetting.Time = Convert.ToInt32(txtTime.Text.Trim());
+                            else if (control == trbGameSpeed) MugenSetting.GameSpeed = trbGameSpeed.Value;
+                            else if (control == txtGameFrame) MugenSetting.GameFrame = Convert.ToInt32(txtGameFrame.Text.Trim());
+                            else if (control == txtTeam1VS2Life) MugenSetting.Team1VS2Life = Convert.ToInt32(txtTeam1VS2Life.Text.Trim());
+                            else if (control == cboTeamLoseOnKO) MugenSetting.TeamLoseOnKO = Convert.ToBoolean(cboTeamLoseOnKO.SelectedIndex);
+                            else if (control == txtGameWidth) MugenSetting.GameWidth = Convert.ToInt32(txtGameWidth.Text.Trim());
+                            else if (control == txtGameHeight) MugenSetting.GameHeight = Convert.ToInt32(txtGameHeight.Text.Trim());
+                            else if (control == cboRenderMode) MugenSetting.RenderMode = cboRenderMode.SelectedItem.ToString();
+                            else if (control == cboFullScreen) MugenSetting.FullScreen = Convert.ToBoolean(cboFullScreen.SelectedIndex);
+                            else if (control == txtP1Jump) MugenSetting.KeyPressP1.Jump = Convert.ToUInt16(txtP1Jump.Text.Trim());
+                            else if (control == txtP1Crouch) MugenSetting.KeyPressP1.Crouch = Convert.ToUInt16(txtP1Crouch.Text.Trim());
+                            else if (control == txtP1Left) MugenSetting.KeyPressP1.Left = Convert.ToUInt16(txtP1Left.Text.Trim());
+                            else if (control == txtP1Right) MugenSetting.KeyPressP1.Right = Convert.ToUInt16(txtP1Right.Text.Trim());
+                            else if (control == txtP1A) MugenSetting.KeyPressP1.A = Convert.ToUInt16(txtP1A.Text.Trim());
+                            else if (control == txtP1B) MugenSetting.KeyPressP1.B = Convert.ToUInt16(txtP1B.Text.Trim());
+                            else if (control == txtP1C) MugenSetting.KeyPressP1.C = Convert.ToUInt16(txtP1C.Text.Trim());
+                            else if (control == txtP1X) MugenSetting.KeyPressP1.X = Convert.ToUInt16(txtP1X.Text.Trim());
+                            else if (control == txtP1Y) MugenSetting.KeyPressP1.Y = Convert.ToUInt16(txtP1Y.Text.Trim());
+                            else if (control == txtP1Z) MugenSetting.KeyPressP1.Z = Convert.ToUInt16(txtP1Z.Text.Trim());
+                            else if (control == txtP1Start) MugenSetting.KeyPressP1.Start = Convert.ToUInt16(txtP1Start.Text.Trim());
+                            else if (control == txtP2Jump) MugenSetting.KeyPressP2.Jump = Convert.ToUInt16(txtP2Jump.Text.Trim());
+                            else if (control == txtP2Crouch) MugenSetting.KeyPressP2.Crouch = Convert.ToUInt16(txtP2Crouch.Text.Trim());
+                            else if (control == txtP2Left) MugenSetting.KeyPressP2.Left = Convert.ToUInt16(txtP2Left.Text.Trim());
+                            else if (control == txtP2Right) MugenSetting.KeyPressP2.Right = Convert.ToUInt16(txtP2Right.Text.Trim());
+                            else if (control == txtP2A) MugenSetting.KeyPressP2.A = Convert.ToUInt16(txtP2A.Text.Trim());
+                            else if (control == txtP2B) MugenSetting.KeyPressP2.B = Convert.ToUInt16(txtP2B.Text.Trim());
+                            else if (control == txtP2C) MugenSetting.KeyPressP2.C = Convert.ToUInt16(txtP2C.Text.Trim());
+                            else if (control == txtP2X) MugenSetting.KeyPressP2.X = Convert.ToUInt16(txtP2X.Text.Trim());
+                            else if (control == txtP2Y) MugenSetting.KeyPressP2.Y = Convert.ToUInt16(txtP2Y.Text.Trim());
+                            else if (control == txtP2Z) MugenSetting.KeyPressP2.Z = Convert.ToUInt16(txtP2Z.Text.Trim());
+                            else if (control == txtP2Start) MugenSetting.KeyPressP2.Start = Convert.ToUInt16(txtP2Start.Text.Trim());
+                        }
+                        catch (FormatException)
+                        {
+                            if (control is TextBox) ((TextBox)control).SelectAll();
+                            control.Focus();
+                            throw new ApplicationException("数值格式错误！");
+                        }
+                        catch (OverflowException)
+                        {
+                            if (control is TextBox) ((TextBox)control).SelectAll();
+                            control.Focus();
+                            throw new ApplicationException("数值超过范围！");
+                        }
+                        catch (ApplicationException ex)
+                        {
+                            if (control is TextBox) ((TextBox)control).SelectAll();
+                            control.Focus();
+                            throw ex;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 当主程序配置标签页获得焦点时发生
+        /// </summary>
+        private void pageMugenCfgSetting_Enter(object sender, EventArgs e)
+        {
+            Size = new Size(422, 468);
+            if (!MugenCfgModifyEnabled)
+            {
+                ReadMugenCfgSetting();
+            }
+        }
+
+        /// <summary>
+        /// 当单击主程序配置标签页的修改按钮时发生
+        /// </summary>
+        private void btnMugenCfgModify_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ReadMugenCfgControlsValue();
+                MugenSetting.SaveMugenCfgSetting();
+            }
+            catch(ApplicationException ex)
+            {
+                try
+                {
+                    MugenSetting.ReadMugenCfgSetting();
+                }
+                catch (ApplicationException) { }
+                ShowErrorMsg(ex.Message);
+                return;
+            }
+            ShowSuccessMsg("设置修改成功！");
+        }
+
+        /// <summary>
+        /// 当单击主程序配置标签页的重置按钮时发生
+        /// </summary>
+        private void btnMugenCfgReset_Click(object sender, EventArgs e)
+        {
+            ReadMugenCfgSetting();
+        }
+
+        /// <summary>
+        /// 当单击主程序配置标签页的备份按钮时发生
+        /// </summary>
+        private void btnMugenCfgBackup_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                MugenSetting.BackupMugenCfgSetting();
+            }
+            catch(ApplicationException ex)
+            {
+                ShowErrorMsg(ex.Message);
+                return;
+            }
+            btnMugenCfgRestore.Enabled = true;
+            ShowSuccessMsg("设置备份成功！");
+        }
+
+        /// <summary>
+        /// 当单击主程序配置标签页的还原按钮时发生
+        /// </summary>
+        private void btnMugenCfgRestore_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                MugenSetting.RestoreMugenCfgSetting();
+            }
+            catch (ApplicationException ex)
+            {
+                ShowErrorMsg(ex.Message);
+                return;
+            }
+            ReadMugenCfgSetting();
+            ShowSuccessMsg("设置还原成功！");
+        }
+
+        /// <summary>
+        /// 当Difficulty滑动条的值改变时发生
+        /// </summary>
+        private void trbDifficulty_ValueChanged(object sender, EventArgs e)
+        {
+            lblDifficultyValue.Text = trbDifficulty.Value.ToString();
+        }
+
+        /// <summary>
+        /// 当GameSpeed滑动条的值改变时发生
+        /// </summary>
+        private void trbGameSpeed_ValueChanged(object sender, EventArgs e)
+        {
+            lblGameSpeedValue.Text = (trbGameSpeed.Value > 0 ? "+" : "") + trbGameSpeed.Value;
         }
 
         #endregion

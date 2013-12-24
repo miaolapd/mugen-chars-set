@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace MUGENCharsSet
 {
@@ -177,6 +178,81 @@ namespace MUGENCharsSet
             byte[] bytes = Encoding.UTF8.GetBytes(content);
             bytes = Encoding.Convert(Encoding.UTF8, Encoding.Default, bytes);
             return Encoding.Default.GetString(bytes);
+        }
+
+        /// <summary>
+        /// 使配置文件规格化(在文件开头添加空行、将UTF-8编码的文件转换为默认编码)
+        /// </summary>
+        /// <param name="path">文件绝对路径</param>
+        public static void IniFileStandardization(string path)
+        {
+            try
+            {
+                FileStream fs = new FileStream(path, FileMode.Open);
+                byte[] bytes = new byte[fs.Length];
+                fs.Read(bytes, 0, bytes.Length);
+                fs.Close();
+                if (Tools.IsUTF8(bytes))
+                {
+                    string content = File.ReadAllText(path, Encoding.UTF8);
+                    content = Tools.ConvertUTF8ToDefault(content);
+                    if (content[0] == '[')
+                    {
+                        content = "\r\n" + content;
+                    }
+                    File.WriteAllText(path, content, Encoding.Default);
+                }
+                else
+                {
+                    if (bytes[0] == '[')
+                    {
+                        string content = File.ReadAllText(path, Encoding.Default);
+                        File.WriteAllText(path, "\r\n" + content, Encoding.Default);
+                    }
+                }
+            }
+            catch (Exception) { }
+        }
+
+        /// <summary>
+        /// 获取ComboBox控件中与指定数值相同的索引项
+        /// </summary>
+        /// <param name="combobox">ComboBox控件</param>
+        /// <param name="value">指定数值</param>
+        public static int GetComboBoxEqualValueIndex(ComboBox combobox, int value)
+        {
+            for (int i = 0; i < combobox.Items.Count; i++)
+            {
+                try
+                {
+                    if (Convert.ToInt32(combobox.Items[i].ToString()) == value)
+                    {
+                        return i;
+                    }
+                }
+                catch(Exception)
+                {
+                    return -1;
+                }
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// 获取ComboBox控件中与指定数值相同的索引项
+        /// </summary>
+        /// <param name="combobox">ComboBox控件</param>
+        /// <param name="value">指定数值</param>
+        public static int GetComboBoxEqualValueIndex(ComboBox combobox, string value)
+        {
+            for (int i = 0; i < combobox.Items.Count; i++)
+            {
+                if (combobox.Items[i].ToString().ToLower() == value.ToLower())
+                {
+                    return i;
+                }
+            }
+            return -1;
         }
     }
 }

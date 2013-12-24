@@ -13,7 +13,7 @@ namespace MUGENCharsSet
     /// <summary>
     /// MUGEN人物类
     /// </summary>
-    public class Character
+    public class Character : IComparable
     {
         #region 类常量
 
@@ -277,6 +277,17 @@ namespace MUGENCharsSet
             set { _stcommon = value; }
         }
 
+        /// <summary>
+        /// 无效人物名数组(用于过滤select.def中的人物列表)
+        /// </summary>
+        public static string[] InvalidCharacterName
+        {
+            get
+            {
+                return new string[] { String.Empty, "blank", "empty", "randomselect", "/-", "/" };
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -292,6 +303,16 @@ namespace MUGENCharsSet
         }
 
         #region 类方法
+
+        /// <summary>
+        /// 用于比较两个Character类的大小
+        /// </summary>
+        /// <param name="other">要比较的人物</param>
+        /// <returns>比较的结果</returns>
+        public int CompareTo(Object other)
+        {
+            return Name.CompareTo(((Character)other).Name);
+        }
 
         /// <summary>
         /// 读取人物属性设置
@@ -623,6 +644,7 @@ namespace MUGENCharsSet
                     continue;
                 }
             }
+            DeleteSelectDefCharacterList(characterList);
             return total;
         }
 
@@ -747,19 +769,126 @@ namespace MUGENCharsSet
             }
         }
 
-        #endregion
-    }
-
-    /// <summary>
-    /// 用于比较两个Character类的大小
-    /// </summary>
-    public class CharacterCompare : IComparer
-    {
-        int IComparer.Compare(Object x, Object y)
+        /// <summary>
+        /// 扫描人物文件夹以获取人物列表
+        /// </summary>
+        /// <param name="characterList">人物列表</param>
+        /// <param name="charsDir">人物文件夹</param>
+        public static void ScanCharacterDir(ArrayList characterList, string charsDir)
         {
-            Character cx = (Character)x;
-            Character cy = (Character)y;
-            return String.Compare(cx.Name, cy.Name);
+            string[] tempDefList = Directory.GetFiles(charsDir, "*" + Character.DefExt);
+            foreach (string tempDefPath in tempDefList)
+            {
+                System.Windows.Forms.Application.DoEvents();
+                try
+                {
+                    characterList.Add(new Character(tempDefPath));
+                }
+                catch (ApplicationException)
+                {
+                    continue;
+                }
+            }
+            string[] tempDirArr = Directory.GetDirectories(charsDir);
+            foreach (string tempDir in tempDirArr)
+            {
+                ScanCharacterDir(characterList, tempDir);
+            }
         }
+
+        /// <summary>
+        /// 读取select.def文件中的人物列表
+        /// </summary>
+        /// <param name="characterList">人物列表</param>
+        /// <exception cref="System.ApplicationException"></exception>
+        public static void ReadSelectDefCharacterList(ArrayList characterList)
+        {
+            if (!File.Exists(MugenSetting.SelectDefPath)) throw new ApplicationException("select.def文件不存在！");
+            Tools.IniFileStandardization(MugenSetting.SelectDefPath);
+            string[] characterLines = null;
+            try
+            {
+                string defContent = File.ReadAllText(MugenSetting.SelectDefPath, Encoding.Default);
+                Regex regex = new Regex(@"\[Characters\](.*)\r\n\[ExtraStages\]", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                characterLines = regex.Match(defContent).Groups[1].Value.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            }
+            catch (Exception)
+            {
+                throw new ApplicationException("读取select.def文件失败！");
+            }
+            if (characterLines.Length == 0) throw new ApplicationException("读取select.def文件失败！");
+            ArrayList tempCharacterList = new ArrayList();
+            foreach (string tempLine in characterLines)
+            {
+                System.Windows.Forms.Application.DoEvents();
+                string line = tempLine.Trim();
+                line = line.Split(new string[] { IniFiles.CommentMark }, 2, StringSplitOptions.None)[0];
+                line = line.Split(new string[] { "," }, 2, StringSplitOptions.None)[0].Trim();
+                if (InvalidCharacterName.Contains(line.ToLower())) continue;
+                if (Path.GetExtension(line.ToLower()) != Character.DefExt) line = Tools.GetFormatDirPath(line) + line + Character.DefExt;
+                string defPath = MugenSetting.MugenCharsDirPath + Tools.GetBackSlashPath(line);
+                if (!File.Exists(defPath)) continue;
+                if (!tempCharacterList.Contains(defPath))
+                {
+                    tempCharacterList.Add(defPath);
+                    try
+                    {
+                        characterList.Add(new Character(defPath));
+                    }
+                    catch (ApplicationException)
+                    {
+                        continue;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 删除select.def文件中的人物列表
+        /// </summary>
+        /// <param name="characterList">人物列表</param>
+        public static void DeleteSelectDefCharacterList(Character[] characterList)
+        {
+            if (!File.Exists(MugenSetting.SelectDefPath)) return;
+            string fileContent = "";
+            string oriCharacterContent = "";
+            string[] characterLines = null;
+            try
+            {
+                fileContent = File.ReadAllText(MugenSetting.SelectDefPath, Encoding.Default);
+                Regex regex = new Regex(@"\[Characters\](.*)\r\n\[ExtraStages\]", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                oriCharacterContent = regex.Match(fileContent).Groups[1].Value;
+                characterLines = oriCharacterContent.Split(new string[] { "\r\n" }, StringSplitOptions.None);
+            }
+            catch (Exception)
+            {
+                return;
+            }
+            if (characterLines.Length == 0) return;
+            for (int i = 0; i < characterLines.Length; i++)
+            {
+                string line = characterLines[i].Trim();
+                line = line.Split(new string[] { IniFiles.CommentMark }, 2, StringSplitOptions.None)[0];
+                line = line.Split(new string[] { "," }, 2, StringSplitOptions.None)[0].Trim();
+                if (InvalidCharacterName.Contains(line.ToLower())) continue;
+                if (Path.GetExtension(line.ToLower()) != Character.DefExt) line = Tools.GetFormatDirPath(line) + line + Character.DefExt;
+                string defPath = MugenSetting.MugenCharsDirPath + Tools.GetBackSlashPath(line);
+                foreach(Character character in characterList)
+                {
+                    if (character.DefPath.ToLower() == defPath.ToLower())
+                    {
+                        characterLines[i] = IniFiles.CommentMark + characterLines[i];
+                    }
+                }
+            }
+            fileContent = fileContent.Replace(oriCharacterContent, String.Join("\r\n", characterLines));
+            try
+            {
+                File.WriteAllText(MugenSetting.SelectDefPath, fileContent, Encoding.Default);
+            }
+            catch (Exception) { }
+        }
+
+        #endregion
     }
 }

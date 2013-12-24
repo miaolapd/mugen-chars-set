@@ -35,6 +35,8 @@
             this.ctxTsmiOpenCnsFile = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxTsmiOpenDefDir = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxTsmiCopyDefPath = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxTsmiConvertToWideScreen = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxTsmiConvertToNormalScreen = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxTsmiDeleteCharacter = new System.Windows.Forms.ToolStripMenuItem();
             this.ttpCommon = new System.Windows.Forms.ToolTip(this.components);
             this.btnRestore = new System.Windows.Forms.Button();
@@ -76,6 +78,65 @@
             this.btnSelectAll = new System.Windows.Forms.Button();
             this.lstCharacterList = new System.Windows.Forms.ListBox();
             this.btnRefreshCharacterList = new System.Windows.Forms.Button();
+            this.btnMugenCfgRestore = new System.Windows.Forms.Button();
+            this.btnMugenCfgBackup = new System.Windows.Forms.Button();
+            this.btnMugenCfgReset = new System.Windows.Forms.Button();
+            this.btnMugenCfgModify = new System.Windows.Forms.Button();
+            this.txtP2Start = new System.Windows.Forms.TextBox();
+            this.txtP1Start = new System.Windows.Forms.TextBox();
+            this.lblKeyPressStart = new System.Windows.Forms.Label();
+            this.txtP2Z = new System.Windows.Forms.TextBox();
+            this.txtP1Z = new System.Windows.Forms.TextBox();
+            this.lblKeyPressZ = new System.Windows.Forms.Label();
+            this.txtP2Y = new System.Windows.Forms.TextBox();
+            this.txtP1Y = new System.Windows.Forms.TextBox();
+            this.lblKeyPressY = new System.Windows.Forms.Label();
+            this.txtP2X = new System.Windows.Forms.TextBox();
+            this.txtP1X = new System.Windows.Forms.TextBox();
+            this.lblKeyPressX = new System.Windows.Forms.Label();
+            this.txtP2C = new System.Windows.Forms.TextBox();
+            this.txtP1C = new System.Windows.Forms.TextBox();
+            this.lblKeyPressC = new System.Windows.Forms.Label();
+            this.txtP2B = new System.Windows.Forms.TextBox();
+            this.txtP1B = new System.Windows.Forms.TextBox();
+            this.lblKeyPressB = new System.Windows.Forms.Label();
+            this.txtP2A = new System.Windows.Forms.TextBox();
+            this.txtP1A = new System.Windows.Forms.TextBox();
+            this.lblKeyPressA = new System.Windows.Forms.Label();
+            this.txtP2Right = new System.Windows.Forms.TextBox();
+            this.txtP1Right = new System.Windows.Forms.TextBox();
+            this.lblKeyPressRight = new System.Windows.Forms.Label();
+            this.txtP2Left = new System.Windows.Forms.TextBox();
+            this.txtP1Left = new System.Windows.Forms.TextBox();
+            this.lblKeyPressLeft = new System.Windows.Forms.Label();
+            this.txtP2Crouch = new System.Windows.Forms.TextBox();
+            this.txtP1Crouch = new System.Windows.Forms.TextBox();
+            this.lblKeyPressCrouch = new System.Windows.Forms.Label();
+            this.txtP2Jump = new System.Windows.Forms.TextBox();
+            this.txtP1Jump = new System.Windows.Forms.TextBox();
+            this.lblKeyPressJump = new System.Windows.Forms.Label();
+            this.cboFullScreen = new System.Windows.Forms.ComboBox();
+            this.cboRenderMode = new System.Windows.Forms.ComboBox();
+            this.lblFullScreen = new System.Windows.Forms.Label();
+            this.lblRenderMode = new System.Windows.Forms.Label();
+            this.txtGameHeight = new System.Windows.Forms.TextBox();
+            this.lblGameHeight = new System.Windows.Forms.Label();
+            this.txtGameWidth = new System.Windows.Forms.TextBox();
+            this.lblGameWidth = new System.Windows.Forms.Label();
+            this.trbGameSpeed = new System.Windows.Forms.TrackBar();
+            this.trbDifficulty = new System.Windows.Forms.TrackBar();
+            this.cboTeamLoseOnKO = new System.Windows.Forms.ComboBox();
+            this.lblTeamLoseOnKO = new System.Windows.Forms.Label();
+            this.txtTeam1VS2Life = new System.Windows.Forms.TextBox();
+            this.lblTeam1VS2Life = new System.Windows.Forms.Label();
+            this.txtGameFrame = new System.Windows.Forms.TextBox();
+            this.lblGameFrame = new System.Windows.Forms.Label();
+            this.lblGameSpeed = new System.Windows.Forms.Label();
+            this.txtTime = new System.Windows.Forms.TextBox();
+            this.lblTime = new System.Windows.Forms.Label();
+            this.txtMugenCfgLife = new System.Windows.Forms.TextBox();
+            this.lblMugenCfgLife = new System.Windows.Forms.Label();
+            this.lblDifficulty = new System.Windows.Forms.Label();
             this.mnuMain = new System.Windows.Forms.MenuStrip();
             this.tsmiFiles = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiSetSystemDefPath = new System.Windows.Forms.ToolStripMenuItem();
@@ -91,10 +152,18 @@
             this.tsmiHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.tabMain = new System.Windows.Forms.TabControl();
+            this.pageMugenCfgSetting = new System.Windows.Forms.TabPage();
+            this.grpKeyPressSetting = new System.Windows.Forms.GroupBox();
+            this.lblKeyPressP2 = new System.Windows.Forms.Label();
+            this.lblKeyPressP1 = new System.Windows.Forms.Label();
+            this.grpDisplaySetting = new System.Windows.Forms.GroupBox();
+            this.grpBaseSetting = new System.Windows.Forms.GroupBox();
+            this.lblMugenCfgLifePercent = new System.Windows.Forms.Label();
+            this.lblTeam1VS2LifePercent = new System.Windows.Forms.Label();
+            this.lblGameSpeedValue = new System.Windows.Forms.Label();
+            this.lblDifficultyValue = new System.Windows.Forms.Label();
             this.fswCharacterCns = new System.IO.FileSystemWatcher();
             this.ofdDefPath = new System.Windows.Forms.OpenFileDialog();
-            this.ctxTsmiConvertToWideScreen = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxTsmiConvertToNormalScreen = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxmnuCharacterList.SuspendLayout();
             this.pageCharacter.SuspendLayout();
             this.grpIsWideScreen.SuspendLayout();
@@ -103,8 +172,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvPal)).BeginInit();
             this.grpProperty.SuspendLayout();
             this.grpChars.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trbGameSpeed)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trbDifficulty)).BeginInit();
             this.mnuMain.SuspendLayout();
             this.tabMain.SuspendLayout();
+            this.pageMugenCfgSetting.SuspendLayout();
+            this.grpKeyPressSetting.SuspendLayout();
+            this.grpDisplaySetting.SuspendLayout();
+            this.grpBaseSetting.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fswCharacterCns)).BeginInit();
             this.SuspendLayout();
             // 
@@ -119,7 +194,7 @@
             this.ctxTsmiConvertToNormalScreen,
             this.ctxTsmiDeleteCharacter});
             this.ctxmnuCharacterList.Name = "contextMenuStrip1";
-            this.ctxmnuCharacterList.Size = new System.Drawing.Size(213, 180);
+            this.ctxmnuCharacterList.Size = new System.Drawing.Size(213, 158);
             // 
             // ctxTsmiOpenDefFile
             // 
@@ -149,6 +224,20 @@
             this.ctxTsmiCopyDefPath.Size = new System.Drawing.Size(212, 22);
             this.ctxTsmiCopyDefPath.Text = "复制def文件路径";
             this.ctxTsmiCopyDefPath.Click += new System.EventHandler(this.ctxTsmiCopyDefPath_Click);
+            // 
+            // ctxTsmiConvertToWideScreen
+            // 
+            this.ctxTsmiConvertToWideScreen.Name = "ctxTsmiConvertToWideScreen";
+            this.ctxTsmiConvertToWideScreen.Size = new System.Drawing.Size(212, 22);
+            this.ctxTsmiConvertToWideScreen.Text = "转换为宽屏人物包";
+            this.ctxTsmiConvertToWideScreen.Click += new System.EventHandler(this.ctxTsmiConvertToWideScreen_Click);
+            // 
+            // ctxTsmiConvertToNormalScreen
+            // 
+            this.ctxTsmiConvertToNormalScreen.Name = "ctxTsmiConvertToNormalScreen";
+            this.ctxTsmiConvertToNormalScreen.Size = new System.Drawing.Size(212, 22);
+            this.ctxTsmiConvertToNormalScreen.Text = "转换为普屏人物包";
+            this.ctxTsmiConvertToNormalScreen.Click += new System.EventHandler(this.ctxTsmiConvertToNormalScreen_Click);
             // 
             // ctxTsmiDeleteCharacter
             // 
@@ -297,6 +386,7 @@
             this.ttpCommon.SetToolTip(this.pageCharacter, "可将人物def文件拖拽至此处");
             this.pageCharacter.DragDrop += new System.Windows.Forms.DragEventHandler(this.pageCharacter_DragDrop);
             this.pageCharacter.DragEnter += new System.Windows.Forms.DragEventHandler(this.pageCharacter_DragEnter);
+            this.pageCharacter.Enter += new System.EventHandler(this.pageCharacter_Enter);
             // 
             // grpIsWideScreen
             // 
@@ -627,6 +717,612 @@
             this.btnRefreshCharacterList.UseVisualStyleBackColor = true;
             this.btnRefreshCharacterList.Click += new System.EventHandler(this.btnRefreshCharacterList_Click);
             // 
+            // btnMugenCfgRestore
+            // 
+            this.btnMugenCfgRestore.Enabled = false;
+            this.btnMugenCfgRestore.Location = new System.Drawing.Point(279, 344);
+            this.btnMugenCfgRestore.Name = "btnMugenCfgRestore";
+            this.btnMugenCfgRestore.Size = new System.Drawing.Size(71, 29);
+            this.btnMugenCfgRestore.TabIndex = 6;
+            this.btnMugenCfgRestore.Text = "恢复";
+            this.ttpCommon.SetToolTip(this.btnMugenCfgRestore, "快捷键：Ctrl+R");
+            this.btnMugenCfgRestore.UseVisualStyleBackColor = true;
+            this.btnMugenCfgRestore.Click += new System.EventHandler(this.btnMugenCfgRestore_Click);
+            // 
+            // btnMugenCfgBackup
+            // 
+            this.btnMugenCfgBackup.Enabled = false;
+            this.btnMugenCfgBackup.Location = new System.Drawing.Point(202, 344);
+            this.btnMugenCfgBackup.Name = "btnMugenCfgBackup";
+            this.btnMugenCfgBackup.Size = new System.Drawing.Size(71, 29);
+            this.btnMugenCfgBackup.TabIndex = 5;
+            this.btnMugenCfgBackup.Text = "备份";
+            this.ttpCommon.SetToolTip(this.btnMugenCfgBackup, "快捷键：Ctrl+B");
+            this.btnMugenCfgBackup.UseVisualStyleBackColor = true;
+            this.btnMugenCfgBackup.Click += new System.EventHandler(this.btnMugenCfgBackup_Click);
+            // 
+            // btnMugenCfgReset
+            // 
+            this.btnMugenCfgReset.Enabled = false;
+            this.btnMugenCfgReset.Location = new System.Drawing.Point(125, 344);
+            this.btnMugenCfgReset.Name = "btnMugenCfgReset";
+            this.btnMugenCfgReset.Size = new System.Drawing.Size(71, 29);
+            this.btnMugenCfgReset.TabIndex = 4;
+            this.btnMugenCfgReset.Text = "重置";
+            this.ttpCommon.SetToolTip(this.btnMugenCfgReset, "快捷键：Ctrl+S");
+            this.btnMugenCfgReset.UseVisualStyleBackColor = true;
+            this.btnMugenCfgReset.Click += new System.EventHandler(this.btnMugenCfgReset_Click);
+            // 
+            // btnMugenCfgModify
+            // 
+            this.btnMugenCfgModify.Enabled = false;
+            this.btnMugenCfgModify.Location = new System.Drawing.Point(48, 344);
+            this.btnMugenCfgModify.Name = "btnMugenCfgModify";
+            this.btnMugenCfgModify.Size = new System.Drawing.Size(71, 29);
+            this.btnMugenCfgModify.TabIndex = 3;
+            this.btnMugenCfgModify.Text = "修改";
+            this.ttpCommon.SetToolTip(this.btnMugenCfgModify, "快捷键：Ctrl+Enter");
+            this.btnMugenCfgModify.UseVisualStyleBackColor = true;
+            this.btnMugenCfgModify.Click += new System.EventHandler(this.btnMugenCfgModify_Click);
+            // 
+            // txtP2Start
+            // 
+            this.txtP2Start.Location = new System.Drawing.Point(92, 302);
+            this.txtP2Start.MaxLength = 3;
+            this.txtP2Start.Name = "txtP2Start";
+            this.txtP2Start.Size = new System.Drawing.Size(28, 21);
+            this.txtP2Start.TabIndex = 34;
+            this.ttpCommon.SetToolTip(this.txtP2Start, "开始键");
+            // 
+            // txtP1Start
+            // 
+            this.txtP1Start.Location = new System.Drawing.Point(58, 302);
+            this.txtP1Start.MaxLength = 3;
+            this.txtP1Start.Name = "txtP1Start";
+            this.txtP1Start.Size = new System.Drawing.Size(28, 21);
+            this.txtP1Start.TabIndex = 33;
+            this.ttpCommon.SetToolTip(this.txtP1Start, "开始键");
+            // 
+            // lblKeyPressStart
+            // 
+            this.lblKeyPressStart.AutoSize = true;
+            this.lblKeyPressStart.Location = new System.Drawing.Point(6, 305);
+            this.lblKeyPressStart.Name = "lblKeyPressStart";
+            this.lblKeyPressStart.Size = new System.Drawing.Size(35, 12);
+            this.lblKeyPressStart.TabIndex = 32;
+            this.lblKeyPressStart.Text = "START";
+            this.ttpCommon.SetToolTip(this.lblKeyPressStart, "开始键");
+            // 
+            // txtP2Z
+            // 
+            this.txtP2Z.Location = new System.Drawing.Point(92, 275);
+            this.txtP2Z.MaxLength = 3;
+            this.txtP2Z.Name = "txtP2Z";
+            this.txtP2Z.Size = new System.Drawing.Size(28, 21);
+            this.txtP2Z.TabIndex = 31;
+            this.ttpCommon.SetToolTip(this.txtP2Z, "热键2");
+            // 
+            // txtP1Z
+            // 
+            this.txtP1Z.Location = new System.Drawing.Point(58, 275);
+            this.txtP1Z.MaxLength = 3;
+            this.txtP1Z.Name = "txtP1Z";
+            this.txtP1Z.Size = new System.Drawing.Size(28, 21);
+            this.txtP1Z.TabIndex = 30;
+            this.ttpCommon.SetToolTip(this.txtP1Z, "热键2");
+            // 
+            // lblKeyPressZ
+            // 
+            this.lblKeyPressZ.AutoSize = true;
+            this.lblKeyPressZ.Location = new System.Drawing.Point(6, 278);
+            this.lblKeyPressZ.Name = "lblKeyPressZ";
+            this.lblKeyPressZ.Size = new System.Drawing.Size(11, 12);
+            this.lblKeyPressZ.TabIndex = 29;
+            this.lblKeyPressZ.Text = "Z";
+            this.ttpCommon.SetToolTip(this.lblKeyPressZ, "热键2");
+            // 
+            // txtP2Y
+            // 
+            this.txtP2Y.Location = new System.Drawing.Point(92, 248);
+            this.txtP2Y.MaxLength = 3;
+            this.txtP2Y.Name = "txtP2Y";
+            this.txtP2Y.Size = new System.Drawing.Size(28, 21);
+            this.txtP2Y.TabIndex = 28;
+            this.ttpCommon.SetToolTip(this.txtP2Y, "重拳");
+            // 
+            // txtP1Y
+            // 
+            this.txtP1Y.Location = new System.Drawing.Point(58, 248);
+            this.txtP1Y.MaxLength = 3;
+            this.txtP1Y.Name = "txtP1Y";
+            this.txtP1Y.Size = new System.Drawing.Size(28, 21);
+            this.txtP1Y.TabIndex = 27;
+            this.ttpCommon.SetToolTip(this.txtP1Y, "重拳");
+            // 
+            // lblKeyPressY
+            // 
+            this.lblKeyPressY.AutoSize = true;
+            this.lblKeyPressY.Location = new System.Drawing.Point(6, 251);
+            this.lblKeyPressY.Name = "lblKeyPressY";
+            this.lblKeyPressY.Size = new System.Drawing.Size(11, 12);
+            this.lblKeyPressY.TabIndex = 26;
+            this.lblKeyPressY.Text = "Y";
+            this.ttpCommon.SetToolTip(this.lblKeyPressY, "重拳");
+            // 
+            // txtP2X
+            // 
+            this.txtP2X.Location = new System.Drawing.Point(92, 221);
+            this.txtP2X.MaxLength = 3;
+            this.txtP2X.Name = "txtP2X";
+            this.txtP2X.Size = new System.Drawing.Size(28, 21);
+            this.txtP2X.TabIndex = 25;
+            this.ttpCommon.SetToolTip(this.txtP2X, "轻拳");
+            // 
+            // txtP1X
+            // 
+            this.txtP1X.Location = new System.Drawing.Point(58, 221);
+            this.txtP1X.MaxLength = 3;
+            this.txtP1X.Name = "txtP1X";
+            this.txtP1X.Size = new System.Drawing.Size(28, 21);
+            this.txtP1X.TabIndex = 24;
+            this.ttpCommon.SetToolTip(this.txtP1X, "轻拳");
+            // 
+            // lblKeyPressX
+            // 
+            this.lblKeyPressX.AutoSize = true;
+            this.lblKeyPressX.Location = new System.Drawing.Point(6, 224);
+            this.lblKeyPressX.Name = "lblKeyPressX";
+            this.lblKeyPressX.Size = new System.Drawing.Size(11, 12);
+            this.lblKeyPressX.TabIndex = 23;
+            this.lblKeyPressX.Text = "X";
+            this.ttpCommon.SetToolTip(this.lblKeyPressX, "轻拳");
+            // 
+            // txtP2C
+            // 
+            this.txtP2C.Location = new System.Drawing.Point(92, 194);
+            this.txtP2C.MaxLength = 3;
+            this.txtP2C.Name = "txtP2C";
+            this.txtP2C.Size = new System.Drawing.Size(28, 21);
+            this.txtP2C.TabIndex = 22;
+            this.ttpCommon.SetToolTip(this.txtP2C, "热键1");
+            // 
+            // txtP1C
+            // 
+            this.txtP1C.Location = new System.Drawing.Point(58, 194);
+            this.txtP1C.MaxLength = 3;
+            this.txtP1C.Name = "txtP1C";
+            this.txtP1C.Size = new System.Drawing.Size(28, 21);
+            this.txtP1C.TabIndex = 21;
+            this.ttpCommon.SetToolTip(this.txtP1C, "热键1");
+            // 
+            // lblKeyPressC
+            // 
+            this.lblKeyPressC.AutoSize = true;
+            this.lblKeyPressC.Location = new System.Drawing.Point(6, 197);
+            this.lblKeyPressC.Name = "lblKeyPressC";
+            this.lblKeyPressC.Size = new System.Drawing.Size(11, 12);
+            this.lblKeyPressC.TabIndex = 20;
+            this.lblKeyPressC.Text = "C";
+            this.ttpCommon.SetToolTip(this.lblKeyPressC, "热键1");
+            // 
+            // txtP2B
+            // 
+            this.txtP2B.Location = new System.Drawing.Point(92, 167);
+            this.txtP2B.MaxLength = 3;
+            this.txtP2B.Name = "txtP2B";
+            this.txtP2B.Size = new System.Drawing.Size(28, 21);
+            this.txtP2B.TabIndex = 19;
+            this.ttpCommon.SetToolTip(this.txtP2B, "重脚");
+            // 
+            // txtP1B
+            // 
+            this.txtP1B.Location = new System.Drawing.Point(58, 167);
+            this.txtP1B.MaxLength = 3;
+            this.txtP1B.Name = "txtP1B";
+            this.txtP1B.Size = new System.Drawing.Size(28, 21);
+            this.txtP1B.TabIndex = 18;
+            this.ttpCommon.SetToolTip(this.txtP1B, "重脚");
+            // 
+            // lblKeyPressB
+            // 
+            this.lblKeyPressB.AutoSize = true;
+            this.lblKeyPressB.Location = new System.Drawing.Point(6, 170);
+            this.lblKeyPressB.Name = "lblKeyPressB";
+            this.lblKeyPressB.Size = new System.Drawing.Size(11, 12);
+            this.lblKeyPressB.TabIndex = 17;
+            this.lblKeyPressB.Text = "B";
+            this.ttpCommon.SetToolTip(this.lblKeyPressB, "重脚");
+            // 
+            // txtP2A
+            // 
+            this.txtP2A.Location = new System.Drawing.Point(92, 140);
+            this.txtP2A.MaxLength = 3;
+            this.txtP2A.Name = "txtP2A";
+            this.txtP2A.Size = new System.Drawing.Size(28, 21);
+            this.txtP2A.TabIndex = 16;
+            this.ttpCommon.SetToolTip(this.txtP2A, "轻脚");
+            // 
+            // txtP1A
+            // 
+            this.txtP1A.Location = new System.Drawing.Point(58, 140);
+            this.txtP1A.MaxLength = 3;
+            this.txtP1A.Name = "txtP1A";
+            this.txtP1A.Size = new System.Drawing.Size(28, 21);
+            this.txtP1A.TabIndex = 15;
+            this.ttpCommon.SetToolTip(this.txtP1A, "轻脚");
+            // 
+            // lblKeyPressA
+            // 
+            this.lblKeyPressA.AutoSize = true;
+            this.lblKeyPressA.Location = new System.Drawing.Point(6, 143);
+            this.lblKeyPressA.Name = "lblKeyPressA";
+            this.lblKeyPressA.Size = new System.Drawing.Size(11, 12);
+            this.lblKeyPressA.TabIndex = 14;
+            this.lblKeyPressA.Text = "A";
+            this.ttpCommon.SetToolTip(this.lblKeyPressA, "轻脚");
+            // 
+            // txtP2Right
+            // 
+            this.txtP2Right.Location = new System.Drawing.Point(92, 113);
+            this.txtP2Right.MaxLength = 3;
+            this.txtP2Right.Name = "txtP2Right";
+            this.txtP2Right.Size = new System.Drawing.Size(28, 21);
+            this.txtP2Right.TabIndex = 13;
+            this.ttpCommon.SetToolTip(this.txtP2Right, "前");
+            // 
+            // txtP1Right
+            // 
+            this.txtP1Right.Location = new System.Drawing.Point(58, 113);
+            this.txtP1Right.MaxLength = 3;
+            this.txtP1Right.Name = "txtP1Right";
+            this.txtP1Right.Size = new System.Drawing.Size(28, 21);
+            this.txtP1Right.TabIndex = 12;
+            this.ttpCommon.SetToolTip(this.txtP1Right, "前");
+            // 
+            // lblKeyPressRight
+            // 
+            this.lblKeyPressRight.AutoSize = true;
+            this.lblKeyPressRight.Location = new System.Drawing.Point(6, 116);
+            this.lblKeyPressRight.Name = "lblKeyPressRight";
+            this.lblKeyPressRight.Size = new System.Drawing.Size(35, 12);
+            this.lblKeyPressRight.TabIndex = 11;
+            this.lblKeyPressRight.Text = "RIGHT";
+            this.ttpCommon.SetToolTip(this.lblKeyPressRight, "前");
+            // 
+            // txtP2Left
+            // 
+            this.txtP2Left.Location = new System.Drawing.Point(92, 86);
+            this.txtP2Left.MaxLength = 3;
+            this.txtP2Left.Name = "txtP2Left";
+            this.txtP2Left.Size = new System.Drawing.Size(28, 21);
+            this.txtP2Left.TabIndex = 10;
+            this.ttpCommon.SetToolTip(this.txtP2Left, "后");
+            // 
+            // txtP1Left
+            // 
+            this.txtP1Left.Location = new System.Drawing.Point(58, 86);
+            this.txtP1Left.MaxLength = 3;
+            this.txtP1Left.Name = "txtP1Left";
+            this.txtP1Left.Size = new System.Drawing.Size(28, 21);
+            this.txtP1Left.TabIndex = 9;
+            this.ttpCommon.SetToolTip(this.txtP1Left, "后");
+            // 
+            // lblKeyPressLeft
+            // 
+            this.lblKeyPressLeft.AutoSize = true;
+            this.lblKeyPressLeft.Location = new System.Drawing.Point(6, 89);
+            this.lblKeyPressLeft.Name = "lblKeyPressLeft";
+            this.lblKeyPressLeft.Size = new System.Drawing.Size(29, 12);
+            this.lblKeyPressLeft.TabIndex = 8;
+            this.lblKeyPressLeft.Text = "LEFT";
+            this.ttpCommon.SetToolTip(this.lblKeyPressLeft, "后");
+            // 
+            // txtP2Crouch
+            // 
+            this.txtP2Crouch.Location = new System.Drawing.Point(92, 59);
+            this.txtP2Crouch.MaxLength = 3;
+            this.txtP2Crouch.Name = "txtP2Crouch";
+            this.txtP2Crouch.Size = new System.Drawing.Size(28, 21);
+            this.txtP2Crouch.TabIndex = 7;
+            this.ttpCommon.SetToolTip(this.txtP2Crouch, "蹲");
+            // 
+            // txtP1Crouch
+            // 
+            this.txtP1Crouch.Location = new System.Drawing.Point(58, 59);
+            this.txtP1Crouch.MaxLength = 3;
+            this.txtP1Crouch.Name = "txtP1Crouch";
+            this.txtP1Crouch.Size = new System.Drawing.Size(28, 21);
+            this.txtP1Crouch.TabIndex = 6;
+            this.ttpCommon.SetToolTip(this.txtP1Crouch, "蹲");
+            // 
+            // lblKeyPressCrouch
+            // 
+            this.lblKeyPressCrouch.AutoSize = true;
+            this.lblKeyPressCrouch.Location = new System.Drawing.Point(6, 62);
+            this.lblKeyPressCrouch.Name = "lblKeyPressCrouch";
+            this.lblKeyPressCrouch.Size = new System.Drawing.Size(29, 12);
+            this.lblKeyPressCrouch.TabIndex = 5;
+            this.lblKeyPressCrouch.Text = "DWON";
+            this.ttpCommon.SetToolTip(this.lblKeyPressCrouch, "蹲");
+            // 
+            // txtP2Jump
+            // 
+            this.txtP2Jump.Location = new System.Drawing.Point(92, 32);
+            this.txtP2Jump.MaxLength = 3;
+            this.txtP2Jump.Name = "txtP2Jump";
+            this.txtP2Jump.Size = new System.Drawing.Size(28, 21);
+            this.txtP2Jump.TabIndex = 4;
+            this.ttpCommon.SetToolTip(this.txtP2Jump, "跳");
+            // 
+            // txtP1Jump
+            // 
+            this.txtP1Jump.Location = new System.Drawing.Point(58, 32);
+            this.txtP1Jump.MaxLength = 3;
+            this.txtP1Jump.Name = "txtP1Jump";
+            this.txtP1Jump.Size = new System.Drawing.Size(28, 21);
+            this.txtP1Jump.TabIndex = 3;
+            this.ttpCommon.SetToolTip(this.txtP1Jump, "跳");
+            // 
+            // lblKeyPressJump
+            // 
+            this.lblKeyPressJump.AutoSize = true;
+            this.lblKeyPressJump.Location = new System.Drawing.Point(6, 35);
+            this.lblKeyPressJump.Name = "lblKeyPressJump";
+            this.lblKeyPressJump.Size = new System.Drawing.Size(17, 12);
+            this.lblKeyPressJump.TabIndex = 2;
+            this.lblKeyPressJump.Text = "UP";
+            this.ttpCommon.SetToolTip(this.lblKeyPressJump, "跳");
+            // 
+            // cboFullScreen
+            // 
+            this.cboFullScreen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboFullScreen.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboFullScreen.FormattingEnabled = true;
+            this.cboFullScreen.Items.AddRange(new object[] {
+            "否",
+            "是"});
+            this.cboFullScreen.Location = new System.Drawing.Point(118, 94);
+            this.cboFullScreen.Name = "cboFullScreen";
+            this.cboFullScreen.Size = new System.Drawing.Size(123, 20);
+            this.cboFullScreen.TabIndex = 7;
+            this.ttpCommon.SetToolTip(this.cboFullScreen, "是否全屏");
+            // 
+            // cboRenderMode
+            // 
+            this.cboRenderMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboRenderMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboRenderMode.FormattingEnabled = true;
+            this.cboRenderMode.Items.AddRange(new object[] {
+            "OpenGL",
+            "OpenGLScreen",
+            "DirectX",
+            "System"});
+            this.cboRenderMode.Location = new System.Drawing.Point(118, 68);
+            this.cboRenderMode.Name = "cboRenderMode";
+            this.cboRenderMode.Size = new System.Drawing.Size(123, 20);
+            this.cboRenderMode.TabIndex = 5;
+            this.ttpCommon.SetToolTip(this.cboRenderMode, "渲染模式");
+            // 
+            // lblFullScreen
+            // 
+            this.lblFullScreen.AutoSize = true;
+            this.lblFullScreen.Location = new System.Drawing.Point(6, 97);
+            this.lblFullScreen.Name = "lblFullScreen";
+            this.lblFullScreen.Size = new System.Drawing.Size(65, 12);
+            this.lblFullScreen.TabIndex = 6;
+            this.lblFullScreen.Text = "FullScreen";
+            this.ttpCommon.SetToolTip(this.lblFullScreen, "是否全屏");
+            // 
+            // lblRenderMode
+            // 
+            this.lblRenderMode.AutoSize = true;
+            this.lblRenderMode.Location = new System.Drawing.Point(6, 71);
+            this.lblRenderMode.Name = "lblRenderMode";
+            this.lblRenderMode.Size = new System.Drawing.Size(65, 12);
+            this.lblRenderMode.TabIndex = 4;
+            this.lblRenderMode.Text = "RenderMode";
+            this.ttpCommon.SetToolTip(this.lblRenderMode, "渲染模式");
+            // 
+            // txtGameHeight
+            // 
+            this.txtGameHeight.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtGameHeight.Location = new System.Drawing.Point(118, 41);
+            this.txtGameHeight.MaxLength = 10;
+            this.txtGameHeight.Name = "txtGameHeight";
+            this.txtGameHeight.Size = new System.Drawing.Size(123, 21);
+            this.txtGameHeight.TabIndex = 3;
+            this.ttpCommon.SetToolTip(this.txtGameHeight, "游戏屏幕分辨率高度");
+            // 
+            // lblGameHeight
+            // 
+            this.lblGameHeight.AutoSize = true;
+            this.lblGameHeight.Location = new System.Drawing.Point(6, 44);
+            this.lblGameHeight.Name = "lblGameHeight";
+            this.lblGameHeight.Size = new System.Drawing.Size(65, 12);
+            this.lblGameHeight.TabIndex = 2;
+            this.lblGameHeight.Text = "GameHeight";
+            this.ttpCommon.SetToolTip(this.lblGameHeight, "游戏屏幕分辨率高度");
+            // 
+            // txtGameWidth
+            // 
+            this.txtGameWidth.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtGameWidth.Location = new System.Drawing.Point(118, 14);
+            this.txtGameWidth.MaxLength = 10;
+            this.txtGameWidth.Name = "txtGameWidth";
+            this.txtGameWidth.Size = new System.Drawing.Size(123, 21);
+            this.txtGameWidth.TabIndex = 1;
+            this.ttpCommon.SetToolTip(this.txtGameWidth, "游戏屏幕分辨率宽度");
+            // 
+            // lblGameWidth
+            // 
+            this.lblGameWidth.AutoSize = true;
+            this.lblGameWidth.Location = new System.Drawing.Point(6, 17);
+            this.lblGameWidth.Name = "lblGameWidth";
+            this.lblGameWidth.Size = new System.Drawing.Size(59, 12);
+            this.lblGameWidth.TabIndex = 0;
+            this.lblGameWidth.Text = "GameWidth";
+            this.ttpCommon.SetToolTip(this.lblGameWidth, "游戏屏幕分辨率宽度");
+            // 
+            // trbGameSpeed
+            // 
+            this.trbGameSpeed.AutoSize = false;
+            this.trbGameSpeed.LargeChange = 3;
+            this.trbGameSpeed.Location = new System.Drawing.Point(117, 92);
+            this.trbGameSpeed.Maximum = 9;
+            this.trbGameSpeed.Minimum = -9;
+            this.trbGameSpeed.Name = "trbGameSpeed";
+            this.trbGameSpeed.Size = new System.Drawing.Size(107, 24);
+            this.trbGameSpeed.TabIndex = 7;
+            this.ttpCommon.SetToolTip(this.trbGameSpeed, "游戏运行速度");
+            this.trbGameSpeed.ValueChanged += new System.EventHandler(this.trbGameSpeed_ValueChanged);
+            // 
+            // trbDifficulty
+            // 
+            this.trbDifficulty.AutoSize = false;
+            this.trbDifficulty.LargeChange = 2;
+            this.trbDifficulty.Location = new System.Drawing.Point(118, 10);
+            this.trbDifficulty.Maximum = 8;
+            this.trbDifficulty.Minimum = 1;
+            this.trbDifficulty.Name = "trbDifficulty";
+            this.trbDifficulty.Size = new System.Drawing.Size(106, 24);
+            this.trbDifficulty.TabIndex = 1;
+            this.ttpCommon.SetToolTip(this.trbDifficulty, "游戏难度");
+            this.trbDifficulty.Value = 1;
+            this.trbDifficulty.ValueChanged += new System.EventHandler(this.trbDifficulty_ValueChanged);
+            // 
+            // cboTeamLoseOnKO
+            // 
+            this.cboTeamLoseOnKO.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboTeamLoseOnKO.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboTeamLoseOnKO.FormattingEnabled = true;
+            this.cboTeamLoseOnKO.Items.AddRange(new object[] {
+            "否",
+            "是"});
+            this.cboTeamLoseOnKO.Location = new System.Drawing.Point(118, 176);
+            this.cboTeamLoseOnKO.Name = "cboTeamLoseOnKO";
+            this.cboTeamLoseOnKO.Size = new System.Drawing.Size(123, 20);
+            this.cboTeamLoseOnKO.TabIndex = 13;
+            this.ttpCommon.SetToolTip(this.cboTeamLoseOnKO, "组队模式中，如果2P输了，电脑控制的人物是否继续战斗");
+            // 
+            // lblTeamLoseOnKO
+            // 
+            this.lblTeamLoseOnKO.AutoSize = true;
+            this.lblTeamLoseOnKO.Location = new System.Drawing.Point(6, 179);
+            this.lblTeamLoseOnKO.Name = "lblTeamLoseOnKO";
+            this.lblTeamLoseOnKO.Size = new System.Drawing.Size(83, 12);
+            this.lblTeamLoseOnKO.TabIndex = 12;
+            this.lblTeamLoseOnKO.Text = "Team.LoseOnKO";
+            this.ttpCommon.SetToolTip(this.lblTeamLoseOnKO, "组队模式中，如果2P输了，电脑控制的人物是否继续战斗");
+            // 
+            // txtTeam1VS2Life
+            // 
+            this.txtTeam1VS2Life.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtTeam1VS2Life.Location = new System.Drawing.Point(118, 149);
+            this.txtTeam1VS2Life.MaxLength = 10;
+            this.txtTeam1VS2Life.Name = "txtTeam1VS2Life";
+            this.txtTeam1VS2Life.Size = new System.Drawing.Size(106, 21);
+            this.txtTeam1VS2Life.TabIndex = 11;
+            this.ttpCommon.SetToolTip(this.txtTeam1VS2Life, "假如我方以1人出场，对方2人的话，我方将以指定百分比的生命力出战");
+            // 
+            // lblTeam1VS2Life
+            // 
+            this.lblTeam1VS2Life.AutoSize = true;
+            this.lblTeam1VS2Life.Location = new System.Drawing.Point(6, 152);
+            this.lblTeam1VS2Life.Name = "lblTeam1VS2Life";
+            this.lblTeam1VS2Life.Size = new System.Drawing.Size(83, 12);
+            this.lblTeam1VS2Life.TabIndex = 10;
+            this.lblTeam1VS2Life.Text = "Team.1VS2Life";
+            this.ttpCommon.SetToolTip(this.lblTeam1VS2Life, "假如我方以1人出场，对方2人的话，我方将以指定百分比的生命力出战");
+            // 
+            // txtGameFrame
+            // 
+            this.txtGameFrame.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtGameFrame.Location = new System.Drawing.Point(118, 122);
+            this.txtGameFrame.MaxLength = 10;
+            this.txtGameFrame.Name = "txtGameFrame";
+            this.txtGameFrame.Size = new System.Drawing.Size(123, 21);
+            this.txtGameFrame.TabIndex = 9;
+            this.ttpCommon.SetToolTip(this.txtGameFrame, "游戏的每秒运行的帧数，默认值：60");
+            // 
+            // lblGameFrame
+            // 
+            this.lblGameFrame.AutoSize = true;
+            this.lblGameFrame.Location = new System.Drawing.Point(6, 125);
+            this.lblGameFrame.Name = "lblGameFrame";
+            this.lblGameFrame.Size = new System.Drawing.Size(95, 12);
+            this.lblGameFrame.TabIndex = 8;
+            this.lblGameFrame.Text = "GameSpeed(帧率)";
+            this.ttpCommon.SetToolTip(this.lblGameFrame, "游戏的每秒运行的帧数，默认值：60");
+            // 
+            // lblGameSpeed
+            // 
+            this.lblGameSpeed.AutoSize = true;
+            this.lblGameSpeed.Location = new System.Drawing.Point(6, 98);
+            this.lblGameSpeed.Name = "lblGameSpeed";
+            this.lblGameSpeed.Size = new System.Drawing.Size(59, 12);
+            this.lblGameSpeed.TabIndex = 6;
+            this.lblGameSpeed.Text = "GameSpeed";
+            this.ttpCommon.SetToolTip(this.lblGameSpeed, "游戏运行速度");
+            // 
+            // txtTime
+            // 
+            this.txtTime.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtTime.Location = new System.Drawing.Point(118, 68);
+            this.txtTime.MaxLength = 10;
+            this.txtTime.Name = "txtTime";
+            this.txtTime.Size = new System.Drawing.Size(123, 21);
+            this.txtTime.TabIndex = 5;
+            this.ttpCommon.SetToolTip(this.txtTime, "每个回合的时间，-1为无限时间");
+            // 
+            // lblTime
+            // 
+            this.lblTime.AutoSize = true;
+            this.lblTime.Location = new System.Drawing.Point(6, 71);
+            this.lblTime.Name = "lblTime";
+            this.lblTime.Size = new System.Drawing.Size(29, 12);
+            this.lblTime.TabIndex = 4;
+            this.lblTime.Text = "Time";
+            this.ttpCommon.SetToolTip(this.lblTime, "每个回合的时间，-1为无限时间");
+            // 
+            // txtMugenCfgLife
+            // 
+            this.txtMugenCfgLife.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtMugenCfgLife.Location = new System.Drawing.Point(118, 40);
+            this.txtMugenCfgLife.MaxLength = 10;
+            this.txtMugenCfgLife.Name = "txtMugenCfgLife";
+            this.txtMugenCfgLife.Size = new System.Drawing.Size(106, 21);
+            this.txtMugenCfgLife.TabIndex = 3;
+            this.ttpCommon.SetToolTip(this.txtMugenCfgLife, "游戏中人物生命力的百分比，默认值：100");
+            // 
+            // lblMugenCfgLife
+            // 
+            this.lblMugenCfgLife.AutoSize = true;
+            this.lblMugenCfgLife.Location = new System.Drawing.Point(6, 43);
+            this.lblMugenCfgLife.Name = "lblMugenCfgLife";
+            this.lblMugenCfgLife.Size = new System.Drawing.Size(29, 12);
+            this.lblMugenCfgLife.TabIndex = 2;
+            this.lblMugenCfgLife.Text = "Life";
+            this.ttpCommon.SetToolTip(this.lblMugenCfgLife, "游戏中人物生命力的百分比，默认值：100");
+            // 
+            // lblDifficulty
+            // 
+            this.lblDifficulty.AutoSize = true;
+            this.lblDifficulty.Location = new System.Drawing.Point(6, 17);
+            this.lblDifficulty.Name = "lblDifficulty";
+            this.lblDifficulty.Size = new System.Drawing.Size(65, 12);
+            this.lblDifficulty.TabIndex = 0;
+            this.lblDifficulty.Text = "Difficulty";
+            this.ttpCommon.SetToolTip(this.lblDifficulty, "游戏难度");
+            // 
             // mnuMain
             // 
             this.mnuMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -742,12 +1438,171 @@
             // tabMain
             // 
             this.tabMain.Controls.Add(this.pageCharacter);
+            this.tabMain.Controls.Add(this.pageMugenCfgSetting);
             this.tabMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabMain.Location = new System.Drawing.Point(0, 25);
             this.tabMain.Name = "tabMain";
             this.tabMain.SelectedIndex = 0;
             this.tabMain.Size = new System.Drawing.Size(559, 526);
             this.tabMain.TabIndex = 0;
+            // 
+            // pageMugenCfgSetting
+            // 
+            this.pageMugenCfgSetting.BackColor = System.Drawing.SystemColors.Control;
+            this.pageMugenCfgSetting.Controls.Add(this.btnMugenCfgRestore);
+            this.pageMugenCfgSetting.Controls.Add(this.btnMugenCfgBackup);
+            this.pageMugenCfgSetting.Controls.Add(this.btnMugenCfgReset);
+            this.pageMugenCfgSetting.Controls.Add(this.btnMugenCfgModify);
+            this.pageMugenCfgSetting.Controls.Add(this.grpKeyPressSetting);
+            this.pageMugenCfgSetting.Controls.Add(this.grpDisplaySetting);
+            this.pageMugenCfgSetting.Controls.Add(this.grpBaseSetting);
+            this.pageMugenCfgSetting.Location = new System.Drawing.Point(4, 22);
+            this.pageMugenCfgSetting.Name = "pageMugenCfgSetting";
+            this.pageMugenCfgSetting.Padding = new System.Windows.Forms.Padding(3);
+            this.pageMugenCfgSetting.Size = new System.Drawing.Size(551, 500);
+            this.pageMugenCfgSetting.TabIndex = 1;
+            this.pageMugenCfgSetting.Text = "主程序配置";
+            this.pageMugenCfgSetting.Enter += new System.EventHandler(this.pageMugenCfgSetting_Enter);
+            // 
+            // grpKeyPressSetting
+            // 
+            this.grpKeyPressSetting.Controls.Add(this.txtP2Start);
+            this.grpKeyPressSetting.Controls.Add(this.txtP1Start);
+            this.grpKeyPressSetting.Controls.Add(this.lblKeyPressStart);
+            this.grpKeyPressSetting.Controls.Add(this.txtP2Z);
+            this.grpKeyPressSetting.Controls.Add(this.txtP1Z);
+            this.grpKeyPressSetting.Controls.Add(this.lblKeyPressZ);
+            this.grpKeyPressSetting.Controls.Add(this.txtP2Y);
+            this.grpKeyPressSetting.Controls.Add(this.txtP1Y);
+            this.grpKeyPressSetting.Controls.Add(this.lblKeyPressY);
+            this.grpKeyPressSetting.Controls.Add(this.txtP2X);
+            this.grpKeyPressSetting.Controls.Add(this.txtP1X);
+            this.grpKeyPressSetting.Controls.Add(this.lblKeyPressX);
+            this.grpKeyPressSetting.Controls.Add(this.txtP2C);
+            this.grpKeyPressSetting.Controls.Add(this.txtP1C);
+            this.grpKeyPressSetting.Controls.Add(this.lblKeyPressC);
+            this.grpKeyPressSetting.Controls.Add(this.txtP2B);
+            this.grpKeyPressSetting.Controls.Add(this.txtP1B);
+            this.grpKeyPressSetting.Controls.Add(this.lblKeyPressB);
+            this.grpKeyPressSetting.Controls.Add(this.txtP2A);
+            this.grpKeyPressSetting.Controls.Add(this.txtP1A);
+            this.grpKeyPressSetting.Controls.Add(this.lblKeyPressA);
+            this.grpKeyPressSetting.Controls.Add(this.txtP2Right);
+            this.grpKeyPressSetting.Controls.Add(this.txtP1Right);
+            this.grpKeyPressSetting.Controls.Add(this.lblKeyPressRight);
+            this.grpKeyPressSetting.Controls.Add(this.txtP2Left);
+            this.grpKeyPressSetting.Controls.Add(this.txtP1Left);
+            this.grpKeyPressSetting.Controls.Add(this.lblKeyPressLeft);
+            this.grpKeyPressSetting.Controls.Add(this.txtP2Crouch);
+            this.grpKeyPressSetting.Controls.Add(this.txtP1Crouch);
+            this.grpKeyPressSetting.Controls.Add(this.lblKeyPressCrouch);
+            this.grpKeyPressSetting.Controls.Add(this.txtP2Jump);
+            this.grpKeyPressSetting.Controls.Add(this.txtP1Jump);
+            this.grpKeyPressSetting.Controls.Add(this.lblKeyPressJump);
+            this.grpKeyPressSetting.Controls.Add(this.lblKeyPressP2);
+            this.grpKeyPressSetting.Controls.Add(this.lblKeyPressP1);
+            this.grpKeyPressSetting.Location = new System.Drawing.Point(261, 6);
+            this.grpKeyPressSetting.Name = "grpKeyPressSetting";
+            this.grpKeyPressSetting.Size = new System.Drawing.Size(128, 332);
+            this.grpKeyPressSetting.TabIndex = 2;
+            this.grpKeyPressSetting.TabStop = false;
+            this.grpKeyPressSetting.Text = "按键设置";
+            // 
+            // lblKeyPressP2
+            // 
+            this.lblKeyPressP2.AutoSize = true;
+            this.lblKeyPressP2.Location = new System.Drawing.Point(97, 17);
+            this.lblKeyPressP2.Name = "lblKeyPressP2";
+            this.lblKeyPressP2.Size = new System.Drawing.Size(17, 12);
+            this.lblKeyPressP2.TabIndex = 1;
+            this.lblKeyPressP2.Text = "2P";
+            // 
+            // lblKeyPressP1
+            // 
+            this.lblKeyPressP1.AutoSize = true;
+            this.lblKeyPressP1.Location = new System.Drawing.Point(64, 17);
+            this.lblKeyPressP1.Name = "lblKeyPressP1";
+            this.lblKeyPressP1.Size = new System.Drawing.Size(17, 12);
+            this.lblKeyPressP1.TabIndex = 0;
+            this.lblKeyPressP1.Text = "1P";
+            // 
+            // grpDisplaySetting
+            // 
+            this.grpDisplaySetting.Controls.Add(this.cboFullScreen);
+            this.grpDisplaySetting.Controls.Add(this.cboRenderMode);
+            this.grpDisplaySetting.Controls.Add(this.lblFullScreen);
+            this.grpDisplaySetting.Controls.Add(this.lblRenderMode);
+            this.grpDisplaySetting.Controls.Add(this.txtGameHeight);
+            this.grpDisplaySetting.Controls.Add(this.lblGameHeight);
+            this.grpDisplaySetting.Controls.Add(this.txtGameWidth);
+            this.grpDisplaySetting.Controls.Add(this.lblGameWidth);
+            this.grpDisplaySetting.Location = new System.Drawing.Point(8, 216);
+            this.grpDisplaySetting.Name = "grpDisplaySetting";
+            this.grpDisplaySetting.Size = new System.Drawing.Size(247, 122);
+            this.grpDisplaySetting.TabIndex = 1;
+            this.grpDisplaySetting.TabStop = false;
+            this.grpDisplaySetting.Text = "显示设置";
+            // 
+            // grpBaseSetting
+            // 
+            this.grpBaseSetting.Controls.Add(this.lblMugenCfgLifePercent);
+            this.grpBaseSetting.Controls.Add(this.lblTeam1VS2LifePercent);
+            this.grpBaseSetting.Controls.Add(this.lblGameSpeedValue);
+            this.grpBaseSetting.Controls.Add(this.lblDifficultyValue);
+            this.grpBaseSetting.Controls.Add(this.trbGameSpeed);
+            this.grpBaseSetting.Controls.Add(this.trbDifficulty);
+            this.grpBaseSetting.Controls.Add(this.cboTeamLoseOnKO);
+            this.grpBaseSetting.Controls.Add(this.lblTeamLoseOnKO);
+            this.grpBaseSetting.Controls.Add(this.txtTeam1VS2Life);
+            this.grpBaseSetting.Controls.Add(this.lblTeam1VS2Life);
+            this.grpBaseSetting.Controls.Add(this.txtGameFrame);
+            this.grpBaseSetting.Controls.Add(this.lblGameFrame);
+            this.grpBaseSetting.Controls.Add(this.lblGameSpeed);
+            this.grpBaseSetting.Controls.Add(this.txtTime);
+            this.grpBaseSetting.Controls.Add(this.lblTime);
+            this.grpBaseSetting.Controls.Add(this.txtMugenCfgLife);
+            this.grpBaseSetting.Controls.Add(this.lblMugenCfgLife);
+            this.grpBaseSetting.Controls.Add(this.lblDifficulty);
+            this.grpBaseSetting.Location = new System.Drawing.Point(8, 6);
+            this.grpBaseSetting.Name = "grpBaseSetting";
+            this.grpBaseSetting.Size = new System.Drawing.Size(247, 204);
+            this.grpBaseSetting.TabIndex = 0;
+            this.grpBaseSetting.TabStop = false;
+            this.grpBaseSetting.Text = "基础设置";
+            // 
+            // lblMugenCfgLifePercent
+            // 
+            this.lblMugenCfgLifePercent.AutoSize = true;
+            this.lblMugenCfgLifePercent.Location = new System.Drawing.Point(230, 43);
+            this.lblMugenCfgLifePercent.Name = "lblMugenCfgLifePercent";
+            this.lblMugenCfgLifePercent.Size = new System.Drawing.Size(11, 12);
+            this.lblMugenCfgLifePercent.TabIndex = 3;
+            this.lblMugenCfgLifePercent.Text = "%";
+            // 
+            // lblTeam1VS2LifePercent
+            // 
+            this.lblTeam1VS2LifePercent.AutoSize = true;
+            this.lblTeam1VS2LifePercent.Location = new System.Drawing.Point(230, 152);
+            this.lblTeam1VS2LifePercent.Name = "lblTeam1VS2LifePercent";
+            this.lblTeam1VS2LifePercent.Size = new System.Drawing.Size(11, 12);
+            this.lblTeam1VS2LifePercent.TabIndex = 11;
+            this.lblTeam1VS2LifePercent.Text = "%";
+            // 
+            // lblGameSpeedValue
+            // 
+            this.lblGameSpeedValue.AutoSize = true;
+            this.lblGameSpeedValue.Location = new System.Drawing.Point(224, 98);
+            this.lblGameSpeedValue.Name = "lblGameSpeedValue";
+            this.lblGameSpeedValue.Size = new System.Drawing.Size(0, 12);
+            this.lblGameSpeedValue.TabIndex = 7;
+            // 
+            // lblDifficultyValue
+            // 
+            this.lblDifficultyValue.AutoSize = true;
+            this.lblDifficultyValue.Location = new System.Drawing.Point(230, 17);
+            this.lblDifficultyValue.Name = "lblDifficultyValue";
+            this.lblDifficultyValue.Size = new System.Drawing.Size(0, 12);
+            this.lblDifficultyValue.TabIndex = 1;
             // 
             // fswCharacterCns
             // 
@@ -760,20 +1615,6 @@
             // ofdDefPath
             // 
             this.ofdDefPath.Filter = "def文件|*.def";
-            // 
-            // ctxTsmiConvertToWideScreen
-            // 
-            this.ctxTsmiConvertToWideScreen.Name = "ctxTsmiConvertToWideScreen";
-            this.ctxTsmiConvertToWideScreen.Size = new System.Drawing.Size(212, 22);
-            this.ctxTsmiConvertToWideScreen.Text = "转换为宽屏人物包";
-            this.ctxTsmiConvertToWideScreen.Click += new System.EventHandler(this.ctxTsmiConvertToWideScreen_Click);
-            // 
-            // ctxTsmiConvertToNormalScreen
-            // 
-            this.ctxTsmiConvertToNormalScreen.Name = "ctxTsmiConvertToNormalScreen";
-            this.ctxTsmiConvertToNormalScreen.Size = new System.Drawing.Size(212, 22);
-            this.ctxTsmiConvertToNormalScreen.Text = "转换为普屏人物包";
-            this.ctxTsmiConvertToNormalScreen.Click += new System.EventHandler(this.ctxTsmiConvertToNormalScreen_Click);
             // 
             // MainForm
             // 
@@ -801,9 +1642,18 @@
             this.grpProperty.PerformLayout();
             this.grpChars.ResumeLayout(false);
             this.grpChars.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trbGameSpeed)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trbDifficulty)).EndInit();
             this.mnuMain.ResumeLayout(false);
             this.mnuMain.PerformLayout();
             this.tabMain.ResumeLayout(false);
+            this.pageMugenCfgSetting.ResumeLayout(false);
+            this.grpKeyPressSetting.ResumeLayout(false);
+            this.grpKeyPressSetting.PerformLayout();
+            this.grpDisplaySetting.ResumeLayout(false);
+            this.grpDisplaySetting.PerformLayout();
+            this.grpBaseSetting.ResumeLayout(false);
+            this.grpBaseSetting.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fswCharacterCns)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -877,6 +1727,75 @@
         private System.Windows.Forms.Label lblIsWideScreen;
         private System.Windows.Forms.ToolStripMenuItem ctxTsmiConvertToWideScreen;
         private System.Windows.Forms.ToolStripMenuItem ctxTsmiConvertToNormalScreen;
+        private System.Windows.Forms.TabPage pageMugenCfgSetting;
+        private System.Windows.Forms.GroupBox grpBaseSetting;
+        private System.Windows.Forms.ComboBox cboTeamLoseOnKO;
+        private System.Windows.Forms.Label lblTeamLoseOnKO;
+        private System.Windows.Forms.TextBox txtTeam1VS2Life;
+        private System.Windows.Forms.Label lblTeam1VS2Life;
+        private System.Windows.Forms.TextBox txtGameFrame;
+        private System.Windows.Forms.Label lblGameFrame;
+        private System.Windows.Forms.Label lblGameSpeed;
+        private System.Windows.Forms.TextBox txtTime;
+        private System.Windows.Forms.Label lblTime;
+        private System.Windows.Forms.TextBox txtMugenCfgLife;
+        private System.Windows.Forms.Label lblMugenCfgLife;
+        private System.Windows.Forms.Label lblDifficulty;
+        private System.Windows.Forms.GroupBox grpDisplaySetting;
+        private System.Windows.Forms.ComboBox cboFullScreen;
+        private System.Windows.Forms.ComboBox cboRenderMode;
+        private System.Windows.Forms.Label lblFullScreen;
+        private System.Windows.Forms.Label lblRenderMode;
+        private System.Windows.Forms.TextBox txtGameHeight;
+        private System.Windows.Forms.Label lblGameHeight;
+        private System.Windows.Forms.TextBox txtGameWidth;
+        private System.Windows.Forms.Label lblGameWidth;
+        private System.Windows.Forms.GroupBox grpKeyPressSetting;
+        private System.Windows.Forms.TextBox txtP1Jump;
+        private System.Windows.Forms.Label lblKeyPressJump;
+        private System.Windows.Forms.Label lblKeyPressP2;
+        private System.Windows.Forms.Label lblKeyPressP1;
+        private System.Windows.Forms.TextBox txtP2Start;
+        private System.Windows.Forms.TextBox txtP1Start;
+        private System.Windows.Forms.Label lblKeyPressStart;
+        private System.Windows.Forms.TextBox txtP2Z;
+        private System.Windows.Forms.TextBox txtP1Z;
+        private System.Windows.Forms.Label lblKeyPressZ;
+        private System.Windows.Forms.TextBox txtP2Y;
+        private System.Windows.Forms.TextBox txtP1Y;
+        private System.Windows.Forms.Label lblKeyPressY;
+        private System.Windows.Forms.TextBox txtP2X;
+        private System.Windows.Forms.TextBox txtP1X;
+        private System.Windows.Forms.Label lblKeyPressX;
+        private System.Windows.Forms.TextBox txtP2C;
+        private System.Windows.Forms.TextBox txtP1C;
+        private System.Windows.Forms.Label lblKeyPressC;
+        private System.Windows.Forms.TextBox txtP2B;
+        private System.Windows.Forms.TextBox txtP1B;
+        private System.Windows.Forms.Label lblKeyPressB;
+        private System.Windows.Forms.TextBox txtP2A;
+        private System.Windows.Forms.TextBox txtP1A;
+        private System.Windows.Forms.Label lblKeyPressA;
+        private System.Windows.Forms.TextBox txtP2Right;
+        private System.Windows.Forms.TextBox txtP1Right;
+        private System.Windows.Forms.Label lblKeyPressRight;
+        private System.Windows.Forms.TextBox txtP2Left;
+        private System.Windows.Forms.TextBox txtP1Left;
+        private System.Windows.Forms.Label lblKeyPressLeft;
+        private System.Windows.Forms.TextBox txtP2Crouch;
+        private System.Windows.Forms.TextBox txtP1Crouch;
+        private System.Windows.Forms.Label lblKeyPressCrouch;
+        private System.Windows.Forms.TextBox txtP2Jump;
+        private System.Windows.Forms.Button btnMugenCfgRestore;
+        private System.Windows.Forms.Button btnMugenCfgBackup;
+        private System.Windows.Forms.Button btnMugenCfgReset;
+        private System.Windows.Forms.Button btnMugenCfgModify;
+        private System.Windows.Forms.TrackBar trbDifficulty;
+        private System.Windows.Forms.TrackBar trbGameSpeed;
+        private System.Windows.Forms.Label lblGameSpeedValue;
+        private System.Windows.Forms.Label lblDifficultyValue;
+        private System.Windows.Forms.Label lblTeam1VS2LifePercent;
+        private System.Windows.Forms.Label lblMugenCfgLifePercent;
     }
 }
 

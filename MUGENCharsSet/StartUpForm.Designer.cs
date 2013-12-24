@@ -60,18 +60,18 @@
             this.lblMugenExePath.AutoSize = true;
             this.lblMugenExePath.Location = new System.Drawing.Point(6, 18);
             this.lblMugenExePath.Name = "lblMugenExePath";
-            this.lblMugenExePath.Size = new System.Drawing.Size(95, 12);
+            this.lblMugenExePath.Size = new System.Drawing.Size(83, 12);
             this.lblMugenExePath.TabIndex = 0;
-            this.lblMugenExePath.Text = "MUGEN程序位置：";
+            this.lblMugenExePath.Text = "MUGEN程序位置";
             // 
             // txtMugenExePath
             // 
             this.txtMugenExePath.AllowDrop = true;
             this.txtMugenExePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtMugenExePath.Location = new System.Drawing.Point(107, 15);
+            this.txtMugenExePath.Location = new System.Drawing.Point(95, 15);
             this.txtMugenExePath.Name = "txtMugenExePath";
-            this.txtMugenExePath.Size = new System.Drawing.Size(241, 21);
+            this.txtMugenExePath.Size = new System.Drawing.Size(253, 21);
             this.txtMugenExePath.TabIndex = 1;
             this.ttpCommon.SetToolTip(this.txtMugenExePath, "可将程序拖拽到此处");
             this.txtMugenExePath.DragDrop += new System.Windows.Forms.DragEventHandler(this.txtMugenExePath_DragDrop);
@@ -96,6 +96,7 @@
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnOK.Location = new System.Drawing.Point(243, 61);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);

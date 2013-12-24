@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 
 namespace MUGENCharsSet
 {
     /// <summary>
-    /// 程序设置类
+    /// 程序配置类
     /// </summary>
     public static class AppSetting
     {
@@ -133,7 +132,8 @@ namespace MUGENCharsSet
         /// </summary>
         public static void Init()
         {
-            Init(Tools.GetFormatDirPath(Directory.GetParent(Application.UserAppDataPath).FullName) + Application.ProductName + IniExt);
+            Init(Tools.GetFormatDirPath(Directory.GetParent(System.Windows.Forms.Application.UserAppDataPath).FullName) +
+                System.Windows.Forms.Application.ProductName + IniExt);
         }
 
         /// <summary>

@@ -95,7 +95,6 @@ namespace MUGENCharsSet
                 ShowErrorMsg(ex.Message);
                 return;
             }
-            DialogResult = DialogResult.OK;
             Close();
         }
 

@@ -48,7 +48,6 @@ namespace MUGENCharsSet
                 MessageBox.Show(ex.Message, "操作失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            DialogResult = DialogResult.OK;
             Close();
         }
 
@@ -57,7 +56,6 @@ namespace MUGENCharsSet
         /// </summary>
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            DialogResult = DialogResult.Cancel;
             Close();
         }
 
