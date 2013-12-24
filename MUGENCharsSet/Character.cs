@@ -878,6 +878,7 @@ namespace MUGENCharsSet
                     if (character.DefPath.ToLower() == defPath.ToLower())
                     {
                         characterLines[i] = IniFiles.CommentMark + characterLines[i];
+                        break;
                     }
                 }
             }
