@@ -194,7 +194,7 @@
             this.ctxTsmiConvertToNormalScreen,
             this.ctxTsmiDeleteCharacter});
             this.ctxmnuCharacterList.Name = "contextMenuStrip1";
-            this.ctxmnuCharacterList.Size = new System.Drawing.Size(213, 158);
+            this.ctxmnuCharacterList.Size = new System.Drawing.Size(213, 180);
             // 
             // ctxTsmiOpenDefFile
             // 
@@ -229,14 +229,14 @@
             // 
             this.ctxTsmiConvertToWideScreen.Name = "ctxTsmiConvertToWideScreen";
             this.ctxTsmiConvertToWideScreen.Size = new System.Drawing.Size(212, 22);
-            this.ctxTsmiConvertToWideScreen.Text = "转换为宽屏人物包";
+            this.ctxTsmiConvertToWideScreen.Text = "转换为宽屏人物包(&W)";
             this.ctxTsmiConvertToWideScreen.Click += new System.EventHandler(this.ctxTsmiConvertToWideScreen_Click);
             // 
             // ctxTsmiConvertToNormalScreen
             // 
             this.ctxTsmiConvertToNormalScreen.Name = "ctxTsmiConvertToNormalScreen";
             this.ctxTsmiConvertToNormalScreen.Size = new System.Drawing.Size(212, 22);
-            this.ctxTsmiConvertToNormalScreen.Text = "转换为普屏人物包";
+            this.ctxTsmiConvertToNormalScreen.Text = "转换为普屏人物包(&N)";
             this.ctxTsmiConvertToNormalScreen.Click += new System.EventHandler(this.ctxTsmiConvertToNormalScreen_Click);
             // 
             // ctxTsmiDeleteCharacter

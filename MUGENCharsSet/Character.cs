@@ -243,8 +243,8 @@ namespace MUGENCharsSet
                     try
                     {
                         IniFiles ini = new IniFiles(DefPath);
-                        int width = MugenSetting.Localcoord.Width / 2;
-                        int height = MugenSetting.Localcoord.Height / 2;
+                        int width = 427;
+                        int height = 240;
                         ini.WriteString(SettingInfo.InfoSection, SettingInfo.LocalcoordItem, String.Format("{0},{1}", width, height));
                     }
                     catch (ApplicationException)
