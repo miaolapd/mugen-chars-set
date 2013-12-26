@@ -645,6 +645,7 @@ namespace MUGENCharsSet
                 ShowErrorMsg(ex.Message);
                 return;
             }
+            fswCharacterCns.EnableRaisingEvents = false;
             if (MultiModified)
             {
                 Character[] characterList = new Character[lstCharacterList.SelectedItems.Count];
@@ -664,6 +665,7 @@ namespace MUGENCharsSet
                 }
                 else
                 {
+                    fswCharacterCns.EnableRaisingEvents = true;
                     ShowErrorMsg("转换失败！");
                     return;
                 }
@@ -684,6 +686,7 @@ namespace MUGENCharsSet
                 }
                 catch (ApplicationException ex)
                 {
+                    fswCharacterCns.EnableRaisingEvents = true;
                     ShowErrorMsg(ex.Message);
                     return;
                 }
@@ -696,6 +699,7 @@ namespace MUGENCharsSet
             {
                 lstCharacterList.SetSelected(index, true);
             }
+            fswCharacterCns.EnableRaisingEvents = true;
         }
 
         #endregion
@@ -1096,7 +1100,7 @@ namespace MUGENCharsSet
                 if (Path.GetExtension(defPath) != Character.DefExt) continue;
                 for (int i = 0; i < lstCharacterList.Items.Count; i++)
                 {
-                    if (((Character)lstCharacterList.Items[i]).DefPath.ToLower() == defPath.ToLower())
+                    if (((Character)lstCharacterList.Items[i]).Equals(defPath))
                     {
                         lstCharacterList.SetSelected(i, true);
                         break;

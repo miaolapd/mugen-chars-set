@@ -315,6 +315,23 @@ namespace MUGENCharsSet
         }
 
         /// <summary>
+        /// 检查此人物实例的人物def文件是否与指定路径相同
+        /// </summary>
+        /// <param name="defPath">人物def文件绝对路径</param>
+        /// <returns></returns>
+        public bool Equals(string defPath)
+        {
+            if (Tools.GetBackSlashPath(DefPath.ToLower()) == Tools.GetBackSlashPath(defPath.ToLower()))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// 读取人物属性设置
         /// </summary>
         /// <exception cref="System.ApplicationException"></exception>
@@ -426,8 +443,17 @@ namespace MUGENCharsSet
         {
             if (!File.Exists(DefPath)) throw new ApplicationException("人物def文件不存在！");
             if (!File.Exists(CnsFullPath)) throw new ApplicationException("人物cns文件不存在！");
-            int total= MultiBackup(new Character[] { this });
-            if (total == 0) throw new ApplicationException("人物备份失败！");
+            try
+            {
+                if (!Tools.SetFileNotReadOnly(DefPath + BakExt)) throw new Exception();
+                File.Copy(DefPath, DefPath + BakExt, true);
+                if (!Tools.SetFileNotReadOnly(CnsFullPath + BakExt)) throw new Exception();
+                File.Copy(CnsFullPath, CnsFullPath + BakExt, true);
+            }
+            catch(Exception)
+            {
+                throw new ApplicationException("人物备份失败！");
+            }
         }
 
         /// <summary>
@@ -438,8 +464,18 @@ namespace MUGENCharsSet
         {
             if (!File.Exists(DefPath + BakExt)) throw new ApplicationException("人物def备份文件不存在！");
             if (!File.Exists(CnsFullPath + BakExt)) throw new ApplicationException("人物cns备份文件不存在！");
-            int total = MultiRestore(new Character[] { this });
-            if (total == 0) throw new ApplicationException("人物恢复失败！");
+            try
+            {
+                if (!Tools.SetFileNotReadOnly(DefPath)) throw new Exception();
+                File.Copy(DefPath + BakExt, DefPath, true);
+                if (!Tools.SetFileNotReadOnly(CnsFullPath)) throw new Exception();
+                File.Copy(CnsFullPath + BakExt, CnsFullPath, true);
+                ReadCharacterSetting();
+            }
+            catch(Exception)
+            {
+                throw new ApplicationException("人物恢复失败！");
+            }
         }
 
         /// <summary>
@@ -449,8 +485,18 @@ namespace MUGENCharsSet
         public void Delete()
         {
             if (!File.Exists(DefPath)) throw new ApplicationException("人物def文件不存在！");
-            int total = MultiDelete(new Character[] { this });
-            if (total == 0) throw new ApplicationException("人物删除失败！");
+            try
+            {
+                if (!Tools.SetFileNotReadOnly(DefPath + DelExt)) throw new Exception();
+                File.Copy(DefPath, DefPath + DelExt, true);
+                if (!Tools.SetFileNotReadOnly(DefPath)) throw new Exception();
+                File.Delete(DefPath);
+            }
+            catch (Exception)
+            {
+                throw new ApplicationException("人物删除失败！");
+            }
+            DeleteSelectDefCharacterList(new Character[] { this });
         }
 
         /// <summary>
@@ -460,8 +506,20 @@ namespace MUGENCharsSet
         public void ConvertToWideScreen()
         {
             if (!File.Exists(DefPath)) throw new ApplicationException("人物def文件不存在！");
-            int total = MultiConvertToWideScreen(new Character[] { this });
-            if (total == 0) throw new ApplicationException("宽屏人物包转换失败！");
+            try
+            {
+                IsWideScreen = true;
+                SetItemName(IsWideScreen);
+                string stcommonPath = Tools.GetBackSlashPath(Tools.GetFileDirName(DefPath) + Stcommon);
+                if (File.Exists(stcommonPath))
+                {
+                    StcommonConvertToWideScreen(stcommonPath);
+                }
+            }
+            catch(ApplicationException)
+            {
+                throw new ApplicationException("宽屏人物包转换失败！");
+            }
         }
 
         /// <summary>
@@ -471,8 +529,20 @@ namespace MUGENCharsSet
         public void ConvertToNormalScreen()
         {
             if (!File.Exists(DefPath)) throw new ApplicationException("人物def文件不存在！");
-            int total = MultiConvertToNormalScreen(new Character[] { this });
-            if (total == 0) throw new ApplicationException("普屏人物包转换失败！");
+            try
+            {
+                IsWideScreen = false;
+                SetItemName(IsWideScreen);
+                string stcommonPath = Tools.GetBackSlashPath(Tools.GetFileDirName(DefPath) + Stcommon);
+                if (File.Exists(stcommonPath))
+                {
+                    StcommonConvertToNormalScreen(stcommonPath);
+                }
+            }
+            catch(ApplicationException)
+            {
+                throw new ApplicationException("普屏人物包转换失败！");
+            }
         }
 
         /// <summary>
@@ -575,15 +645,10 @@ namespace MUGENCharsSet
             {
                 try
                 {
-                    if (!File.Exists(character.DefPath)) continue;
-                    if (!File.Exists(character.CnsFullPath)) continue;
-                    if (!Tools.SetFileNotReadOnly(character.DefPath + BakExt)) continue;
-                    File.Copy(character.DefPath, character.DefPath + BakExt, true);
-                    if (!Tools.SetFileNotReadOnly(character.CnsFullPath + BakExt)) continue;
-                    File.Copy(character.CnsFullPath, character.CnsFullPath + BakExt, true);
+                    character.Backup();
                     total++;
                 }
-                catch (Exception)
+                catch (ApplicationException)
                 {
                     continue;
                 }
@@ -603,16 +668,10 @@ namespace MUGENCharsSet
             {
                 try
                 {
-                    if (!File.Exists(character.DefPath + BakExt)) continue;
-                    if (!File.Exists(character.CnsFullPath + BakExt)) continue;
-                    if (!Tools.SetFileNotReadOnly(character.DefPath)) continue;
-                    File.Copy(character.DefPath + BakExt, character.DefPath, true);
-                    if (!Tools.SetFileNotReadOnly(character.CnsFullPath)) continue;
-                    File.Copy(character.CnsFullPath + BakExt, character.CnsFullPath, true);
-                    character.ReadCharacterSetting();
+                    character.Restore();
                     total++;
                 }
-                catch (Exception)
+                catch (ApplicationException)
                 {
                     continue;
                 }
@@ -632,14 +691,10 @@ namespace MUGENCharsSet
             {
                 try
                 {
-                    if (!File.Exists(character.DefPath)) continue;
-                    if (!Tools.SetFileNotReadOnly(character.DefPath + DelExt)) continue;
-                    File.Copy(character.DefPath, character.DefPath + DelExt, true);
-                    if (!Tools.SetFileNotReadOnly(character.DefPath)) continue;
-                    File.Delete(character.DefPath);
+                    character.Delete();
                     total++;
                 }
-                catch (Exception)
+                catch(ApplicationException)
                 {
                     continue;
                 }
@@ -660,17 +715,10 @@ namespace MUGENCharsSet
             {
                 try
                 {
-                    if (!File.Exists(character.DefPath)) continue;
-                    character.IsWideScreen = true;
-                    character.SetItemName(character.IsWideScreen);
-                    string stcommonPath = Tools.GetBackSlashPath(Tools.GetFileDirName(character.DefPath) + character.Stcommon);
-                    if (File.Exists(stcommonPath))
-                    {
-                        StcommonConvertToWideScreen(stcommonPath);
-                    }
+                    character.ConvertToWideScreen();
                     total++;
                 }
-                catch (Exception)
+                catch (ApplicationException)
                 {
                     continue;
                 }
@@ -690,17 +738,10 @@ namespace MUGENCharsSet
             {
                 try
                 {
-                    if (!File.Exists(character.DefPath)) continue;
-                    character.IsWideScreen = false;
-                    character.SetItemName(character.IsWideScreen);
-                    string stcommonPath = Tools.GetBackSlashPath(Tools.GetFileDirName(character.DefPath) + character.Stcommon);
-                    if (File.Exists(stcommonPath))
-                    {
-                        StcommonConvertToNormalScreen(stcommonPath);
-                    }
+                    character.ConvertToNormalScreen();
                     total++;
                 }
-                catch (Exception)
+                catch (ApplicationException)
                 {
                     continue;
                 }
@@ -875,7 +916,7 @@ namespace MUGENCharsSet
                 string defPath = MugenSetting.MugenCharsDirPath + Tools.GetBackSlashPath(line);
                 foreach(Character character in characterList)
                 {
-                    if (character.DefPath.ToLower() == defPath.ToLower())
+                    if (character.Equals(defPath))
                     {
                         characterLines[i] = IniFiles.CommentMark + characterLines[i];
                         break;
