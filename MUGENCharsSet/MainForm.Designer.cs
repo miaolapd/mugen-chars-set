@@ -82,38 +82,16 @@
             this.btnMugenCfgBackup = new System.Windows.Forms.Button();
             this.btnMugenCfgReset = new System.Windows.Forms.Button();
             this.btnMugenCfgModify = new System.Windows.Forms.Button();
-            this.txtP2Start = new System.Windows.Forms.TextBox();
-            this.txtP1Start = new System.Windows.Forms.TextBox();
             this.lblKeyPressStart = new System.Windows.Forms.Label();
-            this.txtP2Z = new System.Windows.Forms.TextBox();
-            this.txtP1Z = new System.Windows.Forms.TextBox();
             this.lblKeyPressZ = new System.Windows.Forms.Label();
-            this.txtP2Y = new System.Windows.Forms.TextBox();
-            this.txtP1Y = new System.Windows.Forms.TextBox();
             this.lblKeyPressY = new System.Windows.Forms.Label();
-            this.txtP2X = new System.Windows.Forms.TextBox();
-            this.txtP1X = new System.Windows.Forms.TextBox();
             this.lblKeyPressX = new System.Windows.Forms.Label();
-            this.txtP2C = new System.Windows.Forms.TextBox();
-            this.txtP1C = new System.Windows.Forms.TextBox();
             this.lblKeyPressC = new System.Windows.Forms.Label();
-            this.txtP2B = new System.Windows.Forms.TextBox();
-            this.txtP1B = new System.Windows.Forms.TextBox();
             this.lblKeyPressB = new System.Windows.Forms.Label();
-            this.txtP2A = new System.Windows.Forms.TextBox();
-            this.txtP1A = new System.Windows.Forms.TextBox();
             this.lblKeyPressA = new System.Windows.Forms.Label();
-            this.txtP2Right = new System.Windows.Forms.TextBox();
-            this.txtP1Right = new System.Windows.Forms.TextBox();
             this.lblKeyPressRight = new System.Windows.Forms.Label();
-            this.txtP2Left = new System.Windows.Forms.TextBox();
-            this.txtP1Left = new System.Windows.Forms.TextBox();
             this.lblKeyPressLeft = new System.Windows.Forms.Label();
-            this.txtP2Crouch = new System.Windows.Forms.TextBox();
-            this.txtP1Crouch = new System.Windows.Forms.TextBox();
             this.lblKeyPressCrouch = new System.Windows.Forms.Label();
-            this.txtP2Jump = new System.Windows.Forms.TextBox();
-            this.txtP1Jump = new System.Windows.Forms.TextBox();
             this.lblKeyPressJump = new System.Windows.Forms.Label();
             this.cboFullScreen = new System.Windows.Forms.ComboBox();
             this.cboRenderMode = new System.Windows.Forms.ComboBox();
@@ -164,6 +142,28 @@
             this.lblDifficultyValue = new System.Windows.Forms.Label();
             this.fswCharacterCns = new System.IO.FileSystemWatcher();
             this.ofdDefPath = new System.Windows.Forms.OpenFileDialog();
+            this.txtP1Jump = new System.Windows.Forms.TextBox();
+            this.txtP2Jump = new System.Windows.Forms.TextBox();
+            this.txtP1Crouch = new System.Windows.Forms.TextBox();
+            this.txtP2Crouch = new System.Windows.Forms.TextBox();
+            this.txtP1Left = new System.Windows.Forms.TextBox();
+            this.txtP2Left = new System.Windows.Forms.TextBox();
+            this.txtP1Right = new System.Windows.Forms.TextBox();
+            this.txtP2Right = new System.Windows.Forms.TextBox();
+            this.txtP1A = new System.Windows.Forms.TextBox();
+            this.txtP2A = new System.Windows.Forms.TextBox();
+            this.txtP1B = new System.Windows.Forms.TextBox();
+            this.txtP2B = new System.Windows.Forms.TextBox();
+            this.txtP1C = new System.Windows.Forms.TextBox();
+            this.txtP2C = new System.Windows.Forms.TextBox();
+            this.txtP1X = new System.Windows.Forms.TextBox();
+            this.txtP2X = new System.Windows.Forms.TextBox();
+            this.txtP1Y = new System.Windows.Forms.TextBox();
+            this.txtP2Y = new System.Windows.Forms.TextBox();
+            this.txtP1Z = new System.Windows.Forms.TextBox();
+            this.txtP2Z = new System.Windows.Forms.TextBox();
+            this.txtP1Start = new System.Windows.Forms.TextBox();
+            this.txtP2Start = new System.Windows.Forms.TextBox();
             this.ctxmnuCharacterList.SuspendLayout();
             this.pageCharacter.SuspendLayout();
             this.grpIsWideScreen.SuspendLayout();
@@ -194,7 +194,7 @@
             this.ctxTsmiConvertToNormalScreen,
             this.ctxTsmiDeleteCharacter});
             this.ctxmnuCharacterList.Name = "contextMenuStrip1";
-            this.ctxmnuCharacterList.Size = new System.Drawing.Size(213, 180);
+            this.ctxmnuCharacterList.Size = new System.Drawing.Size(213, 158);
             // 
             // ctxTsmiOpenDefFile
             // 
@@ -765,24 +765,6 @@
             this.btnMugenCfgModify.UseVisualStyleBackColor = true;
             this.btnMugenCfgModify.Click += new System.EventHandler(this.btnMugenCfgModify_Click);
             // 
-            // txtP2Start
-            // 
-            this.txtP2Start.Location = new System.Drawing.Point(92, 302);
-            this.txtP2Start.MaxLength = 3;
-            this.txtP2Start.Name = "txtP2Start";
-            this.txtP2Start.Size = new System.Drawing.Size(28, 21);
-            this.txtP2Start.TabIndex = 34;
-            this.ttpCommon.SetToolTip(this.txtP2Start, "开始键");
-            // 
-            // txtP1Start
-            // 
-            this.txtP1Start.Location = new System.Drawing.Point(58, 302);
-            this.txtP1Start.MaxLength = 3;
-            this.txtP1Start.Name = "txtP1Start";
-            this.txtP1Start.Size = new System.Drawing.Size(28, 21);
-            this.txtP1Start.TabIndex = 33;
-            this.ttpCommon.SetToolTip(this.txtP1Start, "开始键");
-            // 
             // lblKeyPressStart
             // 
             this.lblKeyPressStart.AutoSize = true;
@@ -792,24 +774,6 @@
             this.lblKeyPressStart.TabIndex = 32;
             this.lblKeyPressStart.Text = "START";
             this.ttpCommon.SetToolTip(this.lblKeyPressStart, "开始键");
-            // 
-            // txtP2Z
-            // 
-            this.txtP2Z.Location = new System.Drawing.Point(92, 275);
-            this.txtP2Z.MaxLength = 3;
-            this.txtP2Z.Name = "txtP2Z";
-            this.txtP2Z.Size = new System.Drawing.Size(28, 21);
-            this.txtP2Z.TabIndex = 31;
-            this.ttpCommon.SetToolTip(this.txtP2Z, "热键2");
-            // 
-            // txtP1Z
-            // 
-            this.txtP1Z.Location = new System.Drawing.Point(58, 275);
-            this.txtP1Z.MaxLength = 3;
-            this.txtP1Z.Name = "txtP1Z";
-            this.txtP1Z.Size = new System.Drawing.Size(28, 21);
-            this.txtP1Z.TabIndex = 30;
-            this.ttpCommon.SetToolTip(this.txtP1Z, "热键2");
             // 
             // lblKeyPressZ
             // 
@@ -821,24 +785,6 @@
             this.lblKeyPressZ.Text = "Z";
             this.ttpCommon.SetToolTip(this.lblKeyPressZ, "热键2");
             // 
-            // txtP2Y
-            // 
-            this.txtP2Y.Location = new System.Drawing.Point(92, 248);
-            this.txtP2Y.MaxLength = 3;
-            this.txtP2Y.Name = "txtP2Y";
-            this.txtP2Y.Size = new System.Drawing.Size(28, 21);
-            this.txtP2Y.TabIndex = 28;
-            this.ttpCommon.SetToolTip(this.txtP2Y, "重拳");
-            // 
-            // txtP1Y
-            // 
-            this.txtP1Y.Location = new System.Drawing.Point(58, 248);
-            this.txtP1Y.MaxLength = 3;
-            this.txtP1Y.Name = "txtP1Y";
-            this.txtP1Y.Size = new System.Drawing.Size(28, 21);
-            this.txtP1Y.TabIndex = 27;
-            this.ttpCommon.SetToolTip(this.txtP1Y, "重拳");
-            // 
             // lblKeyPressY
             // 
             this.lblKeyPressY.AutoSize = true;
@@ -848,24 +794,6 @@
             this.lblKeyPressY.TabIndex = 26;
             this.lblKeyPressY.Text = "Y";
             this.ttpCommon.SetToolTip(this.lblKeyPressY, "重拳");
-            // 
-            // txtP2X
-            // 
-            this.txtP2X.Location = new System.Drawing.Point(92, 221);
-            this.txtP2X.MaxLength = 3;
-            this.txtP2X.Name = "txtP2X";
-            this.txtP2X.Size = new System.Drawing.Size(28, 21);
-            this.txtP2X.TabIndex = 25;
-            this.ttpCommon.SetToolTip(this.txtP2X, "轻拳");
-            // 
-            // txtP1X
-            // 
-            this.txtP1X.Location = new System.Drawing.Point(58, 221);
-            this.txtP1X.MaxLength = 3;
-            this.txtP1X.Name = "txtP1X";
-            this.txtP1X.Size = new System.Drawing.Size(28, 21);
-            this.txtP1X.TabIndex = 24;
-            this.ttpCommon.SetToolTip(this.txtP1X, "轻拳");
             // 
             // lblKeyPressX
             // 
@@ -877,24 +805,6 @@
             this.lblKeyPressX.Text = "X";
             this.ttpCommon.SetToolTip(this.lblKeyPressX, "轻拳");
             // 
-            // txtP2C
-            // 
-            this.txtP2C.Location = new System.Drawing.Point(92, 194);
-            this.txtP2C.MaxLength = 3;
-            this.txtP2C.Name = "txtP2C";
-            this.txtP2C.Size = new System.Drawing.Size(28, 21);
-            this.txtP2C.TabIndex = 22;
-            this.ttpCommon.SetToolTip(this.txtP2C, "热键1");
-            // 
-            // txtP1C
-            // 
-            this.txtP1C.Location = new System.Drawing.Point(58, 194);
-            this.txtP1C.MaxLength = 3;
-            this.txtP1C.Name = "txtP1C";
-            this.txtP1C.Size = new System.Drawing.Size(28, 21);
-            this.txtP1C.TabIndex = 21;
-            this.ttpCommon.SetToolTip(this.txtP1C, "热键1");
-            // 
             // lblKeyPressC
             // 
             this.lblKeyPressC.AutoSize = true;
@@ -904,24 +814,6 @@
             this.lblKeyPressC.TabIndex = 20;
             this.lblKeyPressC.Text = "C";
             this.ttpCommon.SetToolTip(this.lblKeyPressC, "热键1");
-            // 
-            // txtP2B
-            // 
-            this.txtP2B.Location = new System.Drawing.Point(92, 167);
-            this.txtP2B.MaxLength = 3;
-            this.txtP2B.Name = "txtP2B";
-            this.txtP2B.Size = new System.Drawing.Size(28, 21);
-            this.txtP2B.TabIndex = 19;
-            this.ttpCommon.SetToolTip(this.txtP2B, "重脚");
-            // 
-            // txtP1B
-            // 
-            this.txtP1B.Location = new System.Drawing.Point(58, 167);
-            this.txtP1B.MaxLength = 3;
-            this.txtP1B.Name = "txtP1B";
-            this.txtP1B.Size = new System.Drawing.Size(28, 21);
-            this.txtP1B.TabIndex = 18;
-            this.ttpCommon.SetToolTip(this.txtP1B, "重脚");
             // 
             // lblKeyPressB
             // 
@@ -933,24 +825,6 @@
             this.lblKeyPressB.Text = "B";
             this.ttpCommon.SetToolTip(this.lblKeyPressB, "重脚");
             // 
-            // txtP2A
-            // 
-            this.txtP2A.Location = new System.Drawing.Point(92, 140);
-            this.txtP2A.MaxLength = 3;
-            this.txtP2A.Name = "txtP2A";
-            this.txtP2A.Size = new System.Drawing.Size(28, 21);
-            this.txtP2A.TabIndex = 16;
-            this.ttpCommon.SetToolTip(this.txtP2A, "轻脚");
-            // 
-            // txtP1A
-            // 
-            this.txtP1A.Location = new System.Drawing.Point(58, 140);
-            this.txtP1A.MaxLength = 3;
-            this.txtP1A.Name = "txtP1A";
-            this.txtP1A.Size = new System.Drawing.Size(28, 21);
-            this.txtP1A.TabIndex = 15;
-            this.ttpCommon.SetToolTip(this.txtP1A, "轻脚");
-            // 
             // lblKeyPressA
             // 
             this.lblKeyPressA.AutoSize = true;
@@ -960,24 +834,6 @@
             this.lblKeyPressA.TabIndex = 14;
             this.lblKeyPressA.Text = "A";
             this.ttpCommon.SetToolTip(this.lblKeyPressA, "轻脚");
-            // 
-            // txtP2Right
-            // 
-            this.txtP2Right.Location = new System.Drawing.Point(92, 113);
-            this.txtP2Right.MaxLength = 3;
-            this.txtP2Right.Name = "txtP2Right";
-            this.txtP2Right.Size = new System.Drawing.Size(28, 21);
-            this.txtP2Right.TabIndex = 13;
-            this.ttpCommon.SetToolTip(this.txtP2Right, "前");
-            // 
-            // txtP1Right
-            // 
-            this.txtP1Right.Location = new System.Drawing.Point(58, 113);
-            this.txtP1Right.MaxLength = 3;
-            this.txtP1Right.Name = "txtP1Right";
-            this.txtP1Right.Size = new System.Drawing.Size(28, 21);
-            this.txtP1Right.TabIndex = 12;
-            this.ttpCommon.SetToolTip(this.txtP1Right, "前");
             // 
             // lblKeyPressRight
             // 
@@ -989,24 +845,6 @@
             this.lblKeyPressRight.Text = "RIGHT";
             this.ttpCommon.SetToolTip(this.lblKeyPressRight, "前");
             // 
-            // txtP2Left
-            // 
-            this.txtP2Left.Location = new System.Drawing.Point(92, 86);
-            this.txtP2Left.MaxLength = 3;
-            this.txtP2Left.Name = "txtP2Left";
-            this.txtP2Left.Size = new System.Drawing.Size(28, 21);
-            this.txtP2Left.TabIndex = 10;
-            this.ttpCommon.SetToolTip(this.txtP2Left, "后");
-            // 
-            // txtP1Left
-            // 
-            this.txtP1Left.Location = new System.Drawing.Point(58, 86);
-            this.txtP1Left.MaxLength = 3;
-            this.txtP1Left.Name = "txtP1Left";
-            this.txtP1Left.Size = new System.Drawing.Size(28, 21);
-            this.txtP1Left.TabIndex = 9;
-            this.ttpCommon.SetToolTip(this.txtP1Left, "后");
-            // 
             // lblKeyPressLeft
             // 
             this.lblKeyPressLeft.AutoSize = true;
@@ -1017,24 +855,6 @@
             this.lblKeyPressLeft.Text = "LEFT";
             this.ttpCommon.SetToolTip(this.lblKeyPressLeft, "后");
             // 
-            // txtP2Crouch
-            // 
-            this.txtP2Crouch.Location = new System.Drawing.Point(92, 59);
-            this.txtP2Crouch.MaxLength = 3;
-            this.txtP2Crouch.Name = "txtP2Crouch";
-            this.txtP2Crouch.Size = new System.Drawing.Size(28, 21);
-            this.txtP2Crouch.TabIndex = 7;
-            this.ttpCommon.SetToolTip(this.txtP2Crouch, "蹲");
-            // 
-            // txtP1Crouch
-            // 
-            this.txtP1Crouch.Location = new System.Drawing.Point(58, 59);
-            this.txtP1Crouch.MaxLength = 3;
-            this.txtP1Crouch.Name = "txtP1Crouch";
-            this.txtP1Crouch.Size = new System.Drawing.Size(28, 21);
-            this.txtP1Crouch.TabIndex = 6;
-            this.ttpCommon.SetToolTip(this.txtP1Crouch, "蹲");
-            // 
             // lblKeyPressCrouch
             // 
             this.lblKeyPressCrouch.AutoSize = true;
@@ -1044,24 +864,6 @@
             this.lblKeyPressCrouch.TabIndex = 5;
             this.lblKeyPressCrouch.Text = "DWON";
             this.ttpCommon.SetToolTip(this.lblKeyPressCrouch, "蹲");
-            // 
-            // txtP2Jump
-            // 
-            this.txtP2Jump.Location = new System.Drawing.Point(92, 32);
-            this.txtP2Jump.MaxLength = 3;
-            this.txtP2Jump.Name = "txtP2Jump";
-            this.txtP2Jump.Size = new System.Drawing.Size(28, 21);
-            this.txtP2Jump.TabIndex = 4;
-            this.ttpCommon.SetToolTip(this.txtP2Jump, "跳");
-            // 
-            // txtP1Jump
-            // 
-            this.txtP1Jump.Location = new System.Drawing.Point(58, 32);
-            this.txtP1Jump.MaxLength = 3;
-            this.txtP1Jump.Name = "txtP1Jump";
-            this.txtP1Jump.Size = new System.Drawing.Size(28, 21);
-            this.txtP1Jump.TabIndex = 3;
-            this.ttpCommon.SetToolTip(this.txtP1Jump, "跳");
             // 
             // lblKeyPressJump
             // 
@@ -1616,6 +1418,204 @@
             // 
             this.ofdDefPath.Filter = "def文件|*.def";
             // 
+            // txtP1Jump
+            // 
+            this.txtP1Jump.Location = new System.Drawing.Point(58, 32);
+            this.txtP1Jump.MaxLength = 3;
+            this.txtP1Jump.Name = "txtP1Jump";
+            this.txtP1Jump.Size = new System.Drawing.Size(28, 21);
+            this.txtP1Jump.TabIndex = 3;
+            this.ttpCommon.SetToolTip(this.txtP1Jump, "跳");
+            // 
+            // txtP2Jump
+            // 
+            this.txtP2Jump.Location = new System.Drawing.Point(92, 32);
+            this.txtP2Jump.MaxLength = 3;
+            this.txtP2Jump.Name = "txtP2Jump";
+            this.txtP2Jump.Size = new System.Drawing.Size(28, 21);
+            this.txtP2Jump.TabIndex = 4;
+            this.ttpCommon.SetToolTip(this.txtP2Jump, "跳");
+            // 
+            // txtP1Crouch
+            // 
+            this.txtP1Crouch.Location = new System.Drawing.Point(58, 59);
+            this.txtP1Crouch.MaxLength = 3;
+            this.txtP1Crouch.Name = "txtP1Crouch";
+            this.txtP1Crouch.Size = new System.Drawing.Size(28, 21);
+            this.txtP1Crouch.TabIndex = 6;
+            this.ttpCommon.SetToolTip(this.txtP1Crouch, "蹲");
+            // 
+            // txtP2Crouch
+            // 
+            this.txtP2Crouch.Location = new System.Drawing.Point(92, 59);
+            this.txtP2Crouch.MaxLength = 3;
+            this.txtP2Crouch.Name = "txtP2Crouch";
+            this.txtP2Crouch.Size = new System.Drawing.Size(28, 21);
+            this.txtP2Crouch.TabIndex = 7;
+            this.ttpCommon.SetToolTip(this.txtP2Crouch, "蹲");
+            // 
+            // txtP1Left
+            // 
+            this.txtP1Left.Location = new System.Drawing.Point(58, 86);
+            this.txtP1Left.MaxLength = 3;
+            this.txtP1Left.Name = "txtP1Left";
+            this.txtP1Left.Size = new System.Drawing.Size(28, 21);
+            this.txtP1Left.TabIndex = 9;
+            this.ttpCommon.SetToolTip(this.txtP1Left, "后");
+            // 
+            // txtP2Left
+            // 
+            this.txtP2Left.Location = new System.Drawing.Point(92, 86);
+            this.txtP2Left.MaxLength = 3;
+            this.txtP2Left.Name = "txtP2Left";
+            this.txtP2Left.Size = new System.Drawing.Size(28, 21);
+            this.txtP2Left.TabIndex = 10;
+            this.ttpCommon.SetToolTip(this.txtP2Left, "后");
+            // 
+            // txtP1Right
+            // 
+            this.txtP1Right.Location = new System.Drawing.Point(58, 113);
+            this.txtP1Right.MaxLength = 3;
+            this.txtP1Right.Name = "txtP1Right";
+            this.txtP1Right.Size = new System.Drawing.Size(28, 21);
+            this.txtP1Right.TabIndex = 12;
+            this.ttpCommon.SetToolTip(this.txtP1Right, "前");
+            // 
+            // txtP2Right
+            // 
+            this.txtP2Right.Location = new System.Drawing.Point(92, 113);
+            this.txtP2Right.MaxLength = 3;
+            this.txtP2Right.Name = "txtP2Right";
+            this.txtP2Right.Size = new System.Drawing.Size(28, 21);
+            this.txtP2Right.TabIndex = 13;
+            this.ttpCommon.SetToolTip(this.txtP2Right, "前");
+            // 
+            // txtP1A
+            // 
+            this.txtP1A.Location = new System.Drawing.Point(58, 140);
+            this.txtP1A.MaxLength = 3;
+            this.txtP1A.Name = "txtP1A";
+            this.txtP1A.Size = new System.Drawing.Size(28, 21);
+            this.txtP1A.TabIndex = 15;
+            this.ttpCommon.SetToolTip(this.txtP1A, "轻脚");
+            // 
+            // txtP2A
+            // 
+            this.txtP2A.Location = new System.Drawing.Point(92, 140);
+            this.txtP2A.MaxLength = 3;
+            this.txtP2A.Name = "txtP2A";
+            this.txtP2A.Size = new System.Drawing.Size(28, 21);
+            this.txtP2A.TabIndex = 16;
+            this.ttpCommon.SetToolTip(this.txtP2A, "轻脚");
+            // 
+            // txtP1B
+            // 
+            this.txtP1B.Location = new System.Drawing.Point(58, 167);
+            this.txtP1B.MaxLength = 3;
+            this.txtP1B.Name = "txtP1B";
+            this.txtP1B.Size = new System.Drawing.Size(28, 21);
+            this.txtP1B.TabIndex = 18;
+            this.ttpCommon.SetToolTip(this.txtP1B, "重脚");
+            // 
+            // txtP2B
+            // 
+            this.txtP2B.Location = new System.Drawing.Point(92, 167);
+            this.txtP2B.MaxLength = 3;
+            this.txtP2B.Name = "txtP2B";
+            this.txtP2B.Size = new System.Drawing.Size(28, 21);
+            this.txtP2B.TabIndex = 19;
+            this.ttpCommon.SetToolTip(this.txtP2B, "重脚");
+            // 
+            // txtP1C
+            // 
+            this.txtP1C.Location = new System.Drawing.Point(58, 194);
+            this.txtP1C.MaxLength = 3;
+            this.txtP1C.Name = "txtP1C";
+            this.txtP1C.Size = new System.Drawing.Size(28, 21);
+            this.txtP1C.TabIndex = 21;
+            this.ttpCommon.SetToolTip(this.txtP1C, "热键1");
+            // 
+            // txtP2C
+            // 
+            this.txtP2C.Location = new System.Drawing.Point(92, 194);
+            this.txtP2C.MaxLength = 3;
+            this.txtP2C.Name = "txtP2C";
+            this.txtP2C.Size = new System.Drawing.Size(28, 21);
+            this.txtP2C.TabIndex = 22;
+            this.ttpCommon.SetToolTip(this.txtP2C, "热键1");
+            // 
+            // txtP1X
+            // 
+            this.txtP1X.Location = new System.Drawing.Point(58, 221);
+            this.txtP1X.MaxLength = 3;
+            this.txtP1X.Name = "txtP1X";
+            this.txtP1X.Size = new System.Drawing.Size(28, 21);
+            this.txtP1X.TabIndex = 24;
+            this.ttpCommon.SetToolTip(this.txtP1X, "轻拳");
+            // 
+            // txtP2X
+            // 
+            this.txtP2X.Location = new System.Drawing.Point(92, 221);
+            this.txtP2X.MaxLength = 3;
+            this.txtP2X.Name = "txtP2X";
+            this.txtP2X.Size = new System.Drawing.Size(28, 21);
+            this.txtP2X.TabIndex = 25;
+            this.ttpCommon.SetToolTip(this.txtP2X, "轻拳");
+            // 
+            // txtP1Y
+            // 
+            this.txtP1Y.Location = new System.Drawing.Point(58, 248);
+            this.txtP1Y.MaxLength = 3;
+            this.txtP1Y.Name = "txtP1Y";
+            this.txtP1Y.Size = new System.Drawing.Size(28, 21);
+            this.txtP1Y.TabIndex = 27;
+            this.ttpCommon.SetToolTip(this.txtP1Y, "重拳");
+            // 
+            // txtP2Y
+            // 
+            this.txtP2Y.Location = new System.Drawing.Point(92, 248);
+            this.txtP2Y.MaxLength = 3;
+            this.txtP2Y.Name = "txtP2Y";
+            this.txtP2Y.Size = new System.Drawing.Size(28, 21);
+            this.txtP2Y.TabIndex = 28;
+            this.ttpCommon.SetToolTip(this.txtP2Y, "重拳");
+            // 
+            // txtP1Z
+            // 
+            this.txtP1Z.Location = new System.Drawing.Point(58, 275);
+            this.txtP1Z.MaxLength = 3;
+            this.txtP1Z.Name = "txtP1Z";
+            this.txtP1Z.Size = new System.Drawing.Size(28, 21);
+            this.txtP1Z.TabIndex = 30;
+            this.ttpCommon.SetToolTip(this.txtP1Z, "热键2");
+            // 
+            // txtP2Z
+            // 
+            this.txtP2Z.Location = new System.Drawing.Point(92, 275);
+            this.txtP2Z.MaxLength = 3;
+            this.txtP2Z.Name = "txtP2Z";
+            this.txtP2Z.Size = new System.Drawing.Size(28, 21);
+            this.txtP2Z.TabIndex = 31;
+            this.ttpCommon.SetToolTip(this.txtP2Z, "热键2");
+            // 
+            // txtP1Start
+            // 
+            this.txtP1Start.Location = new System.Drawing.Point(58, 302);
+            this.txtP1Start.MaxLength = 3;
+            this.txtP1Start.Name = "txtP1Start";
+            this.txtP1Start.Size = new System.Drawing.Size(28, 21);
+            this.txtP1Start.TabIndex = 33;
+            this.ttpCommon.SetToolTip(this.txtP1Start, "开始键");
+            // 
+            // txtP2Start
+            // 
+            this.txtP2Start.Location = new System.Drawing.Point(92, 302);
+            this.txtP2Start.MaxLength = 3;
+            this.txtP2Start.Name = "txtP2Start";
+            this.txtP2Start.Size = new System.Drawing.Size(28, 21);
+            this.txtP2Start.TabIndex = 34;
+            this.ttpCommon.SetToolTip(this.txtP2Start, "开始键");
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1751,41 +1751,19 @@
         private System.Windows.Forms.TextBox txtGameWidth;
         private System.Windows.Forms.Label lblGameWidth;
         private System.Windows.Forms.GroupBox grpKeyPressSetting;
-        private System.Windows.Forms.TextBox txtP1Jump;
         private System.Windows.Forms.Label lblKeyPressJump;
         private System.Windows.Forms.Label lblKeyPressP2;
         private System.Windows.Forms.Label lblKeyPressP1;
-        private System.Windows.Forms.TextBox txtP2Start;
-        private System.Windows.Forms.TextBox txtP1Start;
         private System.Windows.Forms.Label lblKeyPressStart;
-        private System.Windows.Forms.TextBox txtP2Z;
-        private System.Windows.Forms.TextBox txtP1Z;
         private System.Windows.Forms.Label lblKeyPressZ;
-        private System.Windows.Forms.TextBox txtP2Y;
-        private System.Windows.Forms.TextBox txtP1Y;
         private System.Windows.Forms.Label lblKeyPressY;
-        private System.Windows.Forms.TextBox txtP2X;
-        private System.Windows.Forms.TextBox txtP1X;
         private System.Windows.Forms.Label lblKeyPressX;
-        private System.Windows.Forms.TextBox txtP2C;
-        private System.Windows.Forms.TextBox txtP1C;
         private System.Windows.Forms.Label lblKeyPressC;
-        private System.Windows.Forms.TextBox txtP2B;
-        private System.Windows.Forms.TextBox txtP1B;
         private System.Windows.Forms.Label lblKeyPressB;
-        private System.Windows.Forms.TextBox txtP2A;
-        private System.Windows.Forms.TextBox txtP1A;
         private System.Windows.Forms.Label lblKeyPressA;
-        private System.Windows.Forms.TextBox txtP2Right;
-        private System.Windows.Forms.TextBox txtP1Right;
         private System.Windows.Forms.Label lblKeyPressRight;
-        private System.Windows.Forms.TextBox txtP2Left;
-        private System.Windows.Forms.TextBox txtP1Left;
         private System.Windows.Forms.Label lblKeyPressLeft;
-        private System.Windows.Forms.TextBox txtP2Crouch;
-        private System.Windows.Forms.TextBox txtP1Crouch;
         private System.Windows.Forms.Label lblKeyPressCrouch;
-        private System.Windows.Forms.TextBox txtP2Jump;
         private System.Windows.Forms.Button btnMugenCfgRestore;
         private System.Windows.Forms.Button btnMugenCfgBackup;
         private System.Windows.Forms.Button btnMugenCfgReset;
@@ -1796,6 +1774,28 @@
         private System.Windows.Forms.Label lblDifficultyValue;
         private System.Windows.Forms.Label lblTeam1VS2LifePercent;
         private System.Windows.Forms.Label lblMugenCfgLifePercent;
+        private System.Windows.Forms.TextBox txtP2Start;
+        private System.Windows.Forms.TextBox txtP1Start;
+        private System.Windows.Forms.TextBox txtP2Z;
+        private System.Windows.Forms.TextBox txtP1Z;
+        private System.Windows.Forms.TextBox txtP2Y;
+        private System.Windows.Forms.TextBox txtP1Y;
+        private System.Windows.Forms.TextBox txtP2X;
+        private System.Windows.Forms.TextBox txtP1X;
+        private System.Windows.Forms.TextBox txtP2C;
+        private System.Windows.Forms.TextBox txtP1C;
+        private System.Windows.Forms.TextBox txtP2B;
+        private System.Windows.Forms.TextBox txtP1B;
+        private System.Windows.Forms.TextBox txtP2A;
+        private System.Windows.Forms.TextBox txtP1A;
+        private System.Windows.Forms.TextBox txtP2Right;
+        private System.Windows.Forms.TextBox txtP1Right;
+        private System.Windows.Forms.TextBox txtP2Left;
+        private System.Windows.Forms.TextBox txtP1Left;
+        private System.Windows.Forms.TextBox txtP2Crouch;
+        private System.Windows.Forms.TextBox txtP1Crouch;
+        private System.Windows.Forms.TextBox txtP2Jump;
+        private System.Windows.Forms.TextBox txtP1Jump;
     }
 }
 

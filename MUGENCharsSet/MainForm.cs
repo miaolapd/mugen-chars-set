@@ -229,6 +229,16 @@ namespace MUGENCharsSet
             lblCharacterCount.Text = String.Format("共{0}项", lstCharacterList.Items.Count);
             fswCharacterCns.Path = MugenSetting.MugenCharsDirPath;
             fswCharacterCns.EnableRaisingEvents = true;
+            if (MugenSetting.MugenVersion == MugenSetting.Version.WIN)
+            {
+                ctxTsmiConvertToWideScreen.Enabled = false;
+                ctxTsmiConvertToNormalScreen.Enabled = false;
+            }
+            else
+            {
+                ctxTsmiConvertToWideScreen.Enabled = true;
+                ctxTsmiConvertToNormalScreen.Enabled = true;
+            }
         }
 
         /// <summary>

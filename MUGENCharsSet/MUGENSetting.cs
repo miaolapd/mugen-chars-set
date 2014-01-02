@@ -70,6 +70,11 @@ namespace MUGENCharsSet
             public const string FullScreenItem = "FullScreen";
         }
 
+        /// <summary>
+        /// MUGEN程序版本
+        /// </summary>
+        public enum Version { WIN, V1_0_PLUS };
+
         #endregion
 
         #region 类私有成员
@@ -93,6 +98,7 @@ namespace MUGENCharsSet
         private static bool _fullScreen = false;
         private static KeyPress _keyPressP1;
         private static KeyPress _keyPressP2;
+        private static Version _mugenVersion = Version.V1_0_PLUS;
 
         #endregion
 
@@ -353,6 +359,15 @@ namespace MUGENCharsSet
             set { _keyPressP2 = value; }
         }
 
+        /// <summary>
+        /// 获取或设置当前MUGEN程序版本
+        /// </summary>
+        public static Version MugenVersion
+        {
+            get { return _mugenVersion; }
+            set { _mugenVersion = value; }
+        }
+
         #endregion
 
         #region 类方法
@@ -391,23 +406,28 @@ namespace MUGENCharsSet
             if (selectDefFileName == String.Empty) throw new ApplicationException("select.def路径读取失败！");
             _selectDefPath = Tools.GetIniFileExistPath(SystemDefPath, selectDefFileName);
             if (SelectDefPath == String.Empty) throw new ApplicationException("select.def文件不存在！");
+            MugenVersion = Version.V1_0_PLUS;
             string localcoord = ini.ReadString(SettingInfo.InfoSection, SettingInfo.LocalcoordItem, "");
-            try
+            if (localcoord != String.Empty)
             {
-                if (localcoord == String.Empty) throw new Exception();
                 string[] size = localcoord.Split(',');
-                Localcoord = new Size(Convert.ToInt32(size[0]), Convert.ToInt32(size[1]));
-            }
-            catch (Exception)
-            {
-                throw new ApplicationException("系统localcoord配置项读取失败！");
-            }
-            if (Math.Round((decimal)Localcoord.Width / Localcoord.Height, 2) == Math.Round(16m / 9m, 2))
-            {
-                IsWideScreen = true;
+                try
+                {
+                    Localcoord = new Size(Convert.ToInt32(size[0]), Convert.ToInt32(size[1]));
+                    if (Math.Round((decimal)Localcoord.Width / Localcoord.Height, 2) == Math.Round(16m / 9m, 2))
+                    {
+                        IsWideScreen = true;
+                    }
+                    else
+                    {
+                        IsWideScreen = false;
+                    }
+                }
+                catch (Exception) { }
             }
             else
             {
+                MugenVersion = Version.WIN;
                 IsWideScreen = false;
             }
         }

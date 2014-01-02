@@ -173,7 +173,7 @@ namespace MUGENCharsSet
         /// </summary>
         /// <param name="content">要转换的字符串</param>
         /// <returns>转换后的字符串</returns>
-        public static string ConvertUTF8ToDefault(string content)
+        public static string ConvertUTF8ToDefaultEncoding(string content)
         {
             byte[] bytes = Encoding.UTF8.GetBytes(content);
             bytes = Encoding.Convert(Encoding.UTF8, Encoding.Default, bytes);
@@ -195,7 +195,7 @@ namespace MUGENCharsSet
                 if (Tools.IsUTF8(bytes))
                 {
                     string content = File.ReadAllText(path, Encoding.UTF8);
-                    content = Tools.ConvertUTF8ToDefault(content);
+                    content = Tools.ConvertUTF8ToDefaultEncoding(content);
                     if (content[0] == '[')
                     {
                         content = "\r\n" + content;
