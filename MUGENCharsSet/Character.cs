@@ -552,7 +552,7 @@ namespace MUGENCharsSet
         public void SetItemName(bool isWideScreen)
         {
             _itemName = Name;
-            if (MugenSetting.MugenVersion != MugenSetting.Version.WIN)
+            if (MugenSetting.Version != MugenSetting.MugenVersion.WIN)
             {
                 if (MugenSetting.IsWideScreen)
                 {

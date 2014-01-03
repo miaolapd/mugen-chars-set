@@ -35,7 +35,6 @@ namespace MUGENCharsSet
         private bool _multiModified = false;
         private ArrayList _characterList;
         private bool _characterListControlPreparing = false;
-        private int _currentCharacterSearchIndex = -1;
 
         #endregion
 
@@ -57,15 +56,6 @@ namespace MUGENCharsSet
         {
             get { return _characterListControlPreparing; }
             set { _characterListControlPreparing = value; }
-        }
-
-        /// <summary>
-        /// 获取或设置当前人物列表搜索索引
-        /// </summary>
-        private int CurrentCharacterSearchIndex
-        {
-            get { return _currentCharacterSearchIndex; }
-            set { _currentCharacterSearchIndex = value; }
         }
 
         /// <summary>
@@ -183,7 +173,7 @@ namespace MUGENCharsSet
             MultiModified = false;
             lstCharacterList.DataSource = null;
             txtKeyword.Clear();
-            lblIsWideScreen.Text = "";
+            lblMugenInfo.Text = "";
             lblCharacterCount.Text = "";
             lblCharacterSelectCount.Text = "";
             try
@@ -225,20 +215,12 @@ namespace MUGENCharsSet
             {
                 RefreshCharacterListDataSource(CharacterList);
             }
-            lblIsWideScreen.Text = String.Format("当前画面包为{0}屏", MugenSetting.IsWideScreen ? "宽" : "普");
+            lblMugenInfo.Text = String.Format("MUGEN版本：{0}  画面包状态：{1}屏", MugenSetting.Version == MugenSetting.MugenVersion.WIN ? "win" : "1.x",
+                MugenSetting.IsWideScreen ? "宽" : "普");
             lblCharacterCount.Text = String.Format("共{0}项", lstCharacterList.Items.Count);
             fswCharacterCns.Path = MugenSetting.MugenCharsDirPath;
             fswCharacterCns.EnableRaisingEvents = true;
-            if (MugenSetting.MugenVersion == MugenSetting.Version.WIN)
-            {
-                ctxTsmiConvertToWideScreen.Enabled = false;
-                ctxTsmiConvertToNormalScreen.Enabled = false;
-            }
-            else
-            {
-                ctxTsmiConvertToWideScreen.Enabled = true;
-                ctxTsmiConvertToNormalScreen.Enabled = true;
-            }
+            SetMugenVersionForControls(MugenSetting.Version);
         }
 
         /// <summary>
@@ -547,20 +529,26 @@ namespace MUGENCharsSet
             string keyword = txtKeyword.Text.Trim();
             if (keyword == String.Empty) return;
             if (lstCharacterList.Items.Count == 0) return;
+            int searchIndex = -1;
             if (lstCharacterList.SelectedIndex != -1)
             {
-                CurrentCharacterSearchIndex = lstCharacterList.SelectedIndex;
+                searchIndex = lstCharacterList.SelectedIndex;
+            }
+            else
+            {
+                if (isUp) searchIndex = lstCharacterList.Items.Count;
+                else searchIndex = -1;
             }
             lstCharacterList.ClearSelected();
             bool isFind = false;
             if (isUp)
             {
-                for (int i = CurrentCharacterSearchIndex - 1; i >= 0; i--)
+                for (int i = searchIndex - 1; i >= 0; i--)
                 {
-                    if (((Character)lstCharacterList.Items[i]).Name.ToString().IndexOf(keyword, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                    if (((Character)lstCharacterList.Items[i]).Name.IndexOf(keyword, StringComparison.CurrentCultureIgnoreCase) >= 0)
                     {
                         lstCharacterList.SelectedIndex = i;
-                        CurrentCharacterSearchIndex = i;
+                        searchIndex = i;
                         isFind = true;
                         break;
                     }
@@ -568,12 +556,12 @@ namespace MUGENCharsSet
             }
             else
             {
-                for (int i = CurrentCharacterSearchIndex + 1; i < lstCharacterList.Items.Count; i++)
+                for (int i = searchIndex + 1; i < lstCharacterList.Items.Count; i++)
                 {
-                    if (((Character)lstCharacterList.Items[i]).Name.ToString().IndexOf(keyword, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                    if (((Character)lstCharacterList.Items[i]).Name.IndexOf(keyword, StringComparison.CurrentCultureIgnoreCase) >= 0)
                     {
                         lstCharacterList.SelectedIndex = i;
-                        CurrentCharacterSearchIndex = i;
+                        searchIndex = i;
                         isFind = true;
                         break;
                     }
@@ -581,13 +569,16 @@ namespace MUGENCharsSet
             }
             if (!isFind)
             {
-                if (CurrentCharacterSearchIndex != -1)
+                if (searchIndex == -1 || searchIndex == lstCharacterList.Items.Count)
                 {
-                    if (isUp) CurrentCharacterSearchIndex = lstCharacterList.Items.Count;
-                    else CurrentCharacterSearchIndex = -1;
+                    searchIndex = -1;
+                }
+                else
+                {
+                    if (isUp) searchIndex = lstCharacterList.Items.Count;
+                    else searchIndex = -1;
                     SearchKeyword(isUp);
                 }
-                else CurrentCharacterSearchIndex = -1;
             }
         }
 
@@ -603,9 +594,9 @@ namespace MUGENCharsSet
             CharacterListControlPreparing = true;
             for (int i = 0; i < lstCharacterList.Items.Count; i++)
             {
-                if (((Character)lstCharacterList.Items[i]).Name.ToString().IndexOf(keyword, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                if (((Character)lstCharacterList.Items[i]).Name.IndexOf(keyword, StringComparison.CurrentCultureIgnoreCase) >= 0)
                 {
-                    lstCharacterList.SelectedIndex = i;
+                    lstCharacterList.SetSelected(i, true);
                 }
             }
             CharacterListControlPreparing = false;
@@ -710,6 +701,31 @@ namespace MUGENCharsSet
                 lstCharacterList.SetSelected(index, true);
             }
             fswCharacterCns.EnableRaisingEvents = true;
+        }
+
+        /// <summary>
+        /// 为不同的MUGEN程序版本设置相应的控件
+        /// </summary>
+        /// <param name="version">MUGEN程序版本</param>
+        private void SetMugenVersionForControls(MugenSetting.MugenVersion version)
+        {
+            if (version == MugenSetting.MugenVersion.WIN)
+            {
+                ctxTsmiConvertToWideScreen.Enabled = false;
+                ctxTsmiConvertToNormalScreen.Enabled = false;
+                txtGameWidth.Enabled = false;
+                txtGameHeight.Enabled = false;
+                cboRenderMode.Enabled = false;
+            }
+            else
+            {
+                ctxTsmiConvertToWideScreen.Enabled = true;
+                ctxTsmiConvertToNormalScreen.Enabled = true;
+                txtGameWidth.Enabled = true;
+                txtGameHeight.Enabled = true;
+                cboRenderMode.Enabled = true;
+            }
+            KeyPressComboBoxInit();
         }
 
         #endregion
@@ -1609,7 +1625,7 @@ namespace MUGENCharsSet
         /// <summary>
         /// 读取mugen.cfg文件配置
         /// </summary>
-        private void ReadMugenCfgSetting()
+        public void ReadMugenCfgSetting()
         {
             try
             {
@@ -1629,6 +1645,10 @@ namespace MUGENCharsSet
             {
                 trbDifficulty.Value = 1;
             }
+            finally
+            {
+                trbDifficulty_ValueChanged(null, null);
+            }
             txtMugenCfgLife.Text = MugenSetting.Life.ToString();
             txtTime.Text = MugenSetting.Time.ToString();
             try
@@ -1639,6 +1659,10 @@ namespace MUGENCharsSet
             {
                 trbGameSpeed.Value = 0;
             }
+            finally
+            {
+                trbGameSpeed_ValueChanged(null, null);
+            }
             txtGameFrame.Text = MugenSetting.GameFrame.ToString();
             txtTeam1VS2Life.Text = MugenSetting.Team1VS2Life.ToString();
             cboTeamLoseOnKO.SelectedIndex = Convert.ToInt32(MugenSetting.TeamLoseOnKO);
@@ -1647,29 +1671,29 @@ namespace MUGENCharsSet
             cboRenderMode.SelectedIndex = Tools.GetComboBoxEqualValueIndex(cboRenderMode, MugenSetting.RenderMode);
             cboFullScreen.SelectedIndex = Convert.ToInt32(MugenSetting.FullScreen);
 
-            txtP1Jump.Text = MugenSetting.KeyPressP1.Jump.ToString();
-            txtP1Crouch.Text = MugenSetting.KeyPressP1.Crouch.ToString();
-            txtP1Left.Text = MugenSetting.KeyPressP1.Left.ToString();
-            txtP1Right.Text = MugenSetting.KeyPressP1.Right.ToString();
-            txtP1A.Text = MugenSetting.KeyPressP1.A.ToString();
-            txtP1B.Text = MugenSetting.KeyPressP1.B.ToString();
-            txtP1C.Text = MugenSetting.KeyPressP1.C.ToString();
-            txtP1X.Text = MugenSetting.KeyPressP1.X.ToString();
-            txtP1Y.Text = MugenSetting.KeyPressP1.Y.ToString();
-            txtP1Z.Text = MugenSetting.KeyPressP1.Z.ToString();
-            txtP1Start.Text = MugenSetting.KeyPressP1.Start.ToString();
+            cboP1Jump.Text = KeyPressSetting.GetKeyName(MugenSetting.KeyPressP1.Jump);
+            cboP1Crouch.Text = KeyPressSetting.GetKeyName(MugenSetting.KeyPressP1.Crouch);
+            cboP1Left.Text = KeyPressSetting.GetKeyName(MugenSetting.KeyPressP1.Left);
+            cboP1Right.Text = KeyPressSetting.GetKeyName(MugenSetting.KeyPressP1.Right);
+            cboP1A.Text = KeyPressSetting.GetKeyName(MugenSetting.KeyPressP1.A);
+            cboP1B.Text = KeyPressSetting.GetKeyName(MugenSetting.KeyPressP1.B);
+            cboP1C.Text = KeyPressSetting.GetKeyName(MugenSetting.KeyPressP1.C);
+            cboP1X.Text = KeyPressSetting.GetKeyName(MugenSetting.KeyPressP1.X);
+            cboP1Y.Text = KeyPressSetting.GetKeyName(MugenSetting.KeyPressP1.Y);
+            cboP1Z.Text = KeyPressSetting.GetKeyName(MugenSetting.KeyPressP1.Z);
+            cboP1Start.Text = KeyPressSetting.GetKeyName(MugenSetting.KeyPressP1.Start);
 
-            txtP2Jump.Text = MugenSetting.KeyPressP2.Jump.ToString();
-            txtP2Crouch.Text = MugenSetting.KeyPressP2.Crouch.ToString();
-            txtP2Left.Text = MugenSetting.KeyPressP2.Left.ToString();
-            txtP2Right.Text = MugenSetting.KeyPressP2.Right.ToString();
-            txtP2A.Text = MugenSetting.KeyPressP2.A.ToString();
-            txtP2B.Text = MugenSetting.KeyPressP2.B.ToString();
-            txtP2C.Text = MugenSetting.KeyPressP2.C.ToString();
-            txtP2X.Text = MugenSetting.KeyPressP2.X.ToString();
-            txtP2Y.Text = MugenSetting.KeyPressP2.Y.ToString();
-            txtP2Z.Text = MugenSetting.KeyPressP2.Z.ToString();
-            txtP2Start.Text = MugenSetting.KeyPressP2.Start.ToString();
+            cboP2Jump.Text = KeyPressSetting.GetKeyName(MugenSetting.KeyPressP2.Jump);
+            cboP2Crouch.Text = KeyPressSetting.GetKeyName(MugenSetting.KeyPressP2.Crouch);
+            cboP2Left.Text = KeyPressSetting.GetKeyName(MugenSetting.KeyPressP2.Left);
+            cboP2Right.Text = KeyPressSetting.GetKeyName(MugenSetting.KeyPressP2.Right);
+            cboP2A.Text = KeyPressSetting.GetKeyName(MugenSetting.KeyPressP2.A);
+            cboP2B.Text = KeyPressSetting.GetKeyName(MugenSetting.KeyPressP2.B);
+            cboP2C.Text = KeyPressSetting.GetKeyName(MugenSetting.KeyPressP2.C);
+            cboP2X.Text = KeyPressSetting.GetKeyName(MugenSetting.KeyPressP2.X);
+            cboP2Y.Text = KeyPressSetting.GetKeyName(MugenSetting.KeyPressP2.Y);
+            cboP2Z.Text = KeyPressSetting.GetKeyName(MugenSetting.KeyPressP2.Z);
+            cboP2Start.Text = KeyPressSetting.GetKeyName(MugenSetting.KeyPressP2.Start);
 
             MugenCfgModifyEnabled = true;
             if (File.Exists(MugenSetting.MugenCfgPath + MugenSetting.BakExt))
@@ -1690,19 +1714,23 @@ namespace MUGENCharsSet
                 {
                     foreach (Control control in ((GroupBox)groupBox).Controls)
                     {
+                        if (!control.Enabled) continue;
                         try
                         {
                             if (control is TextBox)
                             {
                                 if (((TextBox)control).Text.Trim() == String.Empty) throw new ApplicationException("字段不得为空！");
-                                if (groupBox == grpKeyPressSetting)
-                                {
-                                    if (Convert.ToUInt16(((TextBox)control).Text.Trim()) <= 0) throw new ApplicationException("键码必须大于0！");
-                                }
                             }
                             else if (control is ComboBox)
                             {
-                                if (((ComboBox)control).SelectedIndex == -1) throw new ApplicationException("必须选择一项！");
+                                if (((ComboBox)control).DropDownStyle == ComboBoxStyle.DropDownList)
+                                {
+                                    if (((ComboBox)control).SelectedIndex == -1) throw new ApplicationException("必须选择一项！");
+                                }
+                                else
+                                {
+                                    if (((ComboBox)control).Text.Trim() == String.Empty) throw new ApplicationException("字段不得为空！");
+                                }
                             }
                             if (control == trbDifficulty) MugenSetting.Difficulty = trbDifficulty.Value;
                             else if (control == txtLife) MugenSetting.Life = Convert.ToInt32(txtLife.Text.Trim());
@@ -1715,28 +1743,28 @@ namespace MUGENCharsSet
                             else if (control == txtGameHeight) MugenSetting.GameHeight = Convert.ToInt32(txtGameHeight.Text.Trim());
                             else if (control == cboRenderMode) MugenSetting.RenderMode = cboRenderMode.SelectedItem.ToString();
                             else if (control == cboFullScreen) MugenSetting.FullScreen = Convert.ToBoolean(cboFullScreen.SelectedIndex);
-                            else if (control == txtP1Jump) MugenSetting.KeyPressP1.Jump = Convert.ToUInt16(txtP1Jump.Text.Trim());
-                            else if (control == txtP1Crouch) MugenSetting.KeyPressP1.Crouch = Convert.ToUInt16(txtP1Crouch.Text.Trim());
-                            else if (control == txtP1Left) MugenSetting.KeyPressP1.Left = Convert.ToUInt16(txtP1Left.Text.Trim());
-                            else if (control == txtP1Right) MugenSetting.KeyPressP1.Right = Convert.ToUInt16(txtP1Right.Text.Trim());
-                            else if (control == txtP1A) MugenSetting.KeyPressP1.A = Convert.ToUInt16(txtP1A.Text.Trim());
-                            else if (control == txtP1B) MugenSetting.KeyPressP1.B = Convert.ToUInt16(txtP1B.Text.Trim());
-                            else if (control == txtP1C) MugenSetting.KeyPressP1.C = Convert.ToUInt16(txtP1C.Text.Trim());
-                            else if (control == txtP1X) MugenSetting.KeyPressP1.X = Convert.ToUInt16(txtP1X.Text.Trim());
-                            else if (control == txtP1Y) MugenSetting.KeyPressP1.Y = Convert.ToUInt16(txtP1Y.Text.Trim());
-                            else if (control == txtP1Z) MugenSetting.KeyPressP1.Z = Convert.ToUInt16(txtP1Z.Text.Trim());
-                            else if (control == txtP1Start) MugenSetting.KeyPressP1.Start = Convert.ToUInt16(txtP1Start.Text.Trim());
-                            else if (control == txtP2Jump) MugenSetting.KeyPressP2.Jump = Convert.ToUInt16(txtP2Jump.Text.Trim());
-                            else if (control == txtP2Crouch) MugenSetting.KeyPressP2.Crouch = Convert.ToUInt16(txtP2Crouch.Text.Trim());
-                            else if (control == txtP2Left) MugenSetting.KeyPressP2.Left = Convert.ToUInt16(txtP2Left.Text.Trim());
-                            else if (control == txtP2Right) MugenSetting.KeyPressP2.Right = Convert.ToUInt16(txtP2Right.Text.Trim());
-                            else if (control == txtP2A) MugenSetting.KeyPressP2.A = Convert.ToUInt16(txtP2A.Text.Trim());
-                            else if (control == txtP2B) MugenSetting.KeyPressP2.B = Convert.ToUInt16(txtP2B.Text.Trim());
-                            else if (control == txtP2C) MugenSetting.KeyPressP2.C = Convert.ToUInt16(txtP2C.Text.Trim());
-                            else if (control == txtP2X) MugenSetting.KeyPressP2.X = Convert.ToUInt16(txtP2X.Text.Trim());
-                            else if (control == txtP2Y) MugenSetting.KeyPressP2.Y = Convert.ToUInt16(txtP2Y.Text.Trim());
-                            else if (control == txtP2Z) MugenSetting.KeyPressP2.Z = Convert.ToUInt16(txtP2Z.Text.Trim());
-                            else if (control == txtP2Start) MugenSetting.KeyPressP2.Start = Convert.ToUInt16(txtP2Start.Text.Trim());
+                            else if (control == cboP1Jump) MugenSetting.KeyPressP1.Jump = KeyPressSetting.GetKeyCode(cboP1Jump.Text.Trim());
+                            else if (control == cboP1Crouch) MugenSetting.KeyPressP1.Crouch = KeyPressSetting.GetKeyCode(cboP1Crouch.Text.Trim());
+                            else if (control == cboP1Left) MugenSetting.KeyPressP1.Left = KeyPressSetting.GetKeyCode(cboP1Left.Text.Trim());
+                            else if (control == cboP1Right) MugenSetting.KeyPressP1.Right = KeyPressSetting.GetKeyCode(cboP1Right.Text.Trim());
+                            else if (control == cboP1A) MugenSetting.KeyPressP1.A = KeyPressSetting.GetKeyCode(cboP1A.Text.Trim());
+                            else if (control == cboP1B) MugenSetting.KeyPressP1.B = KeyPressSetting.GetKeyCode(cboP1B.Text.Trim());
+                            else if (control == cboP1C) MugenSetting.KeyPressP1.C = KeyPressSetting.GetKeyCode(cboP1C.Text.Trim());
+                            else if (control == cboP1X) MugenSetting.KeyPressP1.X = KeyPressSetting.GetKeyCode(cboP1X.Text.Trim());
+                            else if (control == cboP1Y) MugenSetting.KeyPressP1.Y = KeyPressSetting.GetKeyCode(cboP1Y.Text.Trim());
+                            else if (control == cboP1Z) MugenSetting.KeyPressP1.Z = KeyPressSetting.GetKeyCode(cboP1Z.Text.Trim());
+                            else if (control == cboP1Start) MugenSetting.KeyPressP1.Start = KeyPressSetting.GetKeyCode(cboP1Start.Text.Trim());
+                            else if (control == cboP2Jump) MugenSetting.KeyPressP2.Jump = KeyPressSetting.GetKeyCode(cboP2Jump.Text.Trim());
+                            else if (control == cboP2Crouch) MugenSetting.KeyPressP2.Crouch = KeyPressSetting.GetKeyCode(cboP2Crouch.Text.Trim());
+                            else if (control == cboP2Left) MugenSetting.KeyPressP2.Left = KeyPressSetting.GetKeyCode(cboP2Left.Text.Trim());
+                            else if (control == cboP2Right) MugenSetting.KeyPressP2.Right = KeyPressSetting.GetKeyCode(cboP2Right.Text.Trim());
+                            else if (control == cboP2A) MugenSetting.KeyPressP2.A = KeyPressSetting.GetKeyCode(cboP2A.Text.Trim());
+                            else if (control == cboP2B) MugenSetting.KeyPressP2.B = KeyPressSetting.GetKeyCode(cboP2B.Text.Trim());
+                            else if (control == cboP2C) MugenSetting.KeyPressP2.C = KeyPressSetting.GetKeyCode(cboP2C.Text.Trim());
+                            else if (control == cboP2X) MugenSetting.KeyPressP2.X = KeyPressSetting.GetKeyCode(cboP2X.Text.Trim());
+                            else if (control == cboP2Y) MugenSetting.KeyPressP2.Y = KeyPressSetting.GetKeyCode(cboP2Y.Text.Trim());
+                            else if (control == cboP2Z) MugenSetting.KeyPressP2.Z = KeyPressSetting.GetKeyCode(cboP2Z.Text.Trim());
+                            else if (control == cboP2Start) MugenSetting.KeyPressP2.Start = KeyPressSetting.GetKeyCode(cboP2Start.Text.Trim());
                         }
                         catch (FormatException)
                         {
@@ -1762,11 +1790,26 @@ namespace MUGENCharsSet
         }
 
         /// <summary>
+        /// 初始化按键设置下拉列表
+        /// </summary>
+        private void KeyPressComboBoxInit()
+        {
+            foreach (Control control in grpKeyPressSetting.Controls)
+            {
+                if (control is ComboBox)
+                {
+                    ((ComboBox)control).Items.Clear();
+                    ((ComboBox)control).Items.AddRange(KeyPressSetting.KeyCode.Values.ToArray());
+                }
+            }
+        }
+
+        /// <summary>
         /// 当主程序配置标签页获得焦点时发生
         /// </summary>
         private void pageMugenCfgSetting_Enter(object sender, EventArgs e)
         {
-            Size = new Size(422, 468);
+            Size = new Size(532, 468);
             if (!MugenCfgModifyEnabled)
             {
                 ReadMugenCfgSetting();

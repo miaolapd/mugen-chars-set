@@ -52,6 +52,11 @@ namespace MUGENCharsSet
         /// </summary>
         private void btnOpenMugenExePath_Click(object sender, EventArgs e)
         {
+            ofdExePath.FileName = AppSetting.MugenExePath;
+            if (File.Exists(AppSetting.MugenExePath))
+            {
+                ofdExePath.InitialDirectory = Tools.GetFileDirName(AppSetting.MugenExePath);
+            }
             if (ofdExePath.ShowDialog() == DialogResult.OK)
             {
                 txtMugenExePath.Text = ofdExePath.FileName;
@@ -88,6 +93,7 @@ namespace MUGENCharsSet
                     AppSetting.MugenExePath = txtMugenExePath.Text.Trim();
                     MugenSetting.Init(AppSetting.MugenExePath);
                     owner.ReadCharacterList();
+                    owner.ReadMugenCfgSetting();
                 }
             }
             catch(ApplicationException ex)

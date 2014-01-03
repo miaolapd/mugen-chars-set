@@ -34,6 +34,7 @@
             this.lblAppName = new System.Windows.Forms.Label();
             this.lnkAppUrl = new System.Windows.Forms.LinkLabel();
             this.lblAuthor = new System.Windows.Forms.Label();
+            this.lblCompany = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.picIcon)).BeginInit();
             this.SuspendLayout();
             // 
@@ -62,18 +63,19 @@
             // lblAppName
             // 
             this.lblAppName.AutoSize = true;
-            this.lblAppName.Location = new System.Drawing.Point(82, 17);
+            this.lblAppName.Location = new System.Drawing.Point(82, 16);
             this.lblAppName.Name = "lblAppName";
-            this.lblAppName.Size = new System.Drawing.Size(0, 12);
+            this.lblAppName.Size = new System.Drawing.Size(107, 12);
             this.lblAppName.TabIndex = 1;
+            this.lblAppName.Text = "M.U.G.E.N人物设置";
             // 
             // lnkAppUrl
             // 
             this.lnkAppUrl.AutoSize = true;
-            this.lnkAppUrl.Location = new System.Drawing.Point(82, 59);
+            this.lnkAppUrl.Location = new System.Drawing.Point(82, 82);
             this.lnkAppUrl.Name = "lnkAppUrl";
             this.lnkAppUrl.Size = new System.Drawing.Size(257, 12);
-            this.lnkAppUrl.TabIndex = 3;
+            this.lnkAppUrl.TabIndex = 4;
             this.lnkAppUrl.TabStop = true;
             this.lnkAppUrl.Text = "https://code.google.com/p/mugen-chars-set/";
             this.lnkAppUrl.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkAppUrl_LinkClicked);
@@ -81,11 +83,20 @@
             // lblAuthor
             // 
             this.lblAuthor.AutoSize = true;
-            this.lblAuthor.Location = new System.Drawing.Point(82, 39);
+            this.lblAuthor.Location = new System.Drawing.Point(82, 60);
             this.lblAuthor.Name = "lblAuthor";
             this.lblAuthor.Size = new System.Drawing.Size(113, 12);
-            this.lblAuthor.TabIndex = 2;
+            this.lblAuthor.TabIndex = 3;
             this.lblAuthor.Text = "程序设计：喵拉布丁";
+            // 
+            // lblCompany
+            // 
+            this.lblCompany.AutoSize = true;
+            this.lblCompany.Location = new System.Drawing.Point(82, 38);
+            this.lblCompany.Name = "lblCompany";
+            this.lblCompany.Size = new System.Drawing.Size(131, 12);
+            this.lblCompany.TabIndex = 2;
+            this.lblCompany.Text = "MugenCharsSet开发小组";
             // 
             // AboutForm
             // 
@@ -93,7 +104,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnOK;
-            this.ClientSize = new System.Drawing.Size(431, 87);
+            this.ClientSize = new System.Drawing.Size(431, 108);
+            this.Controls.Add(this.lblCompany);
             this.Controls.Add(this.lblAuthor);
             this.Controls.Add(this.lnkAppUrl);
             this.Controls.Add(this.lblAppName);
@@ -121,5 +133,6 @@
         private System.Windows.Forms.Label lblAppName;
         private System.Windows.Forms.LinkLabel lnkAppUrl;
         private System.Windows.Forms.Label lblAuthor;
+        private System.Windows.Forms.Label lblCompany;
     }
 }

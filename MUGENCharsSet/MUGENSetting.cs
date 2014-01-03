@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace MUGENCharsSet
 {
@@ -71,9 +72,9 @@ namespace MUGENCharsSet
         }
 
         /// <summary>
-        /// MUGEN程序版本
+        /// MUGEN程序版本枚举
         /// </summary>
-        public enum Version { WIN, V1_0_PLUS };
+        public enum MugenVersion { WIN, V1_X };
 
         #endregion
 
@@ -96,9 +97,9 @@ namespace MUGENCharsSet
         private static int _gameHeight = 0;
         private static string _renderMode = "";
         private static bool _fullScreen = false;
-        private static KeyPress _keyPressP1;
-        private static KeyPress _keyPressP2;
-        private static Version _mugenVersion = Version.V1_0_PLUS;
+        private static KeyPressSetting _keyPressP1;
+        private static KeyPressSetting _keyPressP2;
+        private static MugenVersion _version = MugenVersion.V1_X;
 
         #endregion
 
@@ -183,8 +184,9 @@ namespace MUGENCharsSet
                 try
                 {
                     IniFiles ini = new IniFiles(SystemDefPath);
-                    ini.WriteString(SettingInfo.FilesSection, SettingInfo.SelectDefItem,
-                        Tools.GetSlashPath(value.Substring(MugenDirPath.Length)));
+                    string path = GetIniFileBestPath(SystemDefPath, value);
+                    if (path == String.Empty) new ApplicationException();
+                    ini.WriteString(SettingInfo.FilesSection, SettingInfo.SelectDefItem, Tools.GetSlashPath(path));
                 }
                 catch (ApplicationException)
                 {
@@ -344,7 +346,7 @@ namespace MUGENCharsSet
         /// <summary>
         /// 获取或设置P1按键
         /// </summary>
-        public static KeyPress KeyPressP1
+        public static KeyPressSetting KeyPressP1
         {
             get { return _keyPressP1; }
             set { _keyPressP1 = value; }
@@ -353,19 +355,18 @@ namespace MUGENCharsSet
         /// <summary>
         /// 获取或设置P2按键
         /// </summary>
-        public static KeyPress KeyPressP2
+        public static KeyPressSetting KeyPressP2
         {
             get { return _keyPressP2; }
             set { _keyPressP2 = value; }
         }
 
         /// <summary>
-        /// 获取或设置当前MUGEN程序版本
+        /// 获取当前MUGEN程序版本
         /// </summary>
-        public static Version MugenVersion
+        public static MugenVersion Version
         {
-            get { return _mugenVersion; }
-            set { _mugenVersion = value; }
+            get { return _version; }
         }
 
         #endregion
@@ -404,9 +405,9 @@ namespace MUGENCharsSet
             ini = new IniFiles(SystemDefPath);
             string selectDefFileName = ini.ReadString(SettingInfo.FilesSection, SettingInfo.SelectDefItem, "");
             if (selectDefFileName == String.Empty) throw new ApplicationException("select.def路径读取失败！");
-            _selectDefPath = Tools.GetIniFileExistPath(SystemDefPath, selectDefFileName);
+            _selectDefPath = GetIniFileExistPath(SystemDefPath, selectDefFileName);
             if (SelectDefPath == String.Empty) throw new ApplicationException("select.def文件不存在！");
-            MugenVersion = Version.V1_0_PLUS;
+            _version = MugenVersion.V1_X;
             string localcoord = ini.ReadString(SettingInfo.InfoSection, SettingInfo.LocalcoordItem, "");
             if (localcoord != String.Empty)
             {
@@ -427,7 +428,7 @@ namespace MUGENCharsSet
             }
             else
             {
-                MugenVersion = Version.WIN;
+                _version = MugenVersion.WIN;
                 IsWideScreen = false;
             }
         }
@@ -458,8 +459,8 @@ namespace MUGENCharsSet
             {
                 throw new ApplicationException("读取mugen.cfg文件失败！");
             }
-            KeyPressP1 = new KeyPress(KeyPress.SettingInfo.P1KeysSection);
-            KeyPressP2 = new KeyPress(KeyPress.SettingInfo.P2KeysSection);
+            KeyPressP1 = new KeyPressSetting(KeyPressSetting.SettingInfo.P1KeysSection);
+            KeyPressP2 = new KeyPressSetting(KeyPressSetting.SettingInfo.P2KeysSection);
         }
 
         /// <summary>
@@ -480,10 +481,13 @@ namespace MUGENCharsSet
                 ini.WriteInteger(SettingInfo.ConfigSection, SettingInfo.GameFrameItem, GameFrame);
                 ini.WriteInteger(SettingInfo.OptionsSection, SettingInfo.Team1VS2LifeItem, Team1VS2Life);
                 ini.WriteInteger(SettingInfo.OptionsSection, SettingInfo.TeamLoseOnKOItem, TeamLoseOnKO ? 1 : 0);
-                ini.WriteInteger(SettingInfo.ConfigSection, SettingInfo.GameWidthItem, GameWidth);
-                ini.WriteInteger(SettingInfo.ConfigSection, SettingInfo.GameHeightItem, GameHeight);
-                ini.WriteString(SettingInfo.VideoSection, SettingInfo.RenderModeItem, RenderMode);
                 ini.WriteInteger(SettingInfo.VideoSection, SettingInfo.FullScreenItem, FullScreen ? 1 : 0);
+                if (Version != MugenVersion.WIN)
+                {
+                    ini.WriteInteger(SettingInfo.ConfigSection, SettingInfo.GameWidthItem, GameWidth);
+                    ini.WriteInteger(SettingInfo.ConfigSection, SettingInfo.GameHeightItem, GameHeight);
+                    ini.WriteString(SettingInfo.VideoSection, SettingInfo.RenderModeItem, RenderMode);
+                }
             }
             catch (ApplicationException)
             {
@@ -530,6 +534,42 @@ namespace MUGENCharsSet
             }
         }
 
+        /// <summary>
+        /// 获取MUGEN中可用的配置文件绝对路径
+        /// </summary>
+        /// <param name="parentFilePath">父配置文件绝对路径</param>
+        /// <param name="iniFileName">配置文件相对路径</param>
+        /// <returns>配置文件绝对路径</returns>
+        public static string GetIniFileExistPath(string parentFilePath, string iniFileName)
+        {
+            if (parentFilePath == String.Empty) return "";
+            string path = Tools.GetBackSlashPath(Tools.GetFileDirName(parentFilePath) + iniFileName);
+            if (File.Exists(path)) return path;
+            path = Tools.GetBackSlashPath(MugenSetting.MugenDataDirPath + iniFileName);
+            if (File.Exists(path)) return path;
+            path = Tools.GetBackSlashPath(MugenSetting.MugenDirPath + iniFileName);
+            if (File.Exists(path)) return path;
+            else return "";
+        }
+
+        /// <summary>
+        /// 获取MUGEN中配置文件最佳的相对路径
+        /// </summary>
+        /// <param name="parentFilePath">父配置文件绝对路径</param>
+        /// <param name="iniFilePath">配置文件绝对路径</param>
+        /// <returns>配置文件相对路径</returns>
+        public static string GetIniFileBestPath(string parentFilePath, string iniFilePath)
+        {
+            if (parentFilePath == String.Empty) return "";
+            if (iniFilePath == String.Empty) return "";
+            parentFilePath = Tools.GetBackSlashPath(parentFilePath);
+            iniFilePath = Tools.GetBackSlashPath(iniFilePath);
+            if (iniFilePath.IndexOf(Tools.GetFileDirName(parentFilePath)) == 0) return iniFilePath.Substring(Tools.GetFileDirName(parentFilePath).Length);
+            else if (iniFilePath.IndexOf(MugenSetting.MugenDataDirPath) == 0) return iniFilePath.Substring(MugenSetting.MugenDataDirPath.Length);
+            else if (iniFilePath.IndexOf(MugenSetting.MugenDirPath) == 0) return iniFilePath.Substring(MugenSetting.MugenDirPath.Length);
+            else return "";
+        }
+
         #endregion
 
     }
@@ -539,7 +579,7 @@ namespace MUGENCharsSet
     /// <summary>
     /// MUGEN按键类
     /// </summary>
-    public class KeyPress
+    public class KeyPressSetting
     {
         /// <summary>
         /// MUGEN按键配置信息结构
@@ -573,6 +613,21 @@ namespace MUGENCharsSet
             /// <summary>Start配置项</summary>
             public const string StartItem = "Start";
         }
+
+        /// <summary>按键编码左界定符</summary>
+        public const string LeftDelimeter = "(";
+        /// <summary>按键编码右界定符</summary>
+        public const string RightDelimeter = ")";
+        /// <summary>MUGEN 1.x版本按键编码表</summary>
+        private static readonly Dictionary<ushort, string> KeyCodeV1_X = new Dictionary<ushort, string>()
+        {
+            {0, "not used"}, {8, "backspace"}, {9, "tab"}, {13, "return"}, {19, "pause"}, {27, "escape"}, {32, "space"}, {39, "'"}, {44, ","}, {45, "-"}, {46, "."}, {47, "/"}, {48, "0"}, {49, "1"}, {50, "2"}, {51, "3"}, {52, "4"}, {53, "5"}, {54, "6"}, {55, "7"}, {56, "8"}, {57, "9"}, {59, ";"}, {61, "="}, {91, "["}, {92, "\\"}, {93, "]"}, {96, "`"}, {97, "a"}, {98, "b"}, {99, "c"}, {100, "d"}, {101, "e"}, {102, "f"}, {103, "g"}, {104, "h"}, {105, "i"}, {106, "j"}, {107, "k"}, {108, "l"}, {109, "m"}, {110, "n"}, {111, "o"}, {112, "p"}, {113, "q"}, {114, "r"}, {115, "s"}, {116, "t"}, {117, "u"}, {118, "v"}, {119, "w"}, {120, "x"}, {121, "y"}, {122, "z"}, {127, "delete"}, {256, "num 0"}, {257, "num 1"}, {258, "num 2"}, {259, "num 3"}, {260, "num 4"}, {261, "num 5"}, {262, "num 6"}, {263, "num 7"}, {264, "num 8"}, {265, "num 9"}, {266, "num ."}, {267, "num /"}, {268, "num *"}, {269, "num -"}, {270, "num +"}, {271, "num enter"}, {272, "equals"}, {273, "up"}, {274, "down"}, {275, "right"}, {276, "left"}, {277, "insert"}, {278, "home"}, {279, "end"}, {280, "page up"}, {281, "page down"}, {282, "f1"}, {283, "f2"}, {284, "f3"}, {285, "f4"}, {286, "f5"}, {287, "f6"}, {288, "f7"}, {289, "f8"}, {290, "f9"}, {291, "f10"}, {292, "f11"}, {293, "f12"}, {294, "f13"}, {295, "f14"}, {296, "f15"}, {300, "num lock"}, {301, "caps lock"}, {302, "scroll lock"}, {303, "right shift"}, {304, "left shift"}, {305, "right ctrl"}, {306, "left ctrl"}, {307, "right alt"}, {308, "left alt"}, {311, "left super"}, {312, "right super"}, {316, "print screen"}, {319, "menu"}
+        };
+        /// <summary>MUGEN WIN版按键编码表</summary>
+        private static readonly Dictionary<ushort, string> KeyCodeWIN = new Dictionary<ushort, string>()
+        {
+            {0, "not used"}, {1, "esc"}, {2, "1"}, {3, "2"}, {4, "3"}, {5, "4"}, {6, "5"}, {7, "6"}, {8, "7"}, {9, "8"}, {10, "9"}, {11, "0"}, {12, "-"}, {13, "="}, {14, "backspace"}, {15, "tab"}, {16, "q"}, {17, "w"}, {18, "e"}, {19, "r"}, {20, "t"}, {21, "y"}, {22, "u"}, {23, "i"}, {24, "o"}, {25, "p"}, {26, "["}, {27, "]"}, {28, "enter"}, {29, "left ctrl"}, {30, "a"}, {31, "s"}, {32, "d"}, {33, "f"}, {34, "g"}, {35, "h"}, {36, "j"}, {37, "k"}, {38, "l"}, {39, ";"}, {40, "'"}, {41, "`"}, {42, "left shift"}, {43, "\\"}, {44, "z"}, {45, "x"}, {46, "c"}, {47, "v"}, {48, "b"}, {49, "n"}, {50, "m"}, {51, ", "}, {52, "."}, {53, "/"}, {54, "right shift"}, {55, "pad *"}, {56, "left alt"}, {57, "space"}, {58, "caps lock"}, {59, "f1"}, {60, "f2"}, {61, "f3"}, {62, "f4"}, {63, "f5"}, {64, "f6"}, {65, "f7"}, {66, "f8"}, {67, "f9"}, {68, "f10"}, {69, "num lock"}, {70, "scroll lock"}, {71, "pad 7"}, {72, "pad 8"}, {73, "pad 9"}, {74, "pad -"}, {75, "pad 4"}, {76, "pad 5"}, {77, "pad 6"}, {78, "pad +"}, {79, "pad 1"}, {80, "pad 2"}, {81, "pad 3"}, {82, "pad 0"}, {83, "pad ."}, {87, "f11"}, {88, "f12"}, {156, "pad enter"}, {157, "right ctrl"}, {181, "pad /"}, {184, "right alt"}, {199, "home"}, {200, "up"}, {201, "page up"}, {203, "left"}, {205, "right"}, {207, "end"}, {208, "down"}, {209, "page down"}, {210, "insert"}, {211, "delete"}
+        };
 
         private string _keyPressType;
         private ushort _jump;
@@ -696,11 +751,23 @@ namespace MUGENCharsSet
         }
 
         /// <summary>
+        /// 获取MUGEN按键编码表
+        /// </summary>
+        public static Dictionary<ushort, string> KeyCode
+        {
+            get
+            {
+                if (MugenSetting.Version == MugenSetting.MugenVersion.WIN) return KeyCodeWIN;
+                else return KeyCodeV1_X;
+            }
+        }
+
+        /// <summary>
         /// 类构造方法
         /// </summary>
         /// <param name="keyPressType">按键类型</param>
         /// <exception cref="System.ApplicationException"></exception>
-        public KeyPress(string keyPressType)
+        public KeyPressSetting(string keyPressType)
         {
             KeyPressType = keyPressType;
             ReadKeyPressSetting();
@@ -728,7 +795,7 @@ namespace MUGENCharsSet
                 Z = (ushort)ini.ReadInteger(KeyPressType, SettingInfo.ZItem, 0);
                 Start = (ushort)ini.ReadInteger(KeyPressType, SettingInfo.StartItem, 0);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 throw new ApplicationException("读取MUGEN按键失败！");
             }
@@ -759,6 +826,53 @@ namespace MUGENCharsSet
             catch (ApplicationException)
             {
                 throw new ApplicationException("按键设置保存失败！");
+            }
+        }
+
+        /// <summary>
+        /// 获取指定的按键编码名称
+        /// </summary>
+        /// <param name="keyCode">按键编码</param>
+        /// <returns>按键编码名称</returns>
+        public static string GetKeyName(ushort keyCode)
+        {
+            if (KeyCode.ContainsKey(keyCode)) return KeyCode[keyCode];
+            else return LeftDelimeter + keyCode + RightDelimeter;
+        }
+
+        /// <summary>
+        /// 获取指定的按键编码
+        /// </summary>
+        /// <param name="keyName">按键编码名称</param>
+        /// <returns>按键编码</returns>
+        /// <exception cref="System.ApplicationException"></exception>
+        public static ushort GetKeyCode(string keyName)
+        {
+            Regex regex = new Regex(@"\((\d+)\)");
+            ushort keyCode = 0;
+            if (regex.IsMatch(keyName))
+            {
+                try
+                {
+                    keyCode = Convert.ToUInt16(regex.Match(keyName).Groups[1].Value);
+                }
+                catch (Exception)
+                {
+                    throw new ApplicationException("按键编码格式错误");
+                }
+                return keyCode;
+            }
+            else
+            {
+                try
+                {
+                    keyCode = KeyCode.Single(k => k.Value.ToLower() == keyName.ToLower()).Key;
+                }
+                catch (Exception)
+                {
+                    throw new ApplicationException("按键编码格式错误");
+                }
+                return keyCode;
             }
         }
     }
