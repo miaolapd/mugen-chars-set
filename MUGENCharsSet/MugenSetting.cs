@@ -574,10 +574,10 @@ namespace MUGENCharsSet
 
     }
 
-    #region MUGEN按键类
+    #region MUGEN按键配置类
 
     /// <summary>
-    /// MUGEN按键类
+    /// MUGEN按键配置类
     /// </summary>
     public class KeyPressSetting
     {

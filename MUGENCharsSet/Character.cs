@@ -74,7 +74,7 @@ namespace MUGENCharsSet
         private int _attack;
         private int _defence;
         private int _power;
-        private NameValueCollection _palList;
+        private Dictionary<string, string> _palList;
         private bool _isWideScreen;
         private string _stcommon;
 
@@ -206,7 +206,7 @@ namespace MUGENCharsSet
         /// <summary>
         /// 获取或设置Pal相对路径键值对列表
         /// </summary>
-        public NameValueCollection PalList
+        public Dictionary<string, string> PalList
         {
             get { return _palList; }
             set { _palList = value; }
@@ -356,14 +356,12 @@ namespace MUGENCharsSet
         /// <summary>
         /// 读取Pal设置
         /// </summary>
-        /// <exception cref="System.ApplicationException"></exception>
         public void ReadPalSetting()
         {
             IniFiles ini = new IniFiles(DefPath);
             NameValueCollection tempDict = new NameValueCollection();
             ini.ReadSectionValues(SettingInfo.FilesSection, tempDict);
-            if (tempDict.Count == 0) throw new ApplicationException("pal属性不存在！");
-            PalList = new NameValueCollection();
+            PalList = new Dictionary<string, string>();
             foreach (string key in tempDict)
             {
                 if (key.IndexOf(SettingInfo.PalItemPrefix, StringComparison.CurrentCultureIgnoreCase) == 0)
@@ -415,7 +413,7 @@ namespace MUGENCharsSet
             }
             try
             {
-                foreach (string key in PalList)
+                foreach (string key in PalList.Keys)
                 {
                     ini.WriteString(SettingInfo.FilesSection, key, PalList[key]);
                 }

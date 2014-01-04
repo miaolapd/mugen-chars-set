@@ -253,15 +253,7 @@ namespace MUGENCharsSet
                 ShowErrorMsg("人物def文件不存在！");
                 return;
             }
-            try
-            {
-                character.ReadPalSetting();
-            }
-            catch(ApplicationException ex)
-            {
-                ShowErrorMsg(ex.Message);
-                return;
-            }
+            character.ReadPalSetting();
             SetSingleCharacterLabel(character);
             txtName.Text = character.Name;
             txtDisplayName.Text = character.DisplayName;
@@ -269,26 +261,24 @@ namespace MUGENCharsSet
             txtAttack.Text = character.Attack.ToString();
             txtDefence.Text = character.Defence.ToString();
             txtPower.Text = character.Power.ToString();
-            string[] selectableActFileList = character.SelectableActFileList;
-            if (selectableActFileList.Length == 0)
+            if (character.PalList.Count > 0)
             {
-                ShowErrorMsg("色表文件未找到！");
-                return;
-            }
-            DataGridViewComboBoxColumn dgvPalFileList = (DataGridViewComboBoxColumn)dgvPal.Columns[PalValColumnNo];
-            dgvPalFileList.Items.AddRange(selectableActFileList);
-            foreach (string palKey in character.PalList)
-            {
-                dgvPal.Rows.Add(palKey);
-            }
-            for (int i = 0; i < dgvPal.Rows.Count; i++)
-            {
-                foreach (string item in selectableActFileList)
+                string[] selectableActFileList = character.SelectableActFileList;
+                DataGridViewComboBoxColumn dgvPalFileList = (DataGridViewComboBoxColumn)dgvPal.Columns[PalValColumnNo];
+                dgvPalFileList.Items.AddRange(selectableActFileList);
+                foreach (string palKey in character.PalList.Keys)
                 {
-                    if (Tools.GetSlashPath(character.PalList[dgvPal.Rows[i].Cells[PalNoColumnNo].Value.ToString()].ToLower())
-                        == Tools.GetSlashPath(item.ToLower()))
+                    dgvPal.Rows.Add(palKey);
+                }
+                for (int i = 0; i < dgvPal.Rows.Count; i++)
+                {
+                    foreach (string item in selectableActFileList)
                     {
-                        dgvPal.Rows[i].Cells[PalValColumnNo].Value = item;
+                        if (Tools.GetSlashPath(character.PalList[dgvPal.Rows[i].Cells[PalNoColumnNo].Value.ToString()].ToLower())
+                            == Tools.GetSlashPath(item.ToLower()))
+                        {
+                            dgvPal.Rows[i].Cells[PalValColumnNo].Value = item;
+                        }
                     }
                 }
             }
@@ -507,7 +497,7 @@ namespace MUGENCharsSet
         /// <summary>
         /// 读取Pal属性字段
         /// </summary>
-        private void ReadPalValues(NameValueCollection palList)
+        private void ReadPalValues(Dictionary<string, string> palList)
         {
             for (int i = 0; i < dgvPal.Rows.Count; i++)
             {
