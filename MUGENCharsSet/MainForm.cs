@@ -1293,7 +1293,7 @@ namespace MUGENCharsSet
             string copyContent = "";
             for (int i = 0; i < lstCharacterList.SelectedItems.Count; i++)
             {
-                copyContent += ((Character)lstCharacterList.SelectedItems[i]).DefPath.Substring(MugenSetting.MugenCharsDirPath.Length);
+                copyContent += Tools.GetSlashPath(((Character)lstCharacterList.SelectedItems[i]).DefPath.Substring(MugenSetting.MugenCharsDirPath.Length));
                 if (i < lstCharacterList.SelectedItems.Count - 1)
                 {
                     copyContent += "\r\n";
