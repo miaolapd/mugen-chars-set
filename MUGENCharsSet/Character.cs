@@ -110,7 +110,7 @@ namespace MUGENCharsSet
         /// </summary>
         public string CnsFullPath
         {
-            get { return Tools.GetFileDirName(DefPath) + Cns; }
+            get { return Tools.GetDirPathOfFile(DefPath) + Cns; }
         }
 
         /// <summary>
@@ -219,7 +219,7 @@ namespace MUGENCharsSet
         {
             get
             {
-                string path = Tools.GetFileDirName(DefPath);
+                string path = Tools.GetDirPathOfFile(DefPath);
                 if (!Directory.Exists(path)) return null;
                 StringCollection actArr = new StringCollection();
                 ScanActList(actArr, path);
@@ -382,7 +382,7 @@ namespace MUGENCharsSet
             string[] tempPalFiles = Directory.GetFiles(dir, "*" + ActExt);
             for (int i = 0; i < tempPalFiles.Length; i++)
             {
-                tempPalFiles[i] = Tools.GetSlashPath(tempPalFiles[i].Substring(Tools.GetFileDirName(DefPath).Length));
+                tempPalFiles[i] = Tools.GetSlashPath(tempPalFiles[i].Substring(Tools.GetDirPathOfFile(DefPath).Length));
             }
             actList.AddRange(tempPalFiles);
             string[] tempDirs = Directory.GetDirectories(dir);
@@ -508,7 +508,7 @@ namespace MUGENCharsSet
             {
                 IsWideScreen = true;
                 SetItemName(IsWideScreen);
-                string stcommonPath = Tools.GetBackSlashPath(Tools.GetFileDirName(DefPath) + Stcommon);
+                string stcommonPath = Tools.GetBackSlashPath(Tools.GetDirPathOfFile(DefPath) + Stcommon);
                 if (File.Exists(stcommonPath))
                 {
                     StcommonConvertToWideScreen(stcommonPath);
@@ -531,7 +531,7 @@ namespace MUGENCharsSet
             {
                 IsWideScreen = false;
                 SetItemName(IsWideScreen);
-                string stcommonPath = Tools.GetBackSlashPath(Tools.GetFileDirName(DefPath) + Stcommon);
+                string stcommonPath = Tools.GetBackSlashPath(Tools.GetDirPathOfFile(DefPath) + Stcommon);
                 if (File.Exists(stcommonPath))
                 {
                     StcommonConvertToNormalScreen(stcommonPath);

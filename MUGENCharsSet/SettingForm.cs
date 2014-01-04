@@ -55,7 +55,7 @@ namespace MUGENCharsSet
             ofdExePath.FileName = AppSetting.MugenExePath;
             if (File.Exists(AppSetting.MugenExePath))
             {
-                ofdExePath.InitialDirectory = Tools.GetFileDirName(AppSetting.MugenExePath);
+                ofdExePath.InitialDirectory = Tools.GetDirPathOfFile(AppSetting.MugenExePath);
             }
             if (ofdExePath.ShowDialog() == DialogResult.OK)
             {
@@ -83,7 +83,7 @@ namespace MUGENCharsSet
             try
             {
                 AppSetting.EditProgramPath = txtEditProgramPath.Text.Trim();
-                string mugenCfgPath = Tools.GetFileDirName(txtMugenExePath.Text.Trim()) + MugenSetting.DataDir + MugenSetting.MugenCfgFileName;
+                string mugenCfgPath = Tools.GetDirPathOfFile(txtMugenExePath.Text.Trim()) + MugenSetting.DataDir + MugenSetting.MugenCfgFileName;
                 if (!File.Exists(mugenCfgPath))
                 {
                     throw new ApplicationException("mugen.cfg文件不存在！");

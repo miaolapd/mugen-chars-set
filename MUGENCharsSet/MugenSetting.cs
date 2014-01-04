@@ -118,7 +118,7 @@ namespace MUGENCharsSet
         /// </summary>
         public static string MugenDirPath
         {
-            get { return Tools.GetFileDirName(MugenExePath); }
+            get { return Tools.GetDirPathOfFile(MugenExePath); }
         }
         
         /// <summary>
@@ -543,7 +543,7 @@ namespace MUGENCharsSet
         public static string GetIniFileExistPath(string parentFilePath, string iniFileName)
         {
             if (parentFilePath == String.Empty) return "";
-            string path = Tools.GetBackSlashPath(Tools.GetFileDirName(parentFilePath) + iniFileName);
+            string path = Tools.GetBackSlashPath(Tools.GetDirPathOfFile(parentFilePath) + iniFileName);
             if (File.Exists(path)) return path;
             path = Tools.GetBackSlashPath(MugenSetting.MugenDataDirPath + iniFileName);
             if (File.Exists(path)) return path;
@@ -564,7 +564,7 @@ namespace MUGENCharsSet
             if (iniFilePath == String.Empty) return "";
             parentFilePath = Tools.GetBackSlashPath(parentFilePath);
             iniFilePath = Tools.GetBackSlashPath(iniFilePath);
-            if (iniFilePath.IndexOf(Tools.GetFileDirName(parentFilePath)) == 0) return iniFilePath.Substring(Tools.GetFileDirName(parentFilePath).Length);
+            if (iniFilePath.IndexOf(Tools.GetDirPathOfFile(parentFilePath)) == 0) return iniFilePath.Substring(Tools.GetDirPathOfFile(parentFilePath).Length);
             else if (iniFilePath.IndexOf(MugenSetting.MugenDataDirPath) == 0) return iniFilePath.Substring(MugenSetting.MugenDataDirPath.Length);
             else if (iniFilePath.IndexOf(MugenSetting.MugenDirPath) == 0) return iniFilePath.Substring(MugenSetting.MugenDirPath.Length);
             else return "";

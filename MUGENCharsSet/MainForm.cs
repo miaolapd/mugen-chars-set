@@ -728,7 +728,7 @@ namespace MUGENCharsSet
         private void MainForm_Load(object sender, EventArgs e)
         {
             ReadIniSetting();
-            string mugenCfgPath = Tools.GetFileDirName(AppSetting.MugenExePath) + MugenSetting.DataDir + MugenSetting.MugenCfgFileName;
+            string mugenCfgPath = Tools.GetDirPathOfFile(AppSetting.MugenExePath) + MugenSetting.DataDir + MugenSetting.MugenCfgFileName;
             if (AppSetting.MugenExePath == String.Empty || !File.Exists(AppSetting.MugenExePath) || !File.Exists(mugenCfgPath))
             {
                 Visible = false;
@@ -1384,7 +1384,7 @@ namespace MUGENCharsSet
             ofdDefPath.FileName = MugenSetting.SystemDefPath;
             if (File.Exists(MugenSetting.SystemDefPath))
             {
-                ofdDefPath.InitialDirectory = Tools.GetFileDirName(MugenSetting.SystemDefPath);
+                ofdDefPath.InitialDirectory = Tools.GetDirPathOfFile(MugenSetting.SystemDefPath);
             }
             else
             {
@@ -1411,7 +1411,7 @@ namespace MUGENCharsSet
             ofdDefPath.FileName = MugenSetting.SelectDefPath;
             if (File.Exists(MugenSetting.SelectDefPath))
             {
-                ofdDefPath.InitialDirectory = Tools.GetFileDirName(MugenSetting.SelectDefPath);
+                ofdDefPath.InitialDirectory = Tools.GetDirPathOfFile(MugenSetting.SelectDefPath);
             }
             else
             {

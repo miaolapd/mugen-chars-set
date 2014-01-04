@@ -29,7 +29,7 @@ namespace MUGENCharsSet
         /// </summary>
         /// <param name="filePath">文件路径</param>
         /// <returns>文件夹路径</returns>
-        public static string GetFileDirName(string filePath)
+        public static string GetDirPathOfFile(string filePath)
         {
             try
             {
