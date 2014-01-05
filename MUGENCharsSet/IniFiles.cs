@@ -85,7 +85,10 @@ namespace MUGENCharsSet
             //必须设定0（系统默认的代码页）的编码方式，否则无法支持中文
             string s = Encoding.Default.GetString(Buffer);
             s = s.Substring(0, bufLen);
-            if (s.IndexOf(CommentMark) >= 0) s = s.Substring(0, s.IndexOf(CommentMark));
+            if (s.IndexOf(CommentMark) >= 0)
+            {
+                s = s.Substring(0, s.IndexOf(CommentMark));
+            }
             return s.Trim('\0').Trim();
         }
 

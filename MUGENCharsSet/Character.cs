@@ -221,7 +221,7 @@ namespace MUGENCharsSet
             {
                 string path = Tools.GetDirPathOfFile(DefPath);
                 if (!Directory.Exists(path)) return null;
-                StringCollection actArr = new StringCollection();
+                List<string> actArr = new List<string>();
                 ScanActList(actArr, path);
                 string[] tempActList = new string[actArr.Count];
                 actArr.CopyTo(tempActList, 0);
@@ -376,7 +376,7 @@ namespace MUGENCharsSet
         /// </summary>
         /// <param name="actList">act文件相对路径列表</param>
         /// <param name="dir">act文件夹绝对路径</param>
-        private void ScanActList(StringCollection actList, string dir)
+        private void ScanActList(List<string> actList, string dir)
         {
             if (!Directory.Exists(dir)) return;
             string[] tempPalFiles = Directory.GetFiles(dir, "*" + ActExt);
@@ -816,7 +816,7 @@ namespace MUGENCharsSet
         /// </summary>
         /// <param name="characterList">人物列表</param>
         /// <param name="charsDir">人物文件夹</param>
-        public static void ScanCharacterDir(ArrayList characterList, string charsDir)
+        public static void ScanCharacterDir(List<Character> characterList, string charsDir)
         {
             string[] tempDefList = Directory.GetFiles(charsDir, "*" + Character.DefExt);
             foreach (string tempDefPath in tempDefList)
@@ -843,7 +843,7 @@ namespace MUGENCharsSet
         /// </summary>
         /// <param name="characterList">人物列表</param>
         /// <exception cref="System.ApplicationException"></exception>
-        public static void ReadSelectDefCharacterList(ArrayList characterList)
+        public static void ReadSelectDefCharacterList(List<Character> characterList)
         {
             if (!File.Exists(MugenSetting.SelectDefPath)) throw new ApplicationException("select.def文件不存在！");
             Tools.IniFileStandardization(MugenSetting.SelectDefPath);
@@ -859,7 +859,7 @@ namespace MUGENCharsSet
                 throw new ApplicationException("读取select.def文件失败！");
             }
             if (characterLines.Length == 0) throw new ApplicationException("读取select.def文件失败！");
-            ArrayList tempCharacterList = new ArrayList();
+            List<string> tempCharacterList = new List<string>();
             foreach (string tempLine in characterLines)
             {
                 System.Windows.Forms.Application.DoEvents();

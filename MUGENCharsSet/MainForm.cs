@@ -33,7 +33,7 @@ namespace MUGENCharsSet
         #region 类私有变量
         private bool _modifyEnabled = false;
         private bool _multiModified = false;
-        private ArrayList _characterList;
+        private List<Character> _characterList;
         private bool _characterListControlPreparing = false;
 
         #endregion
@@ -43,7 +43,7 @@ namespace MUGENCharsSet
         /// <summary>
         /// 获取或设置MUGEN人物列表
         /// </summary>
-        private ArrayList CharacterList
+        private List<Character> CharacterList
         {
             get { return _characterList; }
             set { _characterList = value; }
@@ -190,7 +190,7 @@ namespace MUGENCharsSet
                 ShowErrorMsg("无法找到MUGEN人物文件夹！");
                 return;
             }
-            CharacterList = new ArrayList();
+            CharacterList = new List<Character>();
             try
             {
                 if (AppSetting.ReadCharacterType == AppSetting.ReadCharTypeEnum.CharsDir)
@@ -227,7 +227,7 @@ namespace MUGENCharsSet
         /// 刷新人物列表控件的DataSource
         /// </summary>
         /// <param name="characterList">人物列表</param>
-        private void RefreshCharacterListDataSource(ArrayList characterList)
+        private void RefreshCharacterListDataSource(List<Character> characterList)
         {
             BindingSource bs = new BindingSource();
             bs.DataSource = characterList;
