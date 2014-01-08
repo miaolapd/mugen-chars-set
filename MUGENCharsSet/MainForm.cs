@@ -180,7 +180,7 @@ namespace MUGENCharsSet
             {
                 MugenSetting.ReadMugenSetting();
             }
-            catch(ApplicationException ex)
+            catch (ApplicationException ex)
             {
                 ShowErrorMsg(ex.Message);
                 return;
@@ -202,7 +202,7 @@ namespace MUGENCharsSet
                     Character.ReadSelectDefCharacterList(CharacterList);
                 }
             }
-            catch(ApplicationException ex)
+            catch (ApplicationException ex)
             {
                 ShowErrorMsg(ex.Message);
                 return;
@@ -381,7 +381,7 @@ namespace MUGENCharsSet
                 fswCharacterCns.EnableRaisingEvents = false;
                 character.Save();
             }
-            catch(ApplicationException)
+            catch (ApplicationException)
             {
                 fswCharacterCns.EnableRaisingEvents = true;
                 ShowErrorMsg("修改失败！");
@@ -993,7 +993,7 @@ namespace MUGENCharsSet
         /// <summary>
         /// 当搜索文本框控件按下某个键时发生
         /// </summary>
-        private void txtSearch_KeyDown(object sender, KeyEventArgs e)
+        private void txtKeyword_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyValue == (int)Keys.Enter)
             {
@@ -1093,7 +1093,7 @@ namespace MUGENCharsSet
         private void fswCharacterCns_Changed(object sender, FileSystemEventArgs e)
         {
             string cnsPath = e.FullPath;
-            foreach(Character character in CharacterList)
+            foreach (Character character in CharacterList)
             {
                 if (character.CnsFullPath.ToLower() == cnsPath.ToLower())
                 {
@@ -1325,7 +1325,7 @@ namespace MUGENCharsSet
             if (lstCharacterList.SelectedItems.Count == 0) return;
             if (MessageBox.Show("是否删除人物？", "操作确认", MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question) != DialogResult.Yes) return;
-            if(MultiModified)
+            if (MultiModified)
             {
                 Character[] characterList = new Character[lstCharacterList.SelectedItems.Count];
                 lstCharacterList.SelectedItems.CopyTo(characterList, 0);
@@ -1335,7 +1335,7 @@ namespace MUGENCharsSet
                     ShowErrorMsg("删除失败！");
                     return;
                 }
-                foreach(Character character in characterList)
+                foreach (Character character in characterList)
                 {
                     CharacterList.Remove(character);
                 }
@@ -1347,7 +1347,7 @@ namespace MUGENCharsSet
                 {
                     character.Delete();
                 }
-                catch(ApplicationException ex)
+                catch (ApplicationException ex)
                 {
                     ShowErrorMsg(ex.Message);
                     return;
@@ -1395,7 +1395,7 @@ namespace MUGENCharsSet
             {
                 MugenSetting.SystemDefPath = ofdDefPath.FileName;
             }
-            catch(ApplicationException ex)
+            catch (ApplicationException ex)
             {
                 ShowErrorMsg(ex.Message);
                 return;
@@ -1621,7 +1621,7 @@ namespace MUGENCharsSet
             {
                 MugenSetting.ReadMugenCfgSetting();
             }
-            catch(ApplicationException ex)
+            catch (ApplicationException ex)
             {
                 MugenCfgModifyEnabled = false;
                 ShowErrorMsg(ex.Message);
@@ -1816,7 +1816,7 @@ namespace MUGENCharsSet
                 ReadMugenCfgControlsValue();
                 MugenSetting.SaveMugenCfgSetting();
             }
-            catch(ApplicationException ex)
+            catch (ApplicationException ex)
             {
                 try
                 {
@@ -1846,7 +1846,7 @@ namespace MUGENCharsSet
             {
                 MugenSetting.BackupMugenCfgSetting();
             }
-            catch(ApplicationException ex)
+            catch (ApplicationException ex)
             {
                 ShowErrorMsg(ex.Message);
                 return;

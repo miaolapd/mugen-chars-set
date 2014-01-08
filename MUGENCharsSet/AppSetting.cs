@@ -182,7 +182,7 @@ namespace MUGENCharsSet
                 IniFiles ini = new IniFiles(IniPath);
                 ini.WriteString(section, item, value);
             }
-            catch(ApplicationException)
+            catch (ApplicationException)
             {
                 return false;
             }

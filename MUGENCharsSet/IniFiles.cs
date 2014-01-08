@@ -54,7 +54,7 @@ namespace MUGENCharsSet
             //必须是完全路径，不能是相对路径
             FileName = fileInfo.FullName;
         }
-        
+
         /// <summary>
         /// 写入指定的配置项
         /// </summary>
@@ -70,7 +70,7 @@ namespace MUGENCharsSet
                 throw new ApplicationException("配置文件写入失败！");
             }
         }
-        
+
         /// <summary>
         /// 读取指定的配置项
         /// </summary>
@@ -195,7 +195,7 @@ namespace MUGENCharsSet
                 }
             }
         }
-        
+
         /// <summary>
         /// 读取所有的配置分段名称
         /// </summary>
@@ -209,7 +209,7 @@ namespace MUGENCharsSet
              Buffer.GetUpperBound(0), FileName);
             GetStringsFromBuffer(Buffer, bufLen, SectionList);
         }
-        
+
 
         /// <summary>
         /// 读取指定的配置分段中的所有项的键值对
@@ -243,7 +243,7 @@ namespace MUGENCharsSet
 
         //　　}
         //}
-        
+
         /// <summary>
         /// 删除指定的配置分段
         /// </summary>
@@ -256,7 +256,7 @@ namespace MUGENCharsSet
                 throw new ApplicationException("无法清除配置文件中的Section！");
             }
         }
-        
+
         /// <summary>
         /// 删除指定的配置项
         /// </summary>

@@ -13,7 +13,7 @@ namespace MUGENCharsSet
     /// <summary>
     /// MUGEN人物类
     /// </summary>
-    public class Character : IComparable
+    public class Character : IComparable<Character>
     {
         #region 类常量
 
@@ -259,7 +259,7 @@ namespace MUGENCharsSet
                         IniFiles ini = new IniFiles(DefPath);
                         ini.DeleteKey(SettingInfo.InfoSection, SettingInfo.LocalcoordItem);
                     }
-                    catch(ApplicationException)
+                    catch (ApplicationException)
                     {
                         throw new ApplicationException("普屏人物包转换失败！");
                     }
@@ -309,9 +309,9 @@ namespace MUGENCharsSet
         /// </summary>
         /// <param name="other">要比较的人物</param>
         /// <returns>比较的结果</returns>
-        public int CompareTo(Object other)
+        public int CompareTo(Character other)
         {
-            return Name.CompareTo(((Character)other).Name);
+            return Name.CompareTo(other.Name);
         }
 
         /// <summary>
@@ -407,7 +407,7 @@ namespace MUGENCharsSet
                 ini.WriteString(SettingInfo.InfoSection, SettingInfo.NameItem, GetDelimeterName(Name));
                 ini.WriteString(SettingInfo.InfoSection, SettingInfo.DisplayNameItem, GetDelimeterName(DisplayName));
             }
-            catch(ApplicationException)
+            catch (ApplicationException)
             {
                 throw new ApplicationException("人物def文件写入失败！");
             }
@@ -448,7 +448,7 @@ namespace MUGENCharsSet
                 if (!Tools.SetFileNotReadOnly(CnsFullPath + BakExt)) throw new Exception();
                 File.Copy(CnsFullPath, CnsFullPath + BakExt, true);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 throw new ApplicationException("人物备份失败！");
             }
@@ -470,7 +470,7 @@ namespace MUGENCharsSet
                 File.Copy(CnsFullPath + BakExt, CnsFullPath, true);
                 ReadCharacterSetting();
             }
-            catch(Exception)
+            catch (Exception)
             {
                 throw new ApplicationException("人物恢复失败！");
             }
@@ -514,7 +514,7 @@ namespace MUGENCharsSet
                     StcommonConvertToWideScreen(stcommonPath);
                 }
             }
-            catch(ApplicationException)
+            catch (ApplicationException)
             {
                 throw new ApplicationException("宽屏人物包转换失败！");
             }
@@ -537,7 +537,7 @@ namespace MUGENCharsSet
                     StcommonConvertToNormalScreen(stcommonPath);
                 }
             }
-            catch(ApplicationException)
+            catch (ApplicationException)
             {
                 throw new ApplicationException("普屏人物包转换失败！");
             }
@@ -695,7 +695,7 @@ namespace MUGENCharsSet
                     character.Delete();
                     total++;
                 }
-                catch(ApplicationException)
+                catch (ApplicationException)
                 {
                     continue;
                 }
@@ -765,7 +765,7 @@ namespace MUGENCharsSet
                 content = regex.Replace(content, "yaccel)/1.2");
                 File.WriteAllText(stcommonPath, content, Encoding.Default);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 throw new ApplicationException("stcommon文件转换宽屏失败！");
             }
@@ -805,7 +805,7 @@ namespace MUGENCharsSet
                 if ((new Regex(@"yaccel\s*\)\s*/\s*\d+(\.\d+)?", RegexOptions.IgnoreCase)).IsMatch(stcommonContent)) return 1;
                 else return 0;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return -1;
             }
@@ -915,7 +915,7 @@ namespace MUGENCharsSet
                 if (InvalidCharacterName.Contains(line.ToLower())) continue;
                 if (Path.GetExtension(line.ToLower()) != Character.DefExt) line = Tools.GetFormatDirPath(line) + line + Character.DefExt;
                 string defPath = MugenSetting.MugenCharsDirPath + Tools.GetBackSlashPath(line);
-                foreach(Character character in characterList)
+                foreach (Character character in characterList)
                 {
                     if (character.Equals(defPath))
                     {

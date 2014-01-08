@@ -120,7 +120,7 @@ namespace MUGENCharsSet
         {
             get { return Tools.GetDirPathOfFile(MugenExePath); }
         }
-        
+
         /// <summary>
         /// 获取MUGEN Data文件夹绝对路径
         /// </summary>
@@ -509,7 +509,7 @@ namespace MUGENCharsSet
                 if (!Tools.SetFileNotReadOnly(MugenCfgPath + BakExt)) throw new Exception();
                 File.Copy(MugenCfgPath, MugenCfgPath + BakExt, true);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 throw new ApplicationException("文件备份失败！");
             }

@@ -212,7 +212,7 @@ namespace MUGENCharsSet
                         return i;
                     }
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     return -1;
                 }
