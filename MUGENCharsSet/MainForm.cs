@@ -150,6 +150,8 @@ namespace MUGENCharsSet
                 if (ctlTemp is TextBox)
                     ((TextBox)ctlTemp).Clear();
             }
+            picSpriteImage.Image = null;
+            lblSpriteVersion.Text = "";
             dgvPal.Rows.Clear();
             ((DataGridViewComboBoxColumn)dgvPal.Columns[1]).Items.Clear();
         }
@@ -261,6 +263,8 @@ namespace MUGENCharsSet
             txtAttack.Text = character.Attack.ToString();
             txtDefence.Text = character.Defence.ToString();
             txtPower.Text = character.Power.ToString();
+            picSpriteImage.Image = character.SpriteImage;
+            lblSpriteVersion.Text = "SFF版本：" + SpriteFile.GetFormatVersion(character.SpriteVersion);
             if (character.PalList.Count > 0)
             {
                 string[] selectableActFileList = character.SelectableActFileList;
@@ -272,14 +276,10 @@ namespace MUGENCharsSet
                 }
                 for (int i = 0; i < dgvPal.Rows.Count; i++)
                 {
-                    foreach (string item in selectableActFileList)
-                    {
-                        if (Tools.GetSlashPath(character.PalList[dgvPal.Rows[i].Cells[PalNoColumnNo].Value.ToString()].ToLower())
-                            == Tools.GetSlashPath(item.ToLower()))
-                        {
-                            dgvPal.Rows[i].Cells[PalValColumnNo].Value = item;
-                        }
-                    }
+                    dgvPal.Rows[i].Cells[PalValColumnNo].Value = (from f in selectableActFileList
+                                                                  where f.ToLower().GetSlashPath()
+                        == character.PalList[dgvPal.Rows[i].Cells[PalNoColumnNo].Value.ToString()].ToLower().GetSlashPath()
+                                                                  select f).FirstOrDefault();
                 }
             }
             ModifyEnabled = true;
@@ -519,6 +519,7 @@ namespace MUGENCharsSet
             string keyword = txtKeyword.Text.Trim();
             if (keyword == String.Empty) return;
             if (lstCharacterList.Items.Count == 0) return;
+            ModifyEnabled = false;
             int searchIndex = -1;
             if (lstCharacterList.SelectedIndex != -1)
             {
@@ -581,6 +582,7 @@ namespace MUGENCharsSet
             if (keyword == String.Empty) return;
             if (lstCharacterList.Items.Count == 0) return;
             lstCharacterList.ClearSelected();
+            ModifyEnabled = false;
             CharacterListControlPreparing = true;
             for (int i = 0; i < lstCharacterList.Items.Count; i++)
             {
@@ -685,7 +687,10 @@ namespace MUGENCharsSet
             }
             int[] selectedIndices = new int[lstCharacterList.SelectedIndices.Count];
             lstCharacterList.SelectedIndices.CopyTo(selectedIndices, 0);
-            RefreshCharacterListDataSource(CharacterList);
+            if (AppSetting.ShowCharacterScreenMark)
+            {
+                RefreshCharacterListDataSource(CharacterList);
+            }
             foreach (int index in selectedIndices)
             {
                 lstCharacterList.SetSelected(index, true);
@@ -728,7 +733,7 @@ namespace MUGENCharsSet
         private void MainForm_Load(object sender, EventArgs e)
         {
             ReadIniSetting();
-            string mugenCfgPath = Tools.GetDirPathOfFile(AppSetting.MugenExePath) + MugenSetting.DataDir + MugenSetting.MugenCfgFileName;
+            string mugenCfgPath = AppSetting.MugenExePath.GetDirPathOfFile() + MugenSetting.DataDir + MugenSetting.MugenCfgFileName;
             if (AppSetting.MugenExePath == String.Empty || !File.Exists(AppSetting.MugenExePath) || !File.Exists(mugenCfgPath))
             {
                 Visible = false;
@@ -1093,13 +1098,12 @@ namespace MUGENCharsSet
         private void fswCharacterCns_Changed(object sender, FileSystemEventArgs e)
         {
             string cnsPath = e.FullPath;
-            foreach (Character character in CharacterList)
+            Character character = (from c in CharacterList
+                                   where c.CnsFullPath.ToLower() == cnsPath.ToLower()
+                                   select c).FirstOrDefault();
+            if (character != null)
             {
-                if (character.CnsFullPath.ToLower() == cnsPath.ToLower())
-                {
-                    character.ReadCharacterSetting();
-                    break;
-                }
+                character.ReadCharacterSetting();
             }
         }
 
@@ -1283,7 +1287,7 @@ namespace MUGENCharsSet
             string copyContent = "";
             for (int i = 0; i < lstCharacterList.SelectedItems.Count; i++)
             {
-                copyContent += Tools.GetSlashPath(((Character)lstCharacterList.SelectedItems[i]).DefPath.Substring(MugenSetting.MugenCharsDirPath.Length));
+                copyContent += ((Character)lstCharacterList.SelectedItems[i]).DefPath.Substring(MugenSetting.MugenCharsDirPath.Length).GetSlashPath();
                 if (i < lstCharacterList.SelectedItems.Count - 1)
                 {
                     copyContent += "\r\n";
@@ -1291,7 +1295,7 @@ namespace MUGENCharsSet
             }
             try
             {
-                Clipboard.SetDataObject(copyContent, true, 2, 200);
+                Clipboard.SetDataObject(copyContent, true, 2, 300);
             }
             catch (Exception)
             {
@@ -1384,7 +1388,7 @@ namespace MUGENCharsSet
             ofdDefPath.FileName = MugenSetting.SystemDefPath;
             if (File.Exists(MugenSetting.SystemDefPath))
             {
-                ofdDefPath.InitialDirectory = Tools.GetDirPathOfFile(MugenSetting.SystemDefPath);
+                ofdDefPath.InitialDirectory = MugenSetting.SystemDefPath.GetDirPathOfFile();
             }
             else
             {
@@ -1411,7 +1415,7 @@ namespace MUGENCharsSet
             ofdDefPath.FileName = MugenSetting.SelectDefPath;
             if (File.Exists(MugenSetting.SelectDefPath))
             {
-                ofdDefPath.InitialDirectory = Tools.GetDirPathOfFile(MugenSetting.SelectDefPath);
+                ofdDefPath.InitialDirectory = MugenSetting.SelectDefPath.GetDirPathOfFile();
             }
             else
             {

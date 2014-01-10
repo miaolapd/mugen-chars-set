@@ -17,7 +17,7 @@ namespace MUGENCharsSet
         /// </summary>
         /// <param name="dirPath">文件夹路径</param>
         /// <returns>文件夹路径</returns>
-        public static string GetFormatDirPath(string dirPath)
+        public static string GetFormatDirPath(this string dirPath)
         {
             if (dirPath.Length > 0 && dirPath[dirPath.Length - 1] != '\\')
                 return dirPath + "\\";
@@ -29,7 +29,7 @@ namespace MUGENCharsSet
         /// </summary>
         /// <param name="filePath">文件路径</param>
         /// <returns>文件夹路径</returns>
-        public static string GetDirPathOfFile(string filePath)
+        public static string GetDirPathOfFile(this string filePath)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace MUGENCharsSet
         /// </summary>
         /// <param name="path">文件(夹)路径</param>
         /// <returns>文件(夹)路径</returns>
-        public static string GetSlashPath(string path)
+        public static string GetSlashPath(this string path)
         {
             return path.Replace('\\', '/');
         }
@@ -53,7 +53,7 @@ namespace MUGENCharsSet
         /// </summary>
         /// <param name="path">文件(夹)路径</param>
         /// <returns>文件(夹)路径</returns>
-        public static string GetBackSlashPath(string path)
+        public static string GetBackSlashPath(this string path)
         {
             return path.Replace('/', '\\');
         }

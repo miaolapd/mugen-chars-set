@@ -59,6 +59,8 @@ namespace MUGENCharsSet
             public const string LocalcoordItem = "localcoord";
             /// <summary>stcommon相对路径配置项</summary>
             public const string StcommonItem = "stcommon";
+            /// <summary>sprite相对路径配置项</summary>
+            public const string SpriteItem = "sprite";
         }
 
         #endregion
@@ -69,7 +71,6 @@ namespace MUGENCharsSet
         private string _cns;
         private string _name;
         private string _displayName;
-        private string _itemName;
         private int _life;
         private int _attack;
         private int _defence;
@@ -77,6 +78,8 @@ namespace MUGENCharsSet
         private Dictionary<string, string> _palList;
         private bool _isWideScreen;
         private string _stcommon;
+        private string _sprite;
+        private SpriteFile.SffVerion _spriteVersion;
 
         #endregion
 
@@ -110,7 +113,7 @@ namespace MUGENCharsSet
         /// </summary>
         public string CnsFullPath
         {
-            get { return Tools.GetDirPathOfFile(DefPath) + Cns; }
+            get { return DefPath.GetDirPathOfFile() + Cns; }
         }
 
         /// <summary>
@@ -148,7 +151,22 @@ namespace MUGENCharsSet
         /// </summary>
         public string ItemName
         {
-            get { return _itemName; }
+            get
+            {
+                string name = Name;
+                if (AppSetting.ShowCharacterScreenMark && MugenSetting.Version != MugenSetting.MugenVersion.WIN)
+                {
+                    if (MugenSetting.IsWideScreen)
+                    {
+                        if (!IsWideScreen) name += " (普)";
+                    }
+                    else
+                    {
+                        if (IsWideScreen) name += " (宽)";
+                    }
+                }
+                return name;
+            }
         }
 
         /// <summary>
@@ -219,7 +237,7 @@ namespace MUGENCharsSet
         {
             get
             {
-                string path = Tools.GetDirPathOfFile(DefPath);
+                string path = DefPath.GetDirPathOfFile();
                 if (!Directory.Exists(path)) return null;
                 List<string> actArr = new List<string>();
                 ScanActList(actArr, path);
@@ -278,6 +296,61 @@ namespace MUGENCharsSet
         }
 
         /// <summary>
+        /// 获取或设置人物模型文件相对路径
+        /// </summary>
+        public string Sprite
+        {
+            get { return _sprite; }
+            set { _sprite = value; }
+        }
+
+        /// <summary>
+        /// 获取或设置人物模型文件版本
+        /// </summary>
+        public SpriteFile.SffVerion SpriteVersion
+        {
+            get { return _spriteVersion; }
+            set { _spriteVersion = value; }
+        }
+
+        /// <summary>
+        /// 获取人物模型图像
+        /// </summary>
+        public Bitmap SpriteImage
+        {
+            get
+            {
+                string sffPath = DefPath.GetDirPathOfFile() + Sprite.GetBackSlashPath();
+                if (!File.Exists(sffPath)) return null;
+                SpriteFile spriteFile = null;
+                try
+                {
+                    spriteFile = new SpriteFile(sffPath);
+                }
+                catch(ApplicationException)
+                {
+                    return null;
+                }
+                SpriteVersion = spriteFile.Version;
+                SpriteFileSubNode first = spriteFile.GetFirstSubNode();
+                if (first == null) return null;
+                byte[] data = first.ImageData;
+                if (data == null) return null;
+                ImagePcx pcx = new ImagePcx(data);
+                Bitmap image = pcx.PcxImage;
+                try
+                {
+                    image.MakeTransparent(image.GetPixel(0, 0));
+                }
+                catch(Exception)
+                {
+                    return null;
+                }
+                return image;
+            }
+        }
+
+        /// <summary>
         /// 无效人物名数组(用于过滤select.def中的人物列表)
         /// </summary>
         public static string[] InvalidCharacterName
@@ -297,7 +370,7 @@ namespace MUGENCharsSet
         /// <exception cref="System.ApplicationException"></exception>
         public Character(string defPath)
         {
-            DefPath = Tools.GetBackSlashPath(defPath);
+            DefPath = defPath.GetBackSlashPath();
             ReadCharacterSetting();
             PalList = null;
         }
@@ -321,7 +394,7 @@ namespace MUGENCharsSet
         /// <returns></returns>
         public bool Equals(string defPath)
         {
-            if (Tools.GetBackSlashPath(DefPath.ToLower()) == Tools.GetBackSlashPath(defPath.ToLower()))
+            if (DefPath.ToLower().GetBackSlashPath() == defPath.ToLower().GetBackSlashPath())
             {
                 return true;
             }
@@ -341,10 +414,10 @@ namespace MUGENCharsSet
             IniFiles ini = new IniFiles(DefPath);
             Name = GetTrimName(ini.ReadString(SettingInfo.InfoSection, SettingInfo.NameItem, ""));
             DisplayName = GetTrimName(ini.ReadString(SettingInfo.InfoSection, SettingInfo.DisplayNameItem, ""));
-            Cns = Tools.GetBackSlashPath(ini.ReadString(SettingInfo.FilesSection, SettingInfo.CnsItem, ""));
+            Cns = ini.ReadString(SettingInfo.FilesSection, SettingInfo.CnsItem, "").GetBackSlashPath();
             _isWideScreen = ini.ReadString(SettingInfo.InfoSection, SettingInfo.LocalcoordItem, "") != String.Empty;
-            SetItemName(IsWideScreen);
             Stcommon = ini.ReadString(SettingInfo.FilesSection, SettingInfo.StcommonItem, "");
+            Sprite = ini.ReadString(SettingInfo.FilesSection, SettingInfo.SpriteItem, "");
             if (!File.Exists(CnsFullPath)) throw new ApplicationException("人物cns文件不存在！");
             ini = new IniFiles(CnsFullPath);
             Life = ini.ReadInteger(SettingInfo.DataSection, SettingInfo.LifeItem, 0);
@@ -364,7 +437,7 @@ namespace MUGENCharsSet
             PalList = new Dictionary<string, string>();
             foreach (string key in tempDict)
             {
-                if (key.IndexOf(SettingInfo.PalItemPrefix, StringComparison.CurrentCultureIgnoreCase) == 0)
+                if (key.StartsWith(SettingInfo.PalItemPrefix, StringComparison.CurrentCultureIgnoreCase))
                 {
                     PalList.Add(key, tempDict[key]);
                 }
@@ -382,7 +455,7 @@ namespace MUGENCharsSet
             string[] tempPalFiles = Directory.GetFiles(dir, "*" + ActExt);
             for (int i = 0; i < tempPalFiles.Length; i++)
             {
-                tempPalFiles[i] = Tools.GetSlashPath(tempPalFiles[i].Substring(Tools.GetDirPathOfFile(DefPath).Length));
+                tempPalFiles[i] = tempPalFiles[i].Substring(DefPath.GetDirPathOfFile().Length).GetSlashPath();
             }
             actList.AddRange(tempPalFiles);
             string[] tempDirs = Directory.GetDirectories(dir);
@@ -507,8 +580,7 @@ namespace MUGENCharsSet
             try
             {
                 IsWideScreen = true;
-                SetItemName(IsWideScreen);
-                string stcommonPath = Tools.GetBackSlashPath(Tools.GetDirPathOfFile(DefPath) + Stcommon);
+                string stcommonPath = (DefPath.GetDirPathOfFile() + Stcommon).GetBackSlashPath();
                 if (File.Exists(stcommonPath))
                 {
                     StcommonConvertToWideScreen(stcommonPath);
@@ -530,8 +602,7 @@ namespace MUGENCharsSet
             try
             {
                 IsWideScreen = false;
-                SetItemName(IsWideScreen);
-                string stcommonPath = Tools.GetBackSlashPath(Tools.GetDirPathOfFile(DefPath) + Stcommon);
+                string stcommonPath = (DefPath.GetDirPathOfFile() + Stcommon).GetBackSlashPath();
                 if (File.Exists(stcommonPath))
                 {
                     StcommonConvertToNormalScreen(stcommonPath);
@@ -540,26 +611,6 @@ namespace MUGENCharsSet
             catch (ApplicationException)
             {
                 throw new ApplicationException("普屏人物包转换失败！");
-            }
-        }
-
-        /// <summary>
-        /// 设置在人物列表控件上显示的名称
-        /// </summary>
-        /// <param name="isWideScreen">是否宽屏</param>
-        public void SetItemName(bool isWideScreen)
-        {
-            _itemName = Name;
-            if (MugenSetting.Version != MugenSetting.MugenVersion.WIN)
-            {
-                if (MugenSetting.IsWideScreen)
-                {
-                    if (!isWideScreen) _itemName += " (普)";
-                }
-                else
-                {
-                    if (isWideScreen) _itemName += " (宽)";
-                }
             }
         }
 
@@ -867,8 +918,8 @@ namespace MUGENCharsSet
                 line = line.Split(new string[] { IniFiles.CommentMark }, 2, StringSplitOptions.None)[0];
                 line = line.Split(new string[] { "," }, 2, StringSplitOptions.None)[0].Trim();
                 if (InvalidCharacterName.Contains(line.ToLower())) continue;
-                if (Path.GetExtension(line.ToLower()) != Character.DefExt) line = Tools.GetFormatDirPath(line) + line + Character.DefExt;
-                string defPath = MugenSetting.MugenCharsDirPath + Tools.GetBackSlashPath(line);
+                if (Path.GetExtension(line.ToLower()) != Character.DefExt) line = line.GetFormatDirPath() + line + Character.DefExt;
+                string defPath = MugenSetting.MugenCharsDirPath + line.GetBackSlashPath();
                 if (!File.Exists(defPath)) continue;
                 if (!tempCharacterList.Contains(defPath))
                 {
@@ -913,8 +964,8 @@ namespace MUGENCharsSet
                 line = line.Split(new string[] { IniFiles.CommentMark }, 2, StringSplitOptions.None)[0];
                 line = line.Split(new string[] { "," }, 2, StringSplitOptions.None)[0].Trim();
                 if (InvalidCharacterName.Contains(line.ToLower())) continue;
-                if (Path.GetExtension(line.ToLower()) != Character.DefExt) line = Tools.GetFormatDirPath(line) + line + Character.DefExt;
-                string defPath = MugenSetting.MugenCharsDirPath + Tools.GetBackSlashPath(line);
+                if (Path.GetExtension(line.ToLower()) != Character.DefExt) line = line.GetFormatDirPath() + line + Character.DefExt;
+                string defPath = MugenSetting.MugenCharsDirPath + line.GetBackSlashPath();
                 foreach (Character character in characterList)
                 {
                     if (character.Equals(defPath))

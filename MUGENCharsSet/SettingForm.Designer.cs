@@ -43,6 +43,7 @@
             this.txtMugenExePath = new System.Windows.Forms.TextBox();
             this.btnOpenMugenExePath = new System.Windows.Forms.Button();
             this.ttpCommon = new System.Windows.Forms.ToolTip(this.components);
+            this.chkShowCharacterScreenMark = new System.Windows.Forms.CheckBox();
             this.grpSetting.SuspendLayout();
             this.grpMugenExePath.SuspendLayout();
             this.SuspendLayout();
@@ -51,12 +52,13 @@
             // 
             this.grpSetting.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpSetting.Controls.Add(this.chkShowCharacterScreenMark);
             this.grpSetting.Controls.Add(this.btnOpenEditProgramPath);
             this.grpSetting.Controls.Add(this.txtEditProgramPath);
             this.grpSetting.Controls.Add(this.lblEditProgram);
             this.grpSetting.Location = new System.Drawing.Point(12, 61);
             this.grpSetting.Name = "grpSetting";
-            this.grpSetting.Size = new System.Drawing.Size(391, 43);
+            this.grpSetting.Size = new System.Drawing.Size(391, 63);
             this.grpSetting.TabIndex = 1;
             this.grpSetting.TabStop = false;
             this.grpSetting.Text = "程序设置";
@@ -98,7 +100,7 @@
             // btnOK
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(101, 110);
+            this.btnOK.Location = new System.Drawing.Point(101, 130);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 2;
@@ -109,7 +111,7 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(182, 110);
+            this.btnCancel.Location = new System.Drawing.Point(182, 130);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 3;
@@ -119,7 +121,7 @@
             // 
             // btnDefault
             // 
-            this.btnDefault.Location = new System.Drawing.Point(263, 110);
+            this.btnDefault.Location = new System.Drawing.Point(263, 130);
             this.btnDefault.Name = "btnDefault";
             this.btnDefault.Size = new System.Drawing.Size(75, 23);
             this.btnDefault.TabIndex = 4;
@@ -179,13 +181,24 @@
             this.btnOpenMugenExePath.UseVisualStyleBackColor = true;
             this.btnOpenMugenExePath.Click += new System.EventHandler(this.btnOpenMugenExePath_Click);
             // 
+            // chkShowCharacterScreenMark
+            // 
+            this.chkShowCharacterScreenMark.AutoSize = true;
+            this.chkShowCharacterScreenMark.Location = new System.Drawing.Point(8, 41);
+            this.chkShowCharacterScreenMark.Name = "chkShowCharacterScreenMark";
+            this.chkShowCharacterScreenMark.Size = new System.Drawing.Size(138, 16);
+            this.chkShowCharacterScreenMark.TabIndex = 3;
+            this.chkShowCharacterScreenMark.Text = "显示人物宽/普屏标记";
+            this.ttpCommon.SetToolTip(this.chkShowCharacterScreenMark, "是否在人物列表上显示宽/普屏标记");
+            this.chkShowCharacterScreenMark.UseVisualStyleBackColor = true;
+            // 
             // SettingForm
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(415, 145);
+            this.ClientSize = new System.Drawing.Size(415, 161);
             this.Controls.Add(this.grpMugenExePath);
             this.Controls.Add(this.btnDefault);
             this.Controls.Add(this.btnCancel);
@@ -223,5 +236,6 @@
         private System.Windows.Forms.TextBox txtMugenExePath;
         private System.Windows.Forms.Button btnOpenMugenExePath;
         private System.Windows.Forms.ToolTip ttpCommon;
+        private System.Windows.Forms.CheckBox chkShowCharacterScreenMark;
     }
 }

@@ -33,6 +33,8 @@ namespace MUGENCharsSet
             public const string EditProgramPathItem = "EditProgramPath";
             /// <summary>读取人物列表类型配置项</summary>
             public const string ReadCharacterTypeItem = "ReadCharacterType";
+            /// <summary>显示人物宽/普屏标记配置项</summary>
+            public const string ShowCharacterScreenMarkItem = "ShowCharacterScreenMark";
         }
 
         /// <summary>
@@ -49,6 +51,7 @@ namespace MUGENCharsSet
         private static bool _autoSort = false;
         private static ReadCharTypeEnum _readCharacterType = ReadCharTypeEnum.SelectDef;
         private static string _editProgramPath = DefaultEditProgramPath;
+        private static bool _showCharacterScreenMark = false;
 
         #endregion
 
@@ -123,6 +126,19 @@ namespace MUGENCharsSet
             }
         }
 
+        /// <summary>
+        /// 获取或设置是否显示人物宽/普屏标记
+        /// </summary>
+        public static bool ShowCharacterScreenMark
+        {
+            get { return _showCharacterScreenMark; }
+            set
+            {
+                _showCharacterScreenMark = value;
+                WriteSetting(SettingInfo.DataSection, SettingInfo.ShowCharacterScreenMarkItem, value ? "1" : "0");
+            }
+        }
+
         #endregion
 
         #region 类方法
@@ -132,7 +148,7 @@ namespace MUGENCharsSet
         /// </summary>
         public static void Init()
         {
-            Init(Tools.GetFormatDirPath(Directory.GetParent(System.Windows.Forms.Application.UserAppDataPath).FullName) +
+            Init(Directory.GetParent(System.Windows.Forms.Application.UserAppDataPath).FullName.GetFormatDirPath() +
                 System.Windows.Forms.Application.ProductName + IniExt);
         }
 
@@ -146,24 +162,12 @@ namespace MUGENCharsSet
             try
             {
                 IniFiles ini = new IniFiles(IniPath);
-                MugenExePath = Tools.GetBackSlashPath(ini.ReadString(SettingInfo.DataSection, SettingInfo.MugenPathItem, ""));
-                if (ini.ReadInteger(SettingInfo.DataSection, SettingInfo.AutoSortItem, 0) == 1)
-                {
-                    AutoSort = true;
-                }
-                else
-                {
-                    AutoSort = false;
-                }
+                MugenExePath = ini.ReadString(SettingInfo.DataSection, SettingInfo.MugenPathItem, "").GetBackSlashPath();
+                AutoSort = ini.ReadInteger(SettingInfo.DataSection, SettingInfo.AutoSortItem, 0) == 1 ? true : false;
                 EditProgramPath = ini.ReadString(SettingInfo.DataSection, SettingInfo.EditProgramPathItem, DefaultEditProgramPath);
-                if (ini.ReadInteger(SettingInfo.DataSection, SettingInfo.ReadCharacterTypeItem, 0) == 1)
-                {
-                    ReadCharacterType = ReadCharTypeEnum.CharsDir;
-                }
-                else
-                {
-                    ReadCharacterType = ReadCharTypeEnum.SelectDef;
-                }
+                ReadCharacterType = ini.ReadInteger(SettingInfo.DataSection, SettingInfo.ReadCharacterTypeItem, 0)
+                    == 1 ? ReadCharTypeEnum.CharsDir : ReadCharTypeEnum.SelectDef;
+                ShowCharacterScreenMark = ini.ReadInteger(SettingInfo.DataSection, SettingInfo.ShowCharacterScreenMarkItem, 0) == 1 ? true : false;
             }
             catch (Exception) { }
         }

@@ -45,6 +45,7 @@ namespace MUGENCharsSet
         {
             txtMugenExePath.Text = AppSetting.MugenExePath;
             txtEditProgramPath.Text = AppSetting.EditProgramPath;
+            chkShowCharacterScreenMark.Checked = AppSetting.ShowCharacterScreenMark;
         }
 
         /// <summary>
@@ -55,7 +56,7 @@ namespace MUGENCharsSet
             ofdExePath.FileName = AppSetting.MugenExePath;
             if (File.Exists(AppSetting.MugenExePath))
             {
-                ofdExePath.InitialDirectory = Tools.GetDirPathOfFile(AppSetting.MugenExePath);
+                ofdExePath.InitialDirectory = AppSetting.MugenExePath.GetDirPathOfFile();
             }
             if (ofdExePath.ShowDialog() == DialogResult.OK)
             {
@@ -83,7 +84,8 @@ namespace MUGENCharsSet
             try
             {
                 AppSetting.EditProgramPath = txtEditProgramPath.Text.Trim();
-                string mugenCfgPath = Tools.GetDirPathOfFile(txtMugenExePath.Text.Trim()) + MugenSetting.DataDir + MugenSetting.MugenCfgFileName;
+                AppSetting.ShowCharacterScreenMark = chkShowCharacterScreenMark.Checked;
+                string mugenCfgPath = txtMugenExePath.Text.Trim().GetDirPathOfFile() + MugenSetting.DataDir + MugenSetting.MugenCfgFileName;
                 if (!File.Exists(mugenCfgPath))
                 {
                     throw new ApplicationException("mugen.cfg文件不存在！");
@@ -118,6 +120,7 @@ namespace MUGENCharsSet
         private void btnDefault_Click(object sender, EventArgs e)
         {
             txtEditProgramPath.Text = AppSetting.DefaultEditProgramPath;
+            chkShowCharacterScreenMark.Checked = false;
         }
 
         /// <summary>

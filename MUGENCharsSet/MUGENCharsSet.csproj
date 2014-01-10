@@ -55,6 +55,8 @@
     </Compile>
     <Compile Include="AppSetting.cs" />
     <Compile Include="Character.cs" />
+    <Compile Include="ImagePcx.cs" />
+    <Compile Include="KeyPressSetting.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -77,6 +79,7 @@
     <Compile Include="SettingForm.Designer.cs">
       <DependentUpon>SettingForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="SpriteFile.cs" />
     <Compile Include="StartUpForm.cs">
       <SubType>Form</SubType>
     </Compile>

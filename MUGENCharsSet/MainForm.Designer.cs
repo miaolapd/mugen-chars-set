@@ -49,6 +49,9 @@
             this.chkAutoSort = new System.Windows.Forms.CheckBox();
             this.btnSearchAll = new System.Windows.Forms.Button();
             this.pageCharacter = new System.Windows.Forms.TabPage();
+            this.lblSpriteVersion = new System.Windows.Forms.Label();
+            this.grpSpriteImage = new System.Windows.Forms.GroupBox();
+            this.picSpriteImage = new System.Windows.Forms.PictureBox();
             this.grpMugenInfo = new System.Windows.Forms.GroupBox();
             this.lblMugenInfo = new System.Windows.Forms.Label();
             this.grpDefPath = new System.Windows.Forms.GroupBox();
@@ -166,6 +169,8 @@
             this.ofdDefPath = new System.Windows.Forms.OpenFileDialog();
             this.ctxmnuCharacterList.SuspendLayout();
             this.pageCharacter.SuspendLayout();
+            this.grpSpriteImage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picSpriteImage)).BeginInit();
             this.grpMugenInfo.SuspendLayout();
             this.grpDefPath.SuspendLayout();
             this.grpPal.SuspendLayout();
@@ -254,7 +259,7 @@
             this.btnRestore.Location = new System.Drawing.Point(468, 462);
             this.btnRestore.Name = "btnRestore";
             this.btnRestore.Size = new System.Drawing.Size(72, 29);
-            this.btnRestore.TabIndex = 7;
+            this.btnRestore.TabIndex = 9;
             this.btnRestore.Text = "还原";
             this.ttpCommon.SetToolTip(this.btnRestore, "快捷键：Ctrl+R");
             this.btnRestore.UseVisualStyleBackColor = true;
@@ -267,7 +272,7 @@
             this.btnBackup.Location = new System.Drawing.Point(390, 462);
             this.btnBackup.Name = "btnBackup";
             this.btnBackup.Size = new System.Drawing.Size(72, 29);
-            this.btnBackup.TabIndex = 6;
+            this.btnBackup.TabIndex = 8;
             this.btnBackup.Text = "备份";
             this.ttpCommon.SetToolTip(this.btnBackup, "快捷键：Ctrl+B");
             this.btnBackup.UseVisualStyleBackColor = true;
@@ -280,7 +285,7 @@
             this.btnReset.Location = new System.Drawing.Point(312, 462);
             this.btnReset.Name = "btnReset";
             this.btnReset.Size = new System.Drawing.Size(72, 29);
-            this.btnReset.TabIndex = 5;
+            this.btnReset.TabIndex = 7;
             this.btnReset.Text = "重置";
             this.ttpCommon.SetToolTip(this.btnReset, "快捷键：Ctrl+S");
             this.btnReset.UseVisualStyleBackColor = true;
@@ -293,7 +298,7 @@
             this.btnModify.Location = new System.Drawing.Point(234, 462);
             this.btnModify.Name = "btnModify";
             this.btnModify.Size = new System.Drawing.Size(72, 29);
-            this.btnModify.TabIndex = 4;
+            this.btnModify.TabIndex = 6;
             this.btnModify.Text = "修改";
             this.ttpCommon.SetToolTip(this.btnModify, "快捷键：Ctrl+Enter");
             this.btnModify.UseVisualStyleBackColor = true;
@@ -368,6 +373,8 @@
             // 
             this.pageCharacter.AllowDrop = true;
             this.pageCharacter.BackColor = System.Drawing.SystemColors.Control;
+            this.pageCharacter.Controls.Add(this.lblSpriteVersion);
+            this.pageCharacter.Controls.Add(this.grpSpriteImage);
             this.pageCharacter.Controls.Add(this.grpMugenInfo);
             this.pageCharacter.Controls.Add(this.grpDefPath);
             this.pageCharacter.Controls.Add(this.btnRestore);
@@ -388,13 +395,43 @@
             this.pageCharacter.DragEnter += new System.Windows.Forms.DragEventHandler(this.pageCharacter_DragEnter);
             this.pageCharacter.Enter += new System.EventHandler(this.pageCharacter_Enter);
             // 
+            // lblSpriteVersion
+            // 
+            this.lblSpriteVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpriteVersion.AutoSize = true;
+            this.lblSpriteVersion.Location = new System.Drawing.Point(449, 203);
+            this.lblSpriteVersion.Name = "lblSpriteVersion";
+            this.lblSpriteVersion.Size = new System.Drawing.Size(0, 12);
+            this.lblSpriteVersion.TabIndex = 10;
+            // 
+            // grpSpriteImage
+            // 
+            this.grpSpriteImage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpSpriteImage.Controls.Add(this.picSpriteImage);
+            this.grpSpriteImage.Location = new System.Drawing.Point(440, 50);
+            this.grpSpriteImage.Name = "grpSpriteImage";
+            this.grpSpriteImage.Size = new System.Drawing.Size(101, 150);
+            this.grpSpriteImage.TabIndex = 4;
+            this.grpSpriteImage.TabStop = false;
+            this.grpSpriteImage.Text = "人物模型";
+            // 
+            // picSpriteImage
+            // 
+            this.picSpriteImage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.picSpriteImage.Location = new System.Drawing.Point(3, 17);
+            this.picSpriteImage.Name = "picSpriteImage";
+            this.picSpriteImage.Size = new System.Drawing.Size(95, 130);
+            this.picSpriteImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picSpriteImage.TabIndex = 0;
+            this.picSpriteImage.TabStop = false;
+            // 
             // grpMugenInfo
             // 
             this.grpMugenInfo.Controls.Add(this.lblMugenInfo);
             this.grpMugenInfo.Location = new System.Drawing.Point(8, 6);
             this.grpMugenInfo.Name = "grpMugenInfo";
             this.grpMugenInfo.Size = new System.Drawing.Size(220, 38);
-            this.grpMugenInfo.TabIndex = 8;
+            this.grpMugenInfo.TabIndex = 0;
             this.grpMugenInfo.TabStop = false;
             this.grpMugenInfo.Text = "MUGEN信息";
             // 
@@ -414,7 +451,7 @@
             this.grpDefPath.Location = new System.Drawing.Point(234, 6);
             this.grpDefPath.Name = "grpDefPath";
             this.grpDefPath.Size = new System.Drawing.Size(307, 38);
-            this.grpDefPath.TabIndex = 1;
+            this.grpDefPath.TabIndex = 2;
             this.grpDefPath.TabStop = false;
             this.grpDefPath.Text = "人物配置文件";
             // 
@@ -437,7 +474,7 @@
             this.grpPal.Location = new System.Drawing.Point(234, 243);
             this.grpPal.Name = "grpPal";
             this.grpPal.Size = new System.Drawing.Size(307, 213);
-            this.grpPal.TabIndex = 3;
+            this.grpPal.TabIndex = 5;
             this.grpPal.TabStop = false;
             this.grpPal.Text = "色表设置";
             // 
@@ -492,8 +529,8 @@
             this.grpProperty.Controls.Add(this.lblName);
             this.grpProperty.Location = new System.Drawing.Point(234, 50);
             this.grpProperty.Name = "grpProperty";
-            this.grpProperty.Size = new System.Drawing.Size(307, 187);
-            this.grpProperty.TabIndex = 2;
+            this.grpProperty.Size = new System.Drawing.Size(200, 187);
+            this.grpProperty.TabIndex = 3;
             this.grpProperty.TabStop = false;
             this.grpProperty.Text = "人物属性设置";
             // 
@@ -504,7 +541,7 @@
             this.txtDefence.Location = new System.Drawing.Point(61, 128);
             this.txtDefence.MaxLength = 10;
             this.txtDefence.Name = "txtDefence";
-            this.txtDefence.Size = new System.Drawing.Size(240, 21);
+            this.txtDefence.Size = new System.Drawing.Size(133, 21);
             this.txtDefence.TabIndex = 5;
             this.txtDefence.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textProperty_KeyDown);
             // 
@@ -524,7 +561,7 @@
             this.txtAttack.Location = new System.Drawing.Point(61, 101);
             this.txtAttack.MaxLength = 10;
             this.txtAttack.Name = "txtAttack";
-            this.txtAttack.Size = new System.Drawing.Size(240, 21);
+            this.txtAttack.Size = new System.Drawing.Size(133, 21);
             this.txtAttack.TabIndex = 4;
             this.txtAttack.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textProperty_KeyDown);
             // 
@@ -544,7 +581,7 @@
             this.txtPower.Location = new System.Drawing.Point(61, 155);
             this.txtPower.MaxLength = 10;
             this.txtPower.Name = "txtPower";
-            this.txtPower.Size = new System.Drawing.Size(240, 21);
+            this.txtPower.Size = new System.Drawing.Size(133, 21);
             this.txtPower.TabIndex = 6;
             this.txtPower.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textProperty_KeyDown);
             // 
@@ -564,7 +601,7 @@
             this.txtLife.Location = new System.Drawing.Point(61, 74);
             this.txtLife.MaxLength = 10;
             this.txtLife.Name = "txtLife";
-            this.txtLife.Size = new System.Drawing.Size(240, 21);
+            this.txtLife.Size = new System.Drawing.Size(133, 21);
             this.txtLife.TabIndex = 3;
             this.txtLife.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textProperty_KeyDown);
             // 
@@ -584,7 +621,7 @@
             this.txtDisplayName.Location = new System.Drawing.Point(61, 47);
             this.txtDisplayName.MaxLength = 255;
             this.txtDisplayName.Name = "txtDisplayName";
-            this.txtDisplayName.Size = new System.Drawing.Size(240, 21);
+            this.txtDisplayName.Size = new System.Drawing.Size(133, 21);
             this.txtDisplayName.TabIndex = 2;
             this.txtDisplayName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textProperty_KeyDown);
             // 
@@ -604,7 +641,7 @@
             this.txtName.Location = new System.Drawing.Point(61, 20);
             this.txtName.MaxLength = 255;
             this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(240, 21);
+            this.txtName.Size = new System.Drawing.Size(133, 21);
             this.txtName.TabIndex = 1;
             this.txtName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textProperty_KeyDown);
             // 
@@ -636,7 +673,7 @@
             this.grpChars.Location = new System.Drawing.Point(8, 50);
             this.grpChars.Name = "grpChars";
             this.grpChars.Size = new System.Drawing.Size(220, 441);
-            this.grpChars.TabIndex = 0;
+            this.grpChars.TabIndex = 1;
             this.grpChars.TabStop = false;
             this.grpChars.Text = "人物列表";
             // 
@@ -1633,6 +1670,9 @@
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             this.ctxmnuCharacterList.ResumeLayout(false);
             this.pageCharacter.ResumeLayout(false);
+            this.pageCharacter.PerformLayout();
+            this.grpSpriteImage.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.picSpriteImage)).EndInit();
             this.grpMugenInfo.ResumeLayout(false);
             this.grpMugenInfo.PerformLayout();
             this.grpDefPath.ResumeLayout(false);
@@ -1796,6 +1836,9 @@
         private System.Windows.Forms.ComboBox cboP2Crouch;
         private System.Windows.Forms.ComboBox cboP1Crouch;
         private System.Windows.Forms.ComboBox cboP2Jump;
+        private System.Windows.Forms.GroupBox grpSpriteImage;
+        private System.Windows.Forms.PictureBox picSpriteImage;
+        private System.Windows.Forms.Label lblSpriteVersion;
     }
 }
 
