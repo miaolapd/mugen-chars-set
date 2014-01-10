@@ -27,6 +27,8 @@ namespace MUGENCharsSet
         public const string ActExt = ".act";
         /// <summary>人物名界定符</summary>
         public const char NameDelimeter = '"';
+        /// <summary>无效人物名数组(用于过滤select.def中的人物列表)</summary>
+        public static string[] InvalidCharacterName = new string[] { String.Empty, "blank", "empty", "randomselect", "/-", "/" };
 
         /// <summary>
         /// 人物配置信息类
@@ -347,17 +349,6 @@ namespace MUGENCharsSet
                     return null;
                 }
                 return image;
-            }
-        }
-
-        /// <summary>
-        /// 无效人物名数组(用于过滤select.def中的人物列表)
-        /// </summary>
-        public static string[] InvalidCharacterName
-        {
-            get
-            {
-                return new string[] { String.Empty, "blank", "empty", "randomselect", "/-", "/" };
             }
         }
 

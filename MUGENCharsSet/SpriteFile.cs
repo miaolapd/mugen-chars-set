@@ -129,7 +129,7 @@ namespace MUGENCharsSet
                 }
 
                 if (Version == SffVerion.V1_01) ReadHeaderV1_01(br);
-                else if (Version == SffVerion.V2_00) ReadHeaderV2_00(br);
+                else if (Version == SffVerion.V1_02 || Version == SffVerion.V2_00) ReadHeaderV2_00(br);
             }
             catch (Exception)
             {
@@ -163,9 +163,13 @@ namespace MUGENCharsSet
         /// 读取SFF V2.00版头部信息
         /// </summary>
         /// <param name="br">当前SFF文件的二进制数据流</param>
+        /// <exception cref="System.ApplicationException"></exception>
         private void ReadHeaderV2_00(BinaryReader br)
         {
-            
+            byte[] data = br.ReadBytes(HeaderSizeV2_00);
+            if (data.Length != HeaderSizeV2_00) throw new ApplicationException("数据大小错误！");
+            _firstSubheaderOffset = BitConverter.ToInt32(data, 36);
+            _numberOfImages = BitConverter.ToInt32(data, 40);
         }
 
         /// <summary>
@@ -178,7 +182,7 @@ namespace MUGENCharsSet
             {
                 return new SpriteFileSubNode(SffPath, FirstSubheaderOffset, Version);
             }
-            catch(ApplicationException)
+            catch (ApplicationException)
             {
                 return null;
             }
@@ -191,7 +195,7 @@ namespace MUGENCharsSet
         /// <returns>格式化的版本信息</returns>
         public static string GetFormatVersion(SffVerion version)
         {
-            switch(version)
+            switch (version)
             {
                 case SffVerion.V1_01: return "1.01";
                 case SffVerion.V1_02: return "1.02";
@@ -305,7 +309,7 @@ namespace MUGENCharsSet
                 fs.Position = offset;
                 br = new BinaryReader(fs);
                 if (version == SpriteFile.SffVerion.V1_01) ReadV1_01(br);
-                else if (version == SpriteFile.SffVerion.V2_00) ReadV2_00(br);
+                else if (version == SpriteFile.SffVerion.V1_02 || version == SpriteFile.SffVerion.V2_00) ReadV2_00(br);
                 else throw new Exception();
             }
             catch (Exception)
@@ -343,9 +347,15 @@ namespace MUGENCharsSet
         /// 读取SFF V2.00版子节点信息
         /// </summary>
         /// <param name="br">当前SFF文件的二进制数据流</param>
+        /// <exception cref="System.ApplicationException"></exception>
         private void ReadV2_00(BinaryReader br)
         {
-            
+            byte[] data = br.ReadBytes(HeaderSizeV2_00);
+            if (data.Length != HeaderSizeV2_00) throw new ApplicationException("数据大小错误！");
+            _groupNumber = BitConverter.ToInt16(data, 0);
+            _imageNumber = BitConverter.ToInt16(data, 2);
+            _axis = new Point(BitConverter.ToInt16(data, 8), BitConverter.ToInt16(data, 10));
+            _imageSize = BitConverter.ToInt32(data, 20);
         }
     }
 
