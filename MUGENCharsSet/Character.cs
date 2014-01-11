@@ -334,9 +334,8 @@ namespace MUGENCharsSet
             {
                 if (Sprite == null) return null;
                 if (Sprite.FirstSubNode == null) return null;
-                byte[] data = Sprite.FirstSubNode.ImageData;
-                if (data == null) return null;
-                ImagePcx pcx = new ImagePcx(data);
+                if (Sprite.FirstSubNode.ImageData == null) return null;
+                ImagePcx pcx = new ImagePcx(Sprite.FirstSubNode.ImageData);
                 Bitmap image = pcx.PcxImage;
                 try
                 {
@@ -634,6 +633,7 @@ namespace MUGENCharsSet
             if (!File.Exists(actPath)) return null;
             if (Sprite == null) return null;
             if (Sprite.FirstSubNode == null) return null;
+            if (Sprite.FirstSubNode.ImageData == null) return null;
             FileStream fs = null;
             BinaryReader br = null;
             byte[] newImageData = null;

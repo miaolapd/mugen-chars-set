@@ -72,6 +72,7 @@ namespace MUGENCharsSet
                     txtDisplayName.ReadOnly = true;
                     grpPal.Enabled = false;
                     btnRestore.Enabled = false;
+                    cboSelectableActFileList.Visible = false;
                     ResetCharacterControls();
                 }
                 else
@@ -79,6 +80,7 @@ namespace MUGENCharsSet
                     txtName.ReadOnly = false;
                     txtDisplayName.ReadOnly = false;
                     grpPal.Enabled = true;
+                    cboSelectableActFileList.Visible = true;
                 }
                 _multiModified = value;
             }
