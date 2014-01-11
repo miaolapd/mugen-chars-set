@@ -152,6 +152,7 @@ namespace MUGENCharsSet
             }
             picSpriteImage.Image = null;
             lblSpriteVersion.Text = "";
+            cboSelectableActFileList.Items.Clear();
             dgvPal.Rows.Clear();
             ((DataGridViewComboBoxColumn)dgvPal.Columns[1]).Items.Clear();
         }
@@ -263,11 +264,14 @@ namespace MUGENCharsSet
             txtAttack.Text = character.Attack.ToString();
             txtDefence.Text = character.Defence.ToString();
             txtPower.Text = character.Power.ToString();
-            picSpriteImage.Image = character.SpriteImage;
+            character.ReadSpriteFile();
             lblSpriteVersion.Text = "SFF版本：" + SpriteFile.GetFormatVersion(character.SpriteVersion);
             if (character.PalList.Count > 0)
             {
                 string[] selectableActFileList = character.SelectableActFileList;
+                cboSelectableActFileList.Items.Add("原始图像");
+                cboSelectableActFileList.Items.AddRange(selectableActFileList);
+                cboSelectableActFileList.SelectedIndex = 0;
                 DataGridViewComboBoxColumn dgvPalFileList = (DataGridViewComboBoxColumn)dgvPal.Columns[PalValColumnNo];
                 dgvPalFileList.Items.AddRange(selectableActFileList);
                 foreach (string palKey in character.PalList.Keys)
@@ -1134,6 +1138,24 @@ namespace MUGENCharsSet
         private void pageCharacter_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
+        }
+
+        /// <summary>
+        /// 当可用act文件列表下拉框选择项改变时发生
+        /// </summary>
+        private void cboSelectableActFileList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lstCharacterList.SelectedItems.Count == 0) return;
+            if (cboSelectableActFileList.Items.Count == 0) return;
+            Character character = (Character)lstCharacterList.SelectedItem;
+            if (cboSelectableActFileList.SelectedIndex == 0)
+            {
+                picSpriteImage.Image = character.SpriteImage;
+            }
+            else
+            {
+                picSpriteImage.Image = character.GetSpriteImageWithPal(cboSelectableActFileList.SelectedItem.ToString());
+            }
         }
 
         #endregion

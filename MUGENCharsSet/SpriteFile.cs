@@ -29,6 +29,7 @@ namespace MUGENCharsSet
         private int _firstSubheaderOffset;
         private int _subheaderSize;
         private bool _sharedPalette;
+        private SpriteFileSubNode _firstNode;
 
         /// <summary>
         /// 获取SFF文件绝对路径
@@ -92,6 +93,28 @@ namespace MUGENCharsSet
         public bool SharedPalette
         {
             get { return _sharedPalette; }
+        }
+
+        /// <summary>
+        /// 获取第一个子节点
+        /// </summary>
+        public SpriteFileSubNode FirstSubNode
+        {
+            get
+            {
+                if (_firstNode == null)
+                {
+                    try
+                    {
+                        _firstNode = new SpriteFileSubNode(SffPath, FirstSubheaderOffset, Version);
+                    }
+                    catch (ApplicationException)
+                    {
+                        return null;
+                    }
+                }
+                return _firstNode;
+            }
         }
 
         /// <summary>
@@ -170,22 +193,6 @@ namespace MUGENCharsSet
             if (data.Length != HeaderSizeV2_00) throw new ApplicationException("数据大小错误！");
             _firstSubheaderOffset = BitConverter.ToInt32(data, 36);
             _numberOfImages = BitConverter.ToInt32(data, 40);
-        }
-
-        /// <summary>
-        /// 获取第一个子节点
-        /// </summary>
-        /// <returns>第一个子节点</returns>
-        public SpriteFileSubNode GetFirstSubNode()
-        {
-            try
-            {
-                return new SpriteFileSubNode(SffPath, FirstSubheaderOffset, Version);
-            }
-            catch (ApplicationException)
-            {
-                return null;
-            }
         }
 
         /// <summary>

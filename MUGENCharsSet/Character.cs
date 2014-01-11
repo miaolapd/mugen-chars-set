@@ -80,8 +80,9 @@ namespace MUGENCharsSet
         private Dictionary<string, string> _palList;
         private bool _isWideScreen;
         private string _stcommon;
-        private string _sprite;
+        private string _spritePath;
         private SpriteFile.SffVerion _spriteVersion;
+        private SpriteFile _sprite;
 
         #endregion
 
@@ -300,10 +301,10 @@ namespace MUGENCharsSet
         /// <summary>
         /// 获取或设置人物模型文件相对路径
         /// </summary>
-        public string Sprite
+        public string SpritePath
         {
-            get { return _sprite; }
-            set { _sprite = value; }
+            get { return _spritePath; }
+            set { _spritePath = value; }
         }
 
         /// <summary>
@@ -316,27 +317,24 @@ namespace MUGENCharsSet
         }
 
         /// <summary>
+        /// 获取或设置人物模型
+        /// </summary>
+        public SpriteFile Sprite
+        {
+            get { return _sprite; }
+            set { _sprite = value; }
+        }
+
+        /// <summary>
         /// 获取人物模型图像
         /// </summary>
         public Bitmap SpriteImage
         {
             get
             {
-                string sffPath = DefPath.GetDirPathOfFile() + Sprite.GetBackSlashPath();
-                if (!File.Exists(sffPath)) return null;
-                SpriteFile spriteFile = null;
-                try
-                {
-                    spriteFile = new SpriteFile(sffPath);
-                }
-                catch(ApplicationException)
-                {
-                    return null;
-                }
-                SpriteVersion = spriteFile.Version;
-                SpriteFileSubNode first = spriteFile.GetFirstSubNode();
-                if (first == null) return null;
-                byte[] data = first.ImageData;
+                if (Sprite == null) return null;
+                if (Sprite.FirstSubNode == null) return null;
+                byte[] data = Sprite.FirstSubNode.ImageData;
                 if (data == null) return null;
                 ImagePcx pcx = new ImagePcx(data);
                 Bitmap image = pcx.PcxImage;
@@ -408,7 +406,7 @@ namespace MUGENCharsSet
             Cns = ini.ReadString(SettingInfo.FilesSection, SettingInfo.CnsItem, "").GetBackSlashPath();
             _isWideScreen = ini.ReadString(SettingInfo.InfoSection, SettingInfo.LocalcoordItem, "") != String.Empty;
             Stcommon = ini.ReadString(SettingInfo.FilesSection, SettingInfo.StcommonItem, "");
-            Sprite = ini.ReadString(SettingInfo.FilesSection, SettingInfo.SpriteItem, "");
+            SpritePath = ini.ReadString(SettingInfo.FilesSection, SettingInfo.SpriteItem, "");
             if (!File.Exists(CnsFullPath)) throw new ApplicationException("人物cns文件不存在！");
             ini = new IniFiles(CnsFullPath);
             Life = ini.ReadInteger(SettingInfo.DataSection, SettingInfo.LifeItem, 0);
@@ -603,6 +601,70 @@ namespace MUGENCharsSet
             {
                 throw new ApplicationException("普屏人物包转换失败！");
             }
+        }
+
+        /// <summary>
+        /// 读取人物模型
+        /// </summary>
+        /// <returns>是否读取成功</returns>
+        public bool ReadSpriteFile()
+        {
+            string sffPath = DefPath.GetDirPathOfFile() + SpritePath.GetBackSlashPath();
+            if (!File.Exists(sffPath)) return false;
+            try
+            {
+                Sprite = new SpriteFile(sffPath);
+            }
+            catch (ApplicationException)
+            {
+                return false;
+            }
+            SpriteVersion = Sprite.Version;
+            return true;
+        }
+
+        /// <summary>
+        /// 获取被指定色表替换后的人物模型图像
+        /// </summary>
+        /// <param name="actPath">色表文件相对路径</param>
+        /// <returns>人物模型图像</returns>
+        public Bitmap GetSpriteImageWithPal(string path)
+        {
+            string actPath = DefPath.GetDirPathOfFile() + path.GetBackSlashPath();
+            if (!File.Exists(actPath)) return null;
+            if (Sprite == null) return null;
+            if (Sprite.FirstSubNode == null) return null;
+            FileStream fs = null;
+            BinaryReader br = null;
+            byte[] newImageData = null;
+            try
+            {
+                fs = new FileStream(actPath, FileMode.Open);
+                br = new BinaryReader(fs);
+                byte[] actData = br.ReadBytes((int)fs.Length);
+                newImageData = Sprite.FirstSubNode.ImageData.Take(Sprite.FirstSubNode.ImageData.Length - (int)fs.Length).Concat(actData.Reverse()).ToArray();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            finally
+            {
+                br.Close();
+                fs.Close();
+            }
+            if (newImageData == null) return null;
+            ImagePcx pcx = new ImagePcx(newImageData);
+            Bitmap image = pcx.PcxImage;
+            try
+            {
+                image.MakeTransparent(image.GetPixel(0, 0));
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            return image;
         }
 
         #endregion

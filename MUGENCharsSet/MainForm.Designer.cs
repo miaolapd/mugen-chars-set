@@ -50,7 +50,7 @@
             this.btnSearchAll = new System.Windows.Forms.Button();
             this.pageCharacter = new System.Windows.Forms.TabPage();
             this.lblSpriteVersion = new System.Windows.Forms.Label();
-            this.grpSpriteImage = new System.Windows.Forms.GroupBox();
+            this.grpSprite = new System.Windows.Forms.GroupBox();
             this.picSpriteImage = new System.Windows.Forms.PictureBox();
             this.grpMugenInfo = new System.Windows.Forms.GroupBox();
             this.lblMugenInfo = new System.Windows.Forms.Label();
@@ -167,9 +167,10 @@
             this.lblDifficultyValue = new System.Windows.Forms.Label();
             this.fswCharacterCns = new System.IO.FileSystemWatcher();
             this.ofdDefPath = new System.Windows.Forms.OpenFileDialog();
+            this.cboSelectableActFileList = new System.Windows.Forms.ComboBox();
             this.ctxmnuCharacterList.SuspendLayout();
             this.pageCharacter.SuspendLayout();
-            this.grpSpriteImage.SuspendLayout();
+            this.grpSprite.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picSpriteImage)).BeginInit();
             this.grpMugenInfo.SuspendLayout();
             this.grpDefPath.SuspendLayout();
@@ -373,8 +374,7 @@
             // 
             this.pageCharacter.AllowDrop = true;
             this.pageCharacter.BackColor = System.Drawing.SystemColors.Control;
-            this.pageCharacter.Controls.Add(this.lblSpriteVersion);
-            this.pageCharacter.Controls.Add(this.grpSpriteImage);
+            this.pageCharacter.Controls.Add(this.grpSprite);
             this.pageCharacter.Controls.Add(this.grpMugenInfo);
             this.pageCharacter.Controls.Add(this.grpDefPath);
             this.pageCharacter.Controls.Add(this.btnRestore);
@@ -397,30 +397,34 @@
             // 
             // lblSpriteVersion
             // 
-            this.lblSpriteVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpriteVersion.AutoSize = true;
-            this.lblSpriteVersion.Location = new System.Drawing.Point(449, 203);
+            this.lblSpriteVersion.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpriteVersion.Location = new System.Drawing.Point(6, 146);
             this.lblSpriteVersion.Name = "lblSpriteVersion";
-            this.lblSpriteVersion.Size = new System.Drawing.Size(0, 12);
-            this.lblSpriteVersion.TabIndex = 10;
+            this.lblSpriteVersion.Size = new System.Drawing.Size(111, 12);
+            this.lblSpriteVersion.TabIndex = 1;
+            this.lblSpriteVersion.Text = "SFF版本：1.01";
+            this.lblSpriteVersion.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // grpSpriteImage
+            // grpSprite
             // 
-            this.grpSpriteImage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpSpriteImage.Controls.Add(this.picSpriteImage);
-            this.grpSpriteImage.Location = new System.Drawing.Point(440, 50);
-            this.grpSpriteImage.Name = "grpSpriteImage";
-            this.grpSpriteImage.Size = new System.Drawing.Size(101, 150);
-            this.grpSpriteImage.TabIndex = 4;
-            this.grpSpriteImage.TabStop = false;
-            this.grpSpriteImage.Text = "人物模型";
+            this.grpSprite.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpSprite.Controls.Add(this.cboSelectableActFileList);
+            this.grpSprite.Controls.Add(this.lblSpriteVersion);
+            this.grpSprite.Controls.Add(this.picSpriteImage);
+            this.grpSprite.Location = new System.Drawing.Point(418, 50);
+            this.grpSprite.Name = "grpSprite";
+            this.grpSprite.Size = new System.Drawing.Size(123, 187);
+            this.grpSprite.TabIndex = 4;
+            this.grpSprite.TabStop = false;
+            this.grpSprite.Text = "人物模型";
             // 
             // picSpriteImage
             // 
-            this.picSpriteImage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.picSpriteImage.Dock = System.Windows.Forms.DockStyle.Top;
             this.picSpriteImage.Location = new System.Drawing.Point(3, 17);
             this.picSpriteImage.Name = "picSpriteImage";
-            this.picSpriteImage.Size = new System.Drawing.Size(95, 130);
+            this.picSpriteImage.Size = new System.Drawing.Size(117, 126);
             this.picSpriteImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picSpriteImage.TabIndex = 0;
             this.picSpriteImage.TabStop = false;
@@ -529,7 +533,7 @@
             this.grpProperty.Controls.Add(this.lblName);
             this.grpProperty.Location = new System.Drawing.Point(234, 50);
             this.grpProperty.Name = "grpProperty";
-            this.grpProperty.Size = new System.Drawing.Size(200, 187);
+            this.grpProperty.Size = new System.Drawing.Size(178, 187);
             this.grpProperty.TabIndex = 3;
             this.grpProperty.TabStop = false;
             this.grpProperty.Text = "人物属性设置";
@@ -541,7 +545,7 @@
             this.txtDefence.Location = new System.Drawing.Point(61, 128);
             this.txtDefence.MaxLength = 10;
             this.txtDefence.Name = "txtDefence";
-            this.txtDefence.Size = new System.Drawing.Size(133, 21);
+            this.txtDefence.Size = new System.Drawing.Size(111, 21);
             this.txtDefence.TabIndex = 5;
             this.txtDefence.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textProperty_KeyDown);
             // 
@@ -561,7 +565,7 @@
             this.txtAttack.Location = new System.Drawing.Point(61, 101);
             this.txtAttack.MaxLength = 10;
             this.txtAttack.Name = "txtAttack";
-            this.txtAttack.Size = new System.Drawing.Size(133, 21);
+            this.txtAttack.Size = new System.Drawing.Size(111, 21);
             this.txtAttack.TabIndex = 4;
             this.txtAttack.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textProperty_KeyDown);
             // 
@@ -581,7 +585,7 @@
             this.txtPower.Location = new System.Drawing.Point(61, 155);
             this.txtPower.MaxLength = 10;
             this.txtPower.Name = "txtPower";
-            this.txtPower.Size = new System.Drawing.Size(133, 21);
+            this.txtPower.Size = new System.Drawing.Size(111, 21);
             this.txtPower.TabIndex = 6;
             this.txtPower.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textProperty_KeyDown);
             // 
@@ -601,7 +605,7 @@
             this.txtLife.Location = new System.Drawing.Point(61, 74);
             this.txtLife.MaxLength = 10;
             this.txtLife.Name = "txtLife";
-            this.txtLife.Size = new System.Drawing.Size(133, 21);
+            this.txtLife.Size = new System.Drawing.Size(111, 21);
             this.txtLife.TabIndex = 3;
             this.txtLife.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textProperty_KeyDown);
             // 
@@ -621,7 +625,7 @@
             this.txtDisplayName.Location = new System.Drawing.Point(61, 47);
             this.txtDisplayName.MaxLength = 255;
             this.txtDisplayName.Name = "txtDisplayName";
-            this.txtDisplayName.Size = new System.Drawing.Size(133, 21);
+            this.txtDisplayName.Size = new System.Drawing.Size(111, 21);
             this.txtDisplayName.TabIndex = 2;
             this.txtDisplayName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textProperty_KeyDown);
             // 
@@ -641,7 +645,7 @@
             this.txtName.Location = new System.Drawing.Point(61, 20);
             this.txtName.MaxLength = 255;
             this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(133, 21);
+            this.txtName.Size = new System.Drawing.Size(111, 21);
             this.txtName.TabIndex = 1;
             this.txtName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textProperty_KeyDown);
             // 
@@ -1166,6 +1170,7 @@
             // 
             this.cboP2Start.FormattingEnabled = true;
             this.cboP2Start.Location = new System.Drawing.Point(145, 302);
+            this.cboP2Start.MaxLength = 255;
             this.cboP2Start.Name = "cboP2Start";
             this.cboP2Start.Size = new System.Drawing.Size(86, 20);
             this.cboP2Start.TabIndex = 34;
@@ -1175,6 +1180,7 @@
             // 
             this.cboP1Start.FormattingEnabled = true;
             this.cboP1Start.Location = new System.Drawing.Point(53, 302);
+            this.cboP1Start.MaxLength = 255;
             this.cboP1Start.Name = "cboP1Start";
             this.cboP1Start.Size = new System.Drawing.Size(86, 20);
             this.cboP1Start.TabIndex = 33;
@@ -1184,6 +1190,7 @@
             // 
             this.cboP2Z.FormattingEnabled = true;
             this.cboP2Z.Location = new System.Drawing.Point(145, 275);
+            this.cboP2Z.MaxLength = 255;
             this.cboP2Z.Name = "cboP2Z";
             this.cboP2Z.Size = new System.Drawing.Size(86, 20);
             this.cboP2Z.TabIndex = 31;
@@ -1193,6 +1200,7 @@
             // 
             this.cboP1Z.FormattingEnabled = true;
             this.cboP1Z.Location = new System.Drawing.Point(53, 275);
+            this.cboP1Z.MaxLength = 255;
             this.cboP1Z.Name = "cboP1Z";
             this.cboP1Z.Size = new System.Drawing.Size(86, 20);
             this.cboP1Z.TabIndex = 30;
@@ -1202,6 +1210,7 @@
             // 
             this.cboP2Y.FormattingEnabled = true;
             this.cboP2Y.Location = new System.Drawing.Point(145, 248);
+            this.cboP2Y.MaxLength = 255;
             this.cboP2Y.Name = "cboP2Y";
             this.cboP2Y.Size = new System.Drawing.Size(86, 20);
             this.cboP2Y.TabIndex = 28;
@@ -1211,6 +1220,7 @@
             // 
             this.cboP1Y.FormattingEnabled = true;
             this.cboP1Y.Location = new System.Drawing.Point(53, 248);
+            this.cboP1Y.MaxLength = 255;
             this.cboP1Y.Name = "cboP1Y";
             this.cboP1Y.Size = new System.Drawing.Size(86, 20);
             this.cboP1Y.TabIndex = 27;
@@ -1220,6 +1230,7 @@
             // 
             this.cboP2X.FormattingEnabled = true;
             this.cboP2X.Location = new System.Drawing.Point(145, 221);
+            this.cboP2X.MaxLength = 255;
             this.cboP2X.Name = "cboP2X";
             this.cboP2X.Size = new System.Drawing.Size(86, 20);
             this.cboP2X.TabIndex = 25;
@@ -1229,6 +1240,7 @@
             // 
             this.cboP1X.FormattingEnabled = true;
             this.cboP1X.Location = new System.Drawing.Point(53, 221);
+            this.cboP1X.MaxLength = 255;
             this.cboP1X.Name = "cboP1X";
             this.cboP1X.Size = new System.Drawing.Size(86, 20);
             this.cboP1X.TabIndex = 24;
@@ -1238,6 +1250,7 @@
             // 
             this.cboP2C.FormattingEnabled = true;
             this.cboP2C.Location = new System.Drawing.Point(145, 194);
+            this.cboP2C.MaxLength = 255;
             this.cboP2C.Name = "cboP2C";
             this.cboP2C.Size = new System.Drawing.Size(86, 20);
             this.cboP2C.TabIndex = 22;
@@ -1247,6 +1260,7 @@
             // 
             this.cboP1C.FormattingEnabled = true;
             this.cboP1C.Location = new System.Drawing.Point(53, 194);
+            this.cboP1C.MaxLength = 255;
             this.cboP1C.Name = "cboP1C";
             this.cboP1C.Size = new System.Drawing.Size(86, 20);
             this.cboP1C.TabIndex = 21;
@@ -1256,6 +1270,7 @@
             // 
             this.cboP2B.FormattingEnabled = true;
             this.cboP2B.Location = new System.Drawing.Point(145, 167);
+            this.cboP2B.MaxLength = 255;
             this.cboP2B.Name = "cboP2B";
             this.cboP2B.Size = new System.Drawing.Size(86, 20);
             this.cboP2B.TabIndex = 19;
@@ -1265,6 +1280,7 @@
             // 
             this.cboP1B.FormattingEnabled = true;
             this.cboP1B.Location = new System.Drawing.Point(53, 167);
+            this.cboP1B.MaxLength = 255;
             this.cboP1B.Name = "cboP1B";
             this.cboP1B.Size = new System.Drawing.Size(86, 20);
             this.cboP1B.TabIndex = 18;
@@ -1274,6 +1290,7 @@
             // 
             this.cboP2A.FormattingEnabled = true;
             this.cboP2A.Location = new System.Drawing.Point(145, 140);
+            this.cboP2A.MaxLength = 255;
             this.cboP2A.Name = "cboP2A";
             this.cboP2A.Size = new System.Drawing.Size(86, 20);
             this.cboP2A.TabIndex = 16;
@@ -1283,6 +1300,7 @@
             // 
             this.cboP1A.FormattingEnabled = true;
             this.cboP1A.Location = new System.Drawing.Point(53, 140);
+            this.cboP1A.MaxLength = 255;
             this.cboP1A.Name = "cboP1A";
             this.cboP1A.Size = new System.Drawing.Size(86, 20);
             this.cboP1A.TabIndex = 15;
@@ -1292,6 +1310,7 @@
             // 
             this.cboP2Right.FormattingEnabled = true;
             this.cboP2Right.Location = new System.Drawing.Point(145, 113);
+            this.cboP2Right.MaxLength = 255;
             this.cboP2Right.Name = "cboP2Right";
             this.cboP2Right.Size = new System.Drawing.Size(86, 20);
             this.cboP2Right.TabIndex = 13;
@@ -1301,6 +1320,7 @@
             // 
             this.cboP1Right.FormattingEnabled = true;
             this.cboP1Right.Location = new System.Drawing.Point(53, 113);
+            this.cboP1Right.MaxLength = 255;
             this.cboP1Right.Name = "cboP1Right";
             this.cboP1Right.Size = new System.Drawing.Size(86, 20);
             this.cboP1Right.TabIndex = 12;
@@ -1310,6 +1330,7 @@
             // 
             this.cboP2Left.FormattingEnabled = true;
             this.cboP2Left.Location = new System.Drawing.Point(145, 86);
+            this.cboP2Left.MaxLength = 255;
             this.cboP2Left.Name = "cboP2Left";
             this.cboP2Left.Size = new System.Drawing.Size(86, 20);
             this.cboP2Left.TabIndex = 10;
@@ -1319,6 +1340,7 @@
             // 
             this.cboP1Left.FormattingEnabled = true;
             this.cboP1Left.Location = new System.Drawing.Point(53, 86);
+            this.cboP1Left.MaxLength = 255;
             this.cboP1Left.Name = "cboP1Left";
             this.cboP1Left.Size = new System.Drawing.Size(86, 20);
             this.cboP1Left.TabIndex = 9;
@@ -1328,6 +1350,7 @@
             // 
             this.cboP2Crouch.FormattingEnabled = true;
             this.cboP2Crouch.Location = new System.Drawing.Point(145, 59);
+            this.cboP2Crouch.MaxLength = 255;
             this.cboP2Crouch.Name = "cboP2Crouch";
             this.cboP2Crouch.Size = new System.Drawing.Size(86, 20);
             this.cboP2Crouch.TabIndex = 7;
@@ -1337,6 +1360,7 @@
             // 
             this.cboP1Crouch.FormattingEnabled = true;
             this.cboP1Crouch.Location = new System.Drawing.Point(53, 59);
+            this.cboP1Crouch.MaxLength = 255;
             this.cboP1Crouch.Name = "cboP1Crouch";
             this.cboP1Crouch.Size = new System.Drawing.Size(86, 20);
             this.cboP1Crouch.TabIndex = 6;
@@ -1346,6 +1370,7 @@
             // 
             this.cboP2Jump.FormattingEnabled = true;
             this.cboP2Jump.Location = new System.Drawing.Point(145, 32);
+            this.cboP2Jump.MaxLength = 255;
             this.cboP2Jump.Name = "cboP2Jump";
             this.cboP2Jump.Size = new System.Drawing.Size(86, 20);
             this.cboP2Jump.TabIndex = 4;
@@ -1355,6 +1380,7 @@
             // 
             this.cboP1Jump.FormattingEnabled = true;
             this.cboP1Jump.Location = new System.Drawing.Point(53, 32);
+            this.cboP1Jump.MaxLength = 255;
             this.cboP1Jump.Name = "cboP1Jump";
             this.cboP1Jump.Size = new System.Drawing.Size(86, 20);
             this.cboP1Jump.TabIndex = 3;
@@ -1653,6 +1679,20 @@
             // 
             this.ofdDefPath.Filter = "def文件|*.def";
             // 
+            // cboSelectableActFileList
+            // 
+            this.cboSelectableActFileList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboSelectableActFileList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSelectableActFileList.DropDownWidth = 200;
+            this.cboSelectableActFileList.FormattingEnabled = true;
+            this.cboSelectableActFileList.Location = new System.Drawing.Point(8, 161);
+            this.cboSelectableActFileList.Name = "cboSelectableActFileList";
+            this.cboSelectableActFileList.Size = new System.Drawing.Size(109, 20);
+            this.cboSelectableActFileList.TabIndex = 2;
+            this.ttpCommon.SetToolTip(this.cboSelectableActFileList, "预览使用指定色表文件的人物模型");
+            this.cboSelectableActFileList.SelectedIndexChanged += new System.EventHandler(this.cboSelectableActFileList_SelectedIndexChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1670,8 +1710,7 @@
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             this.ctxmnuCharacterList.ResumeLayout(false);
             this.pageCharacter.ResumeLayout(false);
-            this.pageCharacter.PerformLayout();
-            this.grpSpriteImage.ResumeLayout(false);
+            this.grpSprite.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.picSpriteImage)).EndInit();
             this.grpMugenInfo.ResumeLayout(false);
             this.grpMugenInfo.PerformLayout();
@@ -1836,9 +1875,10 @@
         private System.Windows.Forms.ComboBox cboP2Crouch;
         private System.Windows.Forms.ComboBox cboP1Crouch;
         private System.Windows.Forms.ComboBox cboP2Jump;
-        private System.Windows.Forms.GroupBox grpSpriteImage;
+        private System.Windows.Forms.GroupBox grpSprite;
         private System.Windows.Forms.PictureBox picSpriteImage;
         private System.Windows.Forms.Label lblSpriteVersion;
+        private System.Windows.Forms.ComboBox cboSelectableActFileList;
     }
 }
 
