@@ -160,8 +160,8 @@ namespace MUGENCharsSet
             }
             finally
             {
-                br.Close();
-                fs.Close();
+                if (br != null) br.Close();
+                if (fs != null) fs.Close();
             }
         }
 
@@ -325,8 +325,8 @@ namespace MUGENCharsSet
             }
             finally
             {
-                br.Close();
-                fs.Close();
+                if (br != null) br.Close();
+                if (fs != null) fs.Close();
             }
         }
 

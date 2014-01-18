@@ -84,27 +84,29 @@ namespace MUGENCharsSet
         /// <summary>
         /// 判断指定字节流是否为UTF-8编码
         /// </summary>
-        /// <param name="inputStream">字节流</param>
+        /// <param name="data">字节流</param>
         /// <returns>是否为UTF-8编码</returns>
-        public static bool IsUTF8(byte[] inputStream)
+        public static bool IsUTF8(byte[] data)
         {
             int encodingBytesCount = 0;
             bool allTextsAreASCIIChars = true;
 
-            for (int i = 0; i < inputStream.Length; i++)
+            if (data.Length >= 3 && (byte)0xEF == data[0] && (byte)0xBB == data[1] && (byte)0xBF == data[2])
             {
-                byte current = inputStream[i];
+                return true;
+            }
+            for (int i = 0; i < data.Length; i++)
+            {
+                byte current = data[i];
 
                 if ((current & 0x80) == 0x80)
                 {
                     allTextsAreASCIIChars = false;
                 }
-                // First byte
                 if (encodingBytesCount == 0)
                 {
                     if ((current & 0x80) == 0)
                     {
-                        // ASCII chars, from 0x00-0x7F
                         continue;
                     }
 
@@ -112,8 +114,6 @@ namespace MUGENCharsSet
                     {
                         encodingBytesCount = 1;
                         current <<= 2;
-                        // More than two bytes used to encoding a unicode char.
-                        // Calculate the real length.
                         while ((current & 0x80) == 0x80)
                         {
                             current <<= 1;
@@ -122,31 +122,25 @@ namespace MUGENCharsSet
                     }
                     else
                     {
-                        // Invalid bits structure for UTF8 encoding rule.
                         return false;
                     }
                 }
                 else
                 {
-                    // Following bytes, must start with 10.
                     if ((current & 0xC0) == 0x80)
                     {
                         encodingBytesCount--;
                     }
                     else
                     {
-                        // Invalid bits structure for UTF8 encoding rule.
                         return false;
                     }
                 }
             }
             if (encodingBytesCount != 0)
             {
-                // Invalid bits structure for UTF8 encoding rule.
-                // Wrong following bytes count.
                 return false;
             }
-            // Although UTF8 supports encoding for ASCII chars, we regard as a input stream, whose contents are all ASCII as default encoding.
             return !allTextsAreASCIIChars;
         }
 
@@ -168,13 +162,25 @@ namespace MUGENCharsSet
         /// <param name="path">文件绝对路径</param>
         public static void IniFileStandardization(string path)
         {
+            FileStream fs = null;
+            byte[] data = null;
             try
             {
-                FileStream fs = new FileStream(path, FileMode.Open);
-                byte[] bytes = new byte[fs.Length];
-                fs.Read(bytes, 0, bytes.Length);
-                fs.Close();
-                if (Tools.IsUTF8(bytes))
+                fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+                data = new byte[fs.Length];
+                fs.Read(data, 0, data.Length);
+            }
+            catch (Exception)
+            {
+                return;
+            }
+            finally
+            {
+                if (fs != null) fs.Close();
+            }
+            try
+            {
+                if (Tools.IsUTF8(data))
                 {
                     string content = File.ReadAllText(path, Encoding.UTF8);
                     content = Tools.ConvertUTF8ToDefaultEncoding(content);
@@ -186,14 +192,17 @@ namespace MUGENCharsSet
                 }
                 else
                 {
-                    if (bytes[0] == '[')
+                    if (data[0] == '[')
                     {
                         string content = File.ReadAllText(path, Encoding.Default);
                         File.WriteAllText(path, "\r\n" + content, Encoding.Default);
                     }
                 }
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+                return;
+            }
         }
 
         /// <summary>

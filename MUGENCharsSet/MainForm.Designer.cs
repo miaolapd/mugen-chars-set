@@ -49,8 +49,9 @@
             this.chkAutoSort = new System.Windows.Forms.CheckBox();
             this.btnSearchAll = new System.Windows.Forms.Button();
             this.pageCharacter = new System.Windows.Forms.TabPage();
-            this.lblSpriteVersion = new System.Windows.Forms.Label();
             this.grpSprite = new System.Windows.Forms.GroupBox();
+            this.cboSelectableActFileList = new System.Windows.Forms.ComboBox();
+            this.lblSpriteVersion = new System.Windows.Forms.Label();
             this.picSpriteImage = new System.Windows.Forms.PictureBox();
             this.grpMugenInfo = new System.Windows.Forms.GroupBox();
             this.lblMugenInfo = new System.Windows.Forms.Label();
@@ -167,7 +168,6 @@
             this.lblDifficultyValue = new System.Windows.Forms.Label();
             this.fswCharacterCns = new System.IO.FileSystemWatcher();
             this.ofdDefPath = new System.Windows.Forms.OpenFileDialog();
-            this.cboSelectableActFileList = new System.Windows.Forms.ComboBox();
             this.ctxmnuCharacterList.SuspendLayout();
             this.pageCharacter.SuspendLayout();
             this.grpSprite.SuspendLayout();
@@ -395,17 +395,6 @@
             this.pageCharacter.DragEnter += new System.Windows.Forms.DragEventHandler(this.pageCharacter_DragEnter);
             this.pageCharacter.Enter += new System.EventHandler(this.pageCharacter_Enter);
             // 
-            // lblSpriteVersion
-            // 
-            this.lblSpriteVersion.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpriteVersion.Location = new System.Drawing.Point(6, 146);
-            this.lblSpriteVersion.Name = "lblSpriteVersion";
-            this.lblSpriteVersion.Size = new System.Drawing.Size(111, 12);
-            this.lblSpriteVersion.TabIndex = 1;
-            this.lblSpriteVersion.Text = "SFF版本：1.01";
-            this.lblSpriteVersion.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
             // grpSprite
             // 
             this.grpSprite.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -418,6 +407,31 @@
             this.grpSprite.TabIndex = 4;
             this.grpSprite.TabStop = false;
             this.grpSprite.Text = "人物模型";
+            // 
+            // cboSelectableActFileList
+            // 
+            this.cboSelectableActFileList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboSelectableActFileList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSelectableActFileList.DropDownWidth = 200;
+            this.cboSelectableActFileList.FormattingEnabled = true;
+            this.cboSelectableActFileList.Location = new System.Drawing.Point(8, 161);
+            this.cboSelectableActFileList.Name = "cboSelectableActFileList";
+            this.cboSelectableActFileList.Size = new System.Drawing.Size(109, 20);
+            this.cboSelectableActFileList.TabIndex = 2;
+            this.ttpCommon.SetToolTip(this.cboSelectableActFileList, "预览使用指定色表文件的人物模型");
+            this.cboSelectableActFileList.SelectedIndexChanged += new System.EventHandler(this.cboSelectableActFileList_SelectedIndexChanged);
+            // 
+            // lblSpriteVersion
+            // 
+            this.lblSpriteVersion.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSpriteVersion.Location = new System.Drawing.Point(6, 146);
+            this.lblSpriteVersion.Name = "lblSpriteVersion";
+            this.lblSpriteVersion.Size = new System.Drawing.Size(111, 12);
+            this.lblSpriteVersion.TabIndex = 1;
+            this.lblSpriteVersion.Text = "SFF版本：1.01";
+            this.lblSpriteVersion.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // picSpriteImage
             // 
@@ -1395,7 +1409,7 @@
             this.mnuMain.Location = new System.Drawing.Point(0, 0);
             this.mnuMain.Name = "mnuMain";
             this.mnuMain.Size = new System.Drawing.Size(559, 25);
-            this.mnuMain.TabIndex = 9;
+            this.mnuMain.TabIndex = 0;
             // 
             // tsmiFiles
             // 
@@ -1507,7 +1521,7 @@
             this.tabMain.Name = "tabMain";
             this.tabMain.SelectedIndex = 0;
             this.tabMain.Size = new System.Drawing.Size(559, 526);
-            this.tabMain.TabIndex = 0;
+            this.tabMain.TabIndex = 1;
             // 
             // pageMugenCfgSetting
             // 
@@ -1678,20 +1692,6 @@
             // ofdDefPath
             // 
             this.ofdDefPath.Filter = "def文件|*.def";
-            // 
-            // cboSelectableActFileList
-            // 
-            this.cboSelectableActFileList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboSelectableActFileList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboSelectableActFileList.DropDownWidth = 200;
-            this.cboSelectableActFileList.FormattingEnabled = true;
-            this.cboSelectableActFileList.Location = new System.Drawing.Point(8, 161);
-            this.cboSelectableActFileList.Name = "cboSelectableActFileList";
-            this.cboSelectableActFileList.Size = new System.Drawing.Size(109, 20);
-            this.cboSelectableActFileList.TabIndex = 2;
-            this.ttpCommon.SetToolTip(this.cboSelectableActFileList, "预览使用指定色表文件的人物模型");
-            this.cboSelectableActFileList.SelectedIndexChanged += new System.EventHandler(this.cboSelectableActFileList_SelectedIndexChanged);
             // 
             // MainForm
             // 

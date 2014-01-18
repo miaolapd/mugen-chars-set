@@ -650,8 +650,8 @@ namespace MUGENCharsSet
             }
             finally
             {
-                br.Close();
-                fs.Close();
+                if (br != null) br.Close();
+                if (fs != null) fs.Close();
             }
             if (newImageData == null) return null;
             ImagePcx pcx = new ImagePcx(newImageData);

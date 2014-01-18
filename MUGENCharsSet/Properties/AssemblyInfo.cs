@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("MUGENCharsSetTeam")]
 [assembly: AssemblyProduct("MUGENCharsSet")]
-[assembly: AssemblyCopyright("Copyright © MUGENCharsSetTeam 2013")]
+[assembly: AssemblyCopyright("Copyright © MUGENCharsSetTeam 2013-2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

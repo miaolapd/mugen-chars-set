@@ -13,8 +13,9 @@ namespace MUGENCharsSet
     /// </summary>
     public class IniFiles
     {
-        public const string CommentMark = ";";    //注释分隔符
-        public string FileName; //INI文件名
+        /// <summary>注释分隔符</summary>
+        public const string CommentMark = ";";
+        private readonly string _filePath;
 
         // 声明读写INI文件的API函数
         [DllImport("kernel32")]
@@ -23,36 +24,47 @@ namespace MUGENCharsSet
         private static extern int GetPrivateProfileString(string section, string key, string def, byte[] retVal, int size, string filePath);
 
         /// <summary>
+        /// 获取配置文件绝对路径
+        /// </summary>
+        public string FilePath
+        {
+            get { return _filePath; }
+        }
+
+        /// <summary>
         /// 类构造函数
         /// </summary>
-        /// <param name="AFileName">ini文件路径</param>
+        /// <param name="fileName">ini文件路径</param>
         /// <exception cref="System.ApplicationException"></exception>
-        public IniFiles(string AFileName)
+        public IniFiles(string fileName)
         {
             // 判断文件是否存在
-            FileInfo fileInfo = new FileInfo(AFileName);
+            FileInfo fileInfo = new FileInfo(fileName);
             //Todo:搞清枚举的用法
             if ((!fileInfo.Exists))
-            { //|| (FileAttributes.Directory in fileInfo.Attributes))
-                //文件不存在，建立文件
-                System.IO.StreamWriter sw = new System.IO.StreamWriter(AFileName, false, Encoding.Default);
+            {
+                StreamWriter sw = null;
                 try
                 {
+                    //文件不存在，建立文件
+                    sw = new StreamWriter(fileName, false, Encoding.Default);
                     sw.Write("\r\n");
-                    sw.Close();
                 }
-
                 catch
                 {
                     throw new ApplicationException("配置文件不存在！");
                 }
+                finally
+                {
+                    if (sw != null) sw.Close();
+                }
             }
             else
             {
-                Tools.IniFileStandardization(AFileName);
+                Tools.IniFileStandardization(fileInfo.FullName);
             }
             //必须是完全路径，不能是相对路径
-            FileName = fileInfo.FullName;
+            _filePath = fileInfo.FullName;
         }
 
         /// <summary>
@@ -64,7 +76,7 @@ namespace MUGENCharsSet
         /// <exception cref="System.ApplicationException"></exception>
         public void WriteString(string Section, string Ident, string Value)
         {
-            if (!WritePrivateProfileString(Section, Ident, " " + Value.TrimStart(), FileName))
+            if (!WritePrivateProfileString(Section, Ident, " " + Value.TrimStart(), FilePath))
             {
 
                 throw new ApplicationException("配置文件写入失败！");
@@ -81,7 +93,7 @@ namespace MUGENCharsSet
         public string ReadString(string Section, string Ident, string Default)
         {
             Byte[] Buffer = new Byte[65535];
-            int bufLen = GetPrivateProfileString(Section, Ident, Default, Buffer, Buffer.GetUpperBound(0), FileName);
+            int bufLen = GetPrivateProfileString(Section, Ident, Default, Buffer, Buffer.GetUpperBound(0), FilePath);
             //必须设定0（系统默认的代码页）的编码方式，否则无法支持中文
             string s = Encoding.Default.GetString(Buffer);
             s = s.Substring(0, bufLen);
@@ -167,7 +179,7 @@ namespace MUGENCharsSet
             //Idents.Clear();
 
             int bufLen = GetPrivateProfileString(Section, null, null, Buffer, Buffer.GetUpperBound(0),
-             FileName);
+             FilePath);
             //对Section进行解析
             GetStringsFromBuffer(Buffer, bufLen, Idents);
         }
@@ -206,7 +218,7 @@ namespace MUGENCharsSet
             byte[] Buffer = new byte[65535];
             int bufLen = 0;
             bufLen = GetPrivateProfileString(null, null, null, Buffer,
-             Buffer.GetUpperBound(0), FileName);
+             Buffer.GetUpperBound(0), FilePath);
             GetStringsFromBuffer(Buffer, bufLen, SectionList);
         }
 
@@ -251,7 +263,7 @@ namespace MUGENCharsSet
         /// <exception cref="System.ApplicationException"></exception>
         public void EraseSection(string Section)
         {
-            if (!WritePrivateProfileString(Section, null, null, FileName))
+            if (!WritePrivateProfileString(Section, null, null, FilePath))
             {
                 throw new ApplicationException("无法清除配置文件中的Section！");
             }
@@ -264,7 +276,7 @@ namespace MUGENCharsSet
         /// <param name="Ident">配置项</param>
         public void DeleteKey(string Section, string Ident)
         {
-            WritePrivateProfileString(Section, Ident, null, FileName);
+            WritePrivateProfileString(Section, Ident, null, FilePath);
         }
 
         /// <summary>
@@ -274,7 +286,7 @@ namespace MUGENCharsSet
         /// </summary>
         public void UpdateFile()
         {
-            WritePrivateProfileString(null, null, null, FileName);
+            WritePrivateProfileString(null, null, null, FilePath);
         }
 
         /// <summary>
