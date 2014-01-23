@@ -7,6 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using SharpCompress.Common;
+using SharpCompress.Reader;
 
 namespace MUGENCharsSet
 {
@@ -29,6 +31,9 @@ namespace MUGENCharsSet
         public const char NameDelimeter = '"';
         /// <summary>无效人物名数组(用于过滤select.def中的人物列表)</summary>
         public static string[] InvalidCharacterName = new string[] { String.Empty, "blank", "empty", "randomselect", "/-", "/" };
+        /// <summary>人物压缩包扩展名数组</summary>
+        public static string[] ArchiveExt = new string[] { ".zip", ".rar", ".7z", ".tar", ".gz", ".bz2" };
+        private static string[] _characterDefPathList = null;
 
         /// <summary>
         /// 人物配置信息类
@@ -83,6 +88,7 @@ namespace MUGENCharsSet
         private string _spritePath;
         private SpriteFile.SffVerion _spriteVersion;
         private SpriteFile _sprite;
+        private bool _isInSelectDef;
 
         #endregion
 
@@ -156,19 +162,23 @@ namespace MUGENCharsSet
         {
             get
             {
-                string name = Name;
-                if (AppSetting.ShowCharacterScreenMark && MugenSetting.Version != MugenSetting.MugenVersion.WIN)
+                StringBuilder name = new StringBuilder(6);
+                if (AppConfig.ShowCharacterScreenMark && MugenSetting.Version != MugenSetting.MugenVersion.WIN)
                 {
                     if (MugenSetting.IsWideScreen)
                     {
-                        if (!IsWideScreen) name += " (普)";
+                        if (!IsWideScreen) name.Append("(普)");
                     }
                     else
                     {
-                        if (IsWideScreen) name += " (宽)";
+                        if (IsWideScreen) name.Append("(宽)");
                     }
                 }
-                return name;
+                if (!IsInSelectDef)
+                {
+                    name.Append("(未)");
+                }
+                return Name + " " + name.ToString();
             }
         }
 
@@ -341,7 +351,7 @@ namespace MUGENCharsSet
                 {
                     image.MakeTransparent(image.GetPixel(0, 0));
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     return null;
                 }
@@ -349,10 +359,27 @@ namespace MUGENCharsSet
             }
         }
 
+        /// <summary>
+        /// 获取或设置此人物是否在select.def文件的人物列表中
+        /// </summary>
+        public bool IsInSelectDef
+        {
+            get { return _isInSelectDef; }
+            set { _isInSelectDef = value; }
+        }
+
+        /// <summary>
+        /// 获取select.def文件中的人物def文件的绝对路径的列表
+        /// </summary>
+        public static string[] CharacterDefPathList
+        {
+            get { return _characterDefPathList; }
+        }
+
         #endregion
 
         /// <summary>
-        /// 类构造方法
+        /// 根据指定def文件路径创建<see cref="Character"/>类新实例
         /// </summary>
         /// <param name="defPath">人物def文件绝对路径</param>
         /// <exception cref="System.ApplicationException"></exception>
@@ -412,6 +439,8 @@ namespace MUGENCharsSet
             Attack = ini.ReadInteger(SettingInfo.DataSection, SettingInfo.AttackItem, 0);
             Defence = ini.ReadInteger(SettingInfo.DataSection, SettingInfo.DefenceItem, 0);
             Power = ini.ReadInteger(SettingInfo.DataSection, SettingInfo.PowerItem, 0);
+            if (CharacterDefPathList != null && CharacterDefPathList.Contains(DefPath.ToLower()))
+                IsInSelectDef = true;
         }
 
         /// <summary>
@@ -555,7 +584,7 @@ namespace MUGENCharsSet
             {
                 throw new ApplicationException("人物删除失败！");
             }
-            DeleteSelectDefCharacterList(new Character[] { this });
+            DeleteCharacterListInSelectDef(new Character[] { this });
         }
 
         /// <summary>
@@ -804,7 +833,7 @@ namespace MUGENCharsSet
                     continue;
                 }
             }
-            DeleteSelectDefCharacterList(characterList);
+            DeleteCharacterListInSelectDef(characterList);
             return total;
         }
 
@@ -916,7 +945,7 @@ namespace MUGENCharsSet
         }
 
         /// <summary>
-        /// 扫描人物文件夹以获取人物列表
+        /// 通过扫描人物文件夹来获取人物列表
         /// </summary>
         /// <param name="characterList">人物列表</param>
         /// <param name="charsDir">人物文件夹</param>
@@ -943,13 +972,35 @@ namespace MUGENCharsSet
         }
 
         /// <summary>
-        /// 读取select.def文件中的人物列表
+        /// 通过读取select.def文件来获取人物列表
         /// </summary>
         /// <param name="characterList">人物列表</param>
         /// <exception cref="System.ApplicationException"></exception>
-        public static void ReadSelectDefCharacterList(List<Character> characterList)
+        public static void ReadCharacterListInSelectDef(List<Character> characterList)
         {
             if (!File.Exists(MugenSetting.SelectDefPath)) throw new ApplicationException("select.def文件不存在！");
+            foreach (string defPath in CharacterDefPathList)
+            {
+                System.Windows.Forms.Application.DoEvents();
+                try
+                {
+                    characterList.Add(new Character(defPath));
+                }
+                catch (ApplicationException)
+                {
+                    continue;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 读取select.def文件中的人物def文件的绝对路径的列表
+        /// </summary>
+        /// <returns>人物def文件的绝对路径的列表</returns>
+        public static void ReadCharacterDefPathListInSelectDef()
+        {
+            _characterDefPathList = null;
+            if (!File.Exists(MugenSetting.SelectDefPath)) return;
             Tools.IniFileStandardization(MugenSetting.SelectDefPath);
             string[] characterLines = null;
             try
@@ -960,40 +1011,32 @@ namespace MUGENCharsSet
             }
             catch (Exception)
             {
-                throw new ApplicationException("读取select.def文件失败！");
+                return;
             }
-            if (characterLines.Length == 0) throw new ApplicationException("读取select.def文件失败！");
-            List<string> tempCharacterList = new List<string>();
+            if (characterLines.Length == 0) return;
+            List<string> characterList = new List<string>();
             foreach (string tempLine in characterLines)
             {
-                System.Windows.Forms.Application.DoEvents();
                 string line = tempLine.Trim();
                 line = line.Split(new string[] { IniFiles.CommentMark }, 2, StringSplitOptions.None)[0];
                 line = line.Split(new string[] { "," }, 2, StringSplitOptions.None)[0].Trim();
                 if (InvalidCharacterName.Contains(line.ToLower())) continue;
                 if (Path.GetExtension(line.ToLower()) != Character.DefExt) line = line.GetFormatDirPath() + line + Character.DefExt;
-                string defPath = MugenSetting.MugenCharsDirPath + line.GetBackSlashPath();
+                string defPath = (MugenSetting.MugenCharsDirPath + line.GetBackSlashPath()).ToLower();
                 if (!File.Exists(defPath)) continue;
-                if (!tempCharacterList.Contains(defPath))
+                if (!characterList.Contains(defPath))
                 {
-                    tempCharacterList.Add(defPath);
-                    try
-                    {
-                        characterList.Add(new Character(defPath));
-                    }
-                    catch (ApplicationException)
-                    {
-                        continue;
-                    }
+                    characterList.Add(defPath);
                 }
             }
+            _characterDefPathList = characterList.ToArray();
         }
 
         /// <summary>
         /// 删除select.def文件中的人物列表
         /// </summary>
         /// <param name="characterList">人物列表</param>
-        public static void DeleteSelectDefCharacterList(Character[] characterList)
+        public static void DeleteCharacterListInSelectDef(Character[] characterList)
         {
             if (!File.Exists(MugenSetting.SelectDefPath)) return;
             string fileContent = "";
@@ -1002,7 +1045,7 @@ namespace MUGENCharsSet
             try
             {
                 fileContent = File.ReadAllText(MugenSetting.SelectDefPath, Encoding.Default);
-                Regex regex = new Regex(@"\[Characters\](.*)\r\n\[ExtraStages\]", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                Regex regex = new Regex(@"(\[Characters\].*)\r\n\[ExtraStages\]", RegexOptions.IgnoreCase | RegexOptions.Singleline);
                 oriCharacterContent = regex.Match(fileContent).Groups[1].Value;
                 characterLines = oriCharacterContent.Split(new string[] { "\r\n" }, StringSplitOptions.None);
             }
@@ -1010,8 +1053,8 @@ namespace MUGENCharsSet
             {
                 return;
             }
-            if (characterLines.Length == 0) return;
-            for (int i = 0; i < characterLines.Length; i++)
+            if (characterLines.Length <= 1) return;
+            for (int i = 1; i < characterLines.Length; i++)
             {
                 string line = characterLines[i].Trim();
                 line = line.Split(new string[] { IniFiles.CommentMark }, 2, StringSplitOptions.None)[0];
@@ -1034,6 +1077,132 @@ namespace MUGENCharsSet
                 File.WriteAllText(MugenSetting.SelectDefPath, fileContent, Encoding.Default);
             }
             catch (Exception) { }
+        }
+
+        /// <summary>
+        /// 将人物添加到select.def文件中
+        /// </summary>
+        /// <param name="characterList">人物列表</param>
+        /// <returns>添加成功总数</returns>
+        public static bool AddCharacterToSelectDef(Character[] characterList)
+        {
+            if (!File.Exists(MugenSetting.SelectDefPath)) return false;
+            Tools.IniFileStandardization(MugenSetting.SelectDefPath);
+            string fileContent = "";
+            string oriCharacterContent = "";
+            try
+            {
+                fileContent = File.ReadAllText(MugenSetting.SelectDefPath, Encoding.Default);
+                Regex regex = new Regex(@"(\[Characters\].*?)(\r\n)+(;-*)?(\r\n)+\[ExtraStages\]", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                oriCharacterContent = regex.Match(fileContent).Groups[1].Value;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            StringBuilder newCharacterContent = new StringBuilder();
+            foreach (Character character in characterList)
+            {
+                if (CharacterDefPathList != null && CharacterDefPathList.Contains(character.DefPath.ToLower())) continue;
+                newCharacterContent.Append("\r\n" + character.DefPath.Substring(MugenSetting.MugenCharsDirPath.Length).GetSlashPath());
+                character.IsInSelectDef = true;
+            }
+            fileContent = fileContent.Replace(oriCharacterContent, oriCharacterContent + newCharacterContent);
+            try
+            {
+                File.WriteAllText(MugenSetting.SelectDefPath, fileContent, Encoding.Default);
+            }
+            catch (Exception)
+            {
+                foreach (Character character in characterList)
+                {
+                    if (CharacterDefPathList != null && CharacterDefPathList.Contains(character.DefPath.ToLower())) continue;
+                    character.IsInSelectDef = false;
+                }
+                return false;
+            }
+            ReadCharacterDefPathListInSelectDef();
+            return true;
+        }
+
+        /// <summary>
+        /// 解压缩人物压缩包
+        /// </summary>
+        /// <param name="archivePath">人物压缩包绝对路径</param>
+        /// <returns>所创建的新人物文件夹绝对路径</returns>
+        /// <exception cref="System.ApplicationException"></exception>
+        public static string DecompressionCharacterArchive(string archivePath)
+        {
+            if (!File.Exists(archivePath)) throw new ApplicationException("压缩包不存在！");
+            string tempDirPath = MugenSetting.MugenCharsDirPath + "MugenCharsSetTemp\\";
+            DirectoryInfo tempDir;
+            try
+            {
+                tempDir = Directory.CreateDirectory(tempDirPath);
+            }
+            catch (Exception)
+            {
+                throw new ApplicationException("创建临时文件夹失败！");
+            }
+            FileStream fs = null;
+            try
+            {
+                fs = File.OpenRead(archivePath);
+                IReader reader = ReaderFactory.Open(fs);
+                while (reader.MoveToNextEntry())
+                {
+                    System.Windows.Forms.Application.DoEvents();
+                    if (!reader.Entry.IsDirectory)
+                    {
+                        try
+                        {
+                            reader.WriteEntryToDirectory(tempDirPath, ExtractOptions.ExtractFullPath | ExtractOptions.Overwrite);
+                        }
+                        catch(Exception)
+                        {
+                            continue;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    tempDir.Delete(true);
+                }
+                catch (Exception) { }
+                throw new ApplicationException("解压缩失败！");
+            }
+            finally
+            {
+                if (fs != null) fs.Close();
+            }
+            string destDirPath = "";
+            try
+            {
+                if (tempDir.GetDirectories().Length == 1 && tempDir.GetFiles().Length == 0)
+                {
+                    destDirPath = Tools.GetNonExistsDirPath(MugenSetting.MugenCharsDirPath, tempDir.GetDirectories()[0].Name);
+                    Directory.Move(tempDir.GetDirectories()[0].FullName, destDirPath);
+                    tempDir.Delete(true);
+                }
+                else
+                {
+                    destDirPath = Tools.GetNonExistsDirPath(MugenSetting.MugenCharsDirPath, Path.GetFileNameWithoutExtension(archivePath));
+                    tempDir.MoveTo(destDirPath);
+                }
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    tempDir.Delete(true);
+                }
+                catch (Exception) { }
+                throw new ApplicationException("移动文件夹失败！");
+            }
+            return destDirPath;
         }
 
         #endregion

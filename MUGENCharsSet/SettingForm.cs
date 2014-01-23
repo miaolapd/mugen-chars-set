@@ -43,9 +43,9 @@ namespace MUGENCharsSet
         /// </summary>
         private void SettingForm_Load(object sender, EventArgs e)
         {
-            txtMugenExePath.Text = AppSetting.MugenExePath;
-            txtEditProgramPath.Text = AppSetting.EditProgramPath;
-            chkShowCharacterScreenMark.Checked = AppSetting.ShowCharacterScreenMark;
+            txtMugenExePath.Text = AppConfig.MugenExePath;
+            txtEditProgramPath.Text = AppConfig.EditProgramPath;
+            chkShowCharacterScreenMark.Checked = AppConfig.ShowCharacterScreenMark;
         }
 
         /// <summary>
@@ -53,10 +53,10 @@ namespace MUGENCharsSet
         /// </summary>
         private void btnOpenMugenExePath_Click(object sender, EventArgs e)
         {
-            ofdExePath.FileName = AppSetting.MugenExePath;
-            if (File.Exists(AppSetting.MugenExePath))
+            ofdExePath.FileName = AppConfig.MugenExePath;
+            if (File.Exists(AppConfig.MugenExePath))
             {
-                ofdExePath.InitialDirectory = AppSetting.MugenExePath.GetDirPathOfFile();
+                ofdExePath.InitialDirectory = AppConfig.MugenExePath.GetDirPathOfFile();
             }
             if (ofdExePath.ShowDialog() == DialogResult.OK)
             {
@@ -83,18 +83,18 @@ namespace MUGENCharsSet
             MainForm owner = (MainForm)Owner;
             try
             {
-                AppSetting.EditProgramPath = txtEditProgramPath.Text.Trim();
-                AppSetting.ShowCharacterScreenMark = chkShowCharacterScreenMark.Checked;
+                AppConfig.EditProgramPath = txtEditProgramPath.Text.Trim();
+                AppConfig.ShowCharacterScreenMark = chkShowCharacterScreenMark.Checked;
                 string mugenCfgPath = txtMugenExePath.Text.Trim().GetDirPathOfFile() + MugenSetting.DataDir + MugenSetting.MugenCfgFileName;
                 if (!File.Exists(mugenCfgPath))
                 {
                     throw new ApplicationException("mugen.cfg文件不存在！");
                 }
-                if (AppSetting.MugenExePath != txtMugenExePath.Text.Trim())
+                if (AppConfig.MugenExePath != txtMugenExePath.Text.Trim())
                 {
-                    AppSetting.MugenExePath = txtMugenExePath.Text.Trim();
-                    MugenSetting.Init(AppSetting.MugenExePath);
-                    owner.ReadCharacterList();
+                    AppConfig.MugenExePath = txtMugenExePath.Text.Trim();
+                    MugenSetting.Init(AppConfig.MugenExePath);
+                    owner.ReadCharacterList(true);
                     owner.ReadMugenCfgSetting();
                 }
             }
@@ -103,15 +103,6 @@ namespace MUGENCharsSet
                 ShowErrorMsg(ex.Message);
                 return;
             }
-            Close();
-        }
-
-        /// <summary>
-        /// 当单击取消按钮时发生
-        /// </summary>
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            Close();
         }
 
         /// <summary>
@@ -119,7 +110,7 @@ namespace MUGENCharsSet
         /// </summary>
         private void btnDefault_Click(object sender, EventArgs e)
         {
-            txtEditProgramPath.Text = AppSetting.DefaultEditProgramPath;
+            txtEditProgramPath.Text = AppConfig.DefaultEditProgramPath;
             chkShowCharacterScreenMark.Checked = false;
         }
 

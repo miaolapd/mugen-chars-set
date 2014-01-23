@@ -118,7 +118,7 @@ namespace MUGENCharsSet
         }
 
         /// <summary>
-        /// 构造方法
+        /// 根据指定SFF文件路径创建<see cref="SpriteFile"/>类新实例
         /// </summary>
         /// <param name="path">SFF文件绝对路径</param>
         /// <exception cref="System.ApplicationException"></exception>
@@ -300,7 +300,7 @@ namespace MUGENCharsSet
         }
 
         /// <summary>
-        /// 构造方法
+        /// 根据指定SFF文件路径、文件流偏移量和SFF文件版本创建<see cref="SpriteFileSubNode"/>类新实例
         /// </summary>
         /// <param name="path">SFF文件绝对路径</param>
         /// <param name="offset">子节点偏移量</param>

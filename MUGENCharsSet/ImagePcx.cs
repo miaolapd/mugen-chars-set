@@ -139,17 +139,28 @@ namespace MUGENCharsSet
         /// </summary>
         public Bitmap PcxImage { get { return m_Image; } set { m_Image = value; } }
 
+        /// <summary>
+        /// 根据指定图像文件路径创建<see cref="ImagePcx"/>类新实例
+        /// </summary>
+        /// <param name="p_FileFullName">图像文件绝对路径</param>
         public ImagePcx(string p_FileFullName)
         {
             if (!File.Exists(p_FileFullName)) return;
             Load(File.ReadAllBytes(p_FileFullName));
         }
 
+        /// <summary>
+        /// 根据指定字节数组创建<see cref="ImagePcx"/>类新实例
+        /// </summary>
+        /// <param name="p_Data">字节数组</param>
         public ImagePcx(byte[] p_Data)
         {
             Load(p_Data);
         }
 
+        /// <summary>
+        /// 创建<see cref="ImagePcx"/>类新实例
+        /// </summary>
         public ImagePcx()
         {
 

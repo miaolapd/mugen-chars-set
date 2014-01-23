@@ -28,14 +28,6 @@ namespace MUGENCharsSet
         }
 
         /// <summary>
-        /// 当单击确定按钮时发生
-        /// </summary>
-        private void btnOK_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
-        /// <summary>
         /// 当单击程序项目Url时发生
         /// </summary>
         private void lnkAppUrl_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

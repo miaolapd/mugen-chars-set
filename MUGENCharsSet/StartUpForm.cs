@@ -36,8 +36,8 @@ namespace MUGENCharsSet
             MainForm owner = (MainForm)Owner;
             try
             {
-                AppSetting.MugenExePath = txtMugenExePath.Text.Trim();
-                string mugenCfgPath = AppSetting.MugenExePath.GetDirPathOfFile() + MugenSetting.DataDir + MugenSetting.MugenCfgFileName;
+                AppConfig.MugenExePath = txtMugenExePath.Text.Trim();
+                string mugenCfgPath = AppConfig.MugenExePath.GetDirPathOfFile() + MugenSetting.DataDir + MugenSetting.MugenCfgFileName;
                 if (!File.Exists(mugenCfgPath))
                 {
                     throw new ApplicationException("mugen.cfg文件不存在！");
@@ -48,15 +48,6 @@ namespace MUGENCharsSet
                 MessageBox.Show(ex.Message, "操作失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            Close();
-        }
-
-        /// <summary>
-        /// 当单击取消按钮时发生
-        /// </summary>
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            Close();
         }
 
         /// <summary>

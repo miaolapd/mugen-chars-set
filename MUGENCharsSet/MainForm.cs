@@ -162,17 +162,20 @@ namespace MUGENCharsSet
         /// <summary>
         /// 读取程序配置
         /// </summary>
-        private void ReadIniSetting()
+        private void ReadConfig()
         {
-            AppSetting.Init();
-            chkAutoSort.Checked = AppSetting.AutoSort;
-            cboReadCharacterType.SelectedIndex = (int)AppSetting.ReadCharacterType;
+            if (!AppConfig.Read())
+            {
+                ShowErrorMsg("读取配置文件失败！");
+            }
+            chkAutoSort.Checked = AppConfig.AutoSort;
+            cboReadCharacterType.SelectedIndex = (int)AppConfig.ReadCharacterType;
         }
 
         /// <summary>
         /// 读取人物列表
         /// </summary>
-        public void ReadCharacterList()
+        public void ReadCharacterList(bool showProgress = false)
         {
             ModifyEnabled = false;
             MultiModified = false;
@@ -195,16 +198,22 @@ namespace MUGENCharsSet
                 ShowErrorMsg("无法找到MUGEN人物文件夹！");
                 return;
             }
+            Panel pnlProgress = null;
+            if (showProgress)
+            {
+                pnlProgress = ShowProgressPanel(this);
+            }
+            Character.ReadCharacterDefPathListInSelectDef();
             CharacterList = new List<Character>();
             try
             {
-                if (AppSetting.ReadCharacterType == AppSetting.ReadCharTypeEnum.CharsDir)
+                if (AppConfig.ReadCharacterType == AppConfig.ReadCharTypeEnum.CharsDir)
                 {
                     Character.ScanCharacterDir(CharacterList, MugenSetting.MugenCharsDirPath);
                 }
                 else
                 {
-                    Character.ReadSelectDefCharacterList(CharacterList);
+                    Character.ReadCharacterListInSelectDef(CharacterList);
                 }
             }
             catch (ApplicationException ex)
@@ -212,7 +221,7 @@ namespace MUGENCharsSet
                 ShowErrorMsg(ex.Message);
                 return;
             }
-            if (AppSetting.AutoSort)
+            if (AppConfig.AutoSort)
             {
                 CharacterList.Sort();
             }
@@ -226,6 +235,16 @@ namespace MUGENCharsSet
             fswCharacterCns.Path = MugenSetting.MugenCharsDirPath;
             fswCharacterCns.EnableRaisingEvents = true;
             SetMugenVersionForControls(MugenSetting.Version);
+            if (pnlProgress != null)
+            {
+                foreach (Control control in pnlProgress.Controls)
+                {
+                    pnlProgress.Controls.Remove(control);
+                    control.Dispose();
+                }
+                Controls.Remove(pnlProgress);
+                pnlProgress.Dispose();
+            }
         }
 
         /// <summary>
@@ -266,7 +285,7 @@ namespace MUGENCharsSet
             txtAttack.Text = character.Attack.ToString();
             txtDefence.Text = character.Defence.ToString();
             txtPower.Text = character.Power.ToString();
-            character.ReadSpriteFile();
+            if (character.Sprite == null) character.ReadSpriteFile();
             lblSpriteVersion.Text = "SFF版本：" + SpriteFile.GetFormatVersion(character.SpriteVersion);
             if (character.PalList.Count > 0)
             {
@@ -389,9 +408,12 @@ namespace MUGENCharsSet
             }
             catch (ApplicationException)
             {
-                fswCharacterCns.EnableRaisingEvents = true;
                 ShowErrorMsg("修改失败！");
                 return;
+            }
+            finally
+            {
+                fswCharacterCns.EnableRaisingEvents = true;
             }
             if (oriName != character.Name)
             {
@@ -399,7 +421,6 @@ namespace MUGENCharsSet
                 RefreshCharacterListDataSource(CharacterList);
                 lstCharacterList.SelectedIndex = index;
             }
-            fswCharacterCns.EnableRaisingEvents = true;
             ShowSuccessMsg("修改成功！");
         }
 
@@ -693,14 +714,17 @@ namespace MUGENCharsSet
             }
             int[] selectedIndices = new int[lstCharacterList.SelectedIndices.Count];
             lstCharacterList.SelectedIndices.CopyTo(selectedIndices, 0);
-            if (AppSetting.ShowCharacterScreenMark)
+            if (AppConfig.ShowCharacterScreenMark)
             {
                 RefreshCharacterListDataSource(CharacterList);
             }
+            CharacterListControlPreparing = true;
             foreach (int index in selectedIndices)
             {
                 lstCharacterList.SetSelected(index, true);
             }
+            CharacterListControlPreparing = false;
+            lstCharacterList_SelectedIndexChanged(null, null);
             fswCharacterCns.EnableRaisingEvents = true;
         }
 
@@ -729,6 +753,135 @@ namespace MUGENCharsSet
             KeyPressComboBoxInit();
         }
 
+        /// <summary>
+        /// 创建一个带有进度条的<see cref="Panel"/>类实例，并添加到父容器内
+        /// </summary>
+        /// <param name="parent">父容器</param>
+        /// <returns>新<see cref="Panel"/>类实例</returns>
+        private Panel ShowProgressPanel(Control parent)
+        {
+            Panel panel = new Panel();
+            panel.Dock = DockStyle.Fill;
+            ProgressBar progressBar = new ProgressBar();
+            progressBar.Size = new Size(200, 28);
+            progressBar.Location = new Point((Width - progressBar.Width) / 2, Height / 2 - progressBar.Height - 25);
+            progressBar.Style = ProgressBarStyle.Marquee;
+            progressBar.MarqueeAnimationSpeed = 10;
+            panel.Controls.Add(progressBar);
+            parent.Controls.Add(panel);
+            parent.Controls.SetChildIndex(panel, 0);
+            return panel;
+        }
+
+        /// <summary>
+        /// 通过压缩包添加人物
+        /// </summary>
+        /// <param name="archivePathList">压缩包绝对路径列表</param>
+        /// <returns>添加人物总数</returns>
+        private int AddCharacterByArchive(string[] archivePathList)
+        {
+            Panel pnlProgress = ShowProgressPanel(this);
+            fswCharacterCns.EnableRaisingEvents = false;
+            int total = 0;
+            foreach (string path in archivePathList)
+            {
+                if (!Character.ArchiveExt.Contains(Path.GetExtension(path).ToLower())) continue;
+                string newDirPath = "";
+                try
+                {
+                    newDirPath = Character.DecompressionCharacterArchive(path);
+                }
+                catch (ApplicationException)
+                {
+                    continue;
+                }
+                List<Character> tempCharacterList = new List<Character>();
+                Character.ScanCharacterDir(tempCharacterList, newDirPath);
+                if (tempCharacterList.Count > 0)
+                {
+                    CharacterList.AddRange(tempCharacterList);
+                    total += tempCharacterList.Count;
+                }
+                else
+                {
+                    try
+                    {
+                        Directory.Delete(newDirPath, true);
+                    }
+                    catch (Exception) { }
+                }
+            }
+            if (total > 0)
+            {
+                RefreshCharacterListDataSource(CharacterList);
+                CharacterListControlPreparing = true;
+                for (int i = 0; i < total; i++)
+                {
+                    lstCharacterList.SetSelected(lstCharacterList.Items.Count - i - 1, true);
+                }
+                CharacterListControlPreparing = false;
+                lstCharacterList_SelectedIndexChanged(null, null);
+            }
+            fswCharacterCns.EnableRaisingEvents = true;
+            foreach (Control control in pnlProgress.Controls)
+            {
+                pnlProgress.Controls.Remove(control);
+                control.Dispose();
+            }
+            Controls.Remove(pnlProgress);
+            pnlProgress.Dispose();
+            return total;
+        }
+
+        /// <summary>
+        /// 通过def文件添加人物
+        /// </summary>
+        /// <param name="defPathList">def文件绝对路径列表</param>
+        private void AddCharacterByDef(string[] defPathList)
+        {
+            lstCharacterList.ClearSelected();
+            ModifyEnabled = false;
+            CharacterListControlPreparing = true;
+            int newItemNum = 0;
+            foreach (string defPath in defPathList)
+            {
+                if (!defPath.StartsWith(MugenSetting.MugenCharsDirPath)) continue;
+                if (Path.GetExtension(defPath).ToLower() != Character.DefExt) continue;
+                int index;
+                for (index = 0; index < lstCharacterList.Items.Count; index++)
+                {
+                    if (((Character)lstCharacterList.Items[index]).Equals(defPath))
+                    {
+                        lstCharacterList.SetSelected(index, true);
+                        break;
+                    }
+                }
+                if (index == lstCharacterList.Items.Count)
+                {
+                    try
+                    {
+                        CharacterList.Add(new Character(defPath));
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+                    }
+                    newItemNum++;
+                }
+            }
+            if (newItemNum != 0)
+            {
+                RefreshCharacterListDataSource(CharacterList);
+                CharacterListControlPreparing = true;
+                for (int i = 0; i < newItemNum; i++)
+                {
+                    lstCharacterList.SetSelected(lstCharacterList.Items.Count - i - 1, true);
+                }
+            }
+            CharacterListControlPreparing = false;
+            lstCharacterList_SelectedIndexChanged(null, null);
+        }
+
         #endregion
 
         #region 类事件
@@ -738,9 +891,9 @@ namespace MUGENCharsSet
         /// </summary>
         private void MainForm_Load(object sender, EventArgs e)
         {
-            ReadIniSetting();
-            string mugenCfgPath = AppSetting.MugenExePath.GetDirPathOfFile() + MugenSetting.DataDir + MugenSetting.MugenCfgFileName;
-            if (AppSetting.MugenExePath == String.Empty || !File.Exists(AppSetting.MugenExePath) || !File.Exists(mugenCfgPath))
+            ReadConfig();
+            string mugenCfgPath = AppConfig.MugenExePath.GetDirPathOfFile() + MugenSetting.DataDir + MugenSetting.MugenCfgFileName;
+            if (AppConfig.MugenExePath == String.Empty || !File.Exists(AppConfig.MugenExePath) || !File.Exists(mugenCfgPath))
             {
                 Visible = false;
                 StartUpForm startUpForm = new StartUpForm();
@@ -753,7 +906,7 @@ namespace MUGENCharsSet
             }
             try
             {
-                MugenSetting.Init(AppSetting.MugenExePath);
+                MugenSetting.Init(AppConfig.MugenExePath);
             }
             catch (ApplicationException ex)
             {
@@ -765,6 +918,14 @@ namespace MUGENCharsSet
             readCharListProgressForm.Owner = this;
             readCharListProgressForm.ShowDialog();
             Visible = true;
+        }
+
+        /// <summary>
+        /// 当窗口将要关闭时发生
+        /// </summary>
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            AppConfig.Save();
         }
 
         /// <summary>
@@ -780,7 +941,7 @@ namespace MUGENCharsSet
         /// </summary>
         private void btnRefreshCharacterList_Click(object sender, EventArgs e)
         {
-            ReadCharacterList();
+            ReadCharacterList(true);
         }
 
         /// <summary>
@@ -929,7 +1090,7 @@ namespace MUGENCharsSet
         /// </summary>
         private void chkAutoSort_CheckedChanged(object sender, EventArgs e)
         {
-            AppSetting.AutoSort = chkAutoSort.Checked;
+            AppConfig.AutoSort = chkAutoSort.Checked;
         }
 
         /// <summary>
@@ -1095,7 +1256,7 @@ namespace MUGENCharsSet
         /// </summary>
         private void cboReadCharacterType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            AppSetting.ReadCharacterType = (AppSetting.ReadCharTypeEnum)cboReadCharacterType.SelectedIndex;
+            AppConfig.ReadCharacterType = (AppConfig.ReadCharTypeEnum)cboReadCharacterType.SelectedIndex;
         }
 
         /// <summary>
@@ -1118,23 +1279,18 @@ namespace MUGENCharsSet
         /// </summary>
         private void pageCharacter_DragDrop(object sender, DragEventArgs e)
         {
-            lstCharacterList.ClearSelected();
-            ModifyEnabled = false;
-            CharacterListControlPreparing = true;
-            foreach (string defPath in (string[])e.Data.GetData(DataFormats.FileDrop))
+            string[] pathList = (string[])e.Data.GetData(DataFormats.FileDrop);
+            if (Path.GetExtension(pathList[0]).ToLower() == Character.DefExt)
             {
-                if (Path.GetExtension(defPath) != Character.DefExt) continue;
-                for (int i = 0; i < lstCharacterList.Items.Count; i++)
+                AddCharacterByDef(pathList);
+            }
+            else if (Character.ArchiveExt.Contains(Path.GetExtension(pathList[0]).ToLower()))
+            {
+                if (AddCharacterByArchive(pathList) == 0)
                 {
-                    if (((Character)lstCharacterList.Items[i]).Equals(defPath))
-                    {
-                        lstCharacterList.SetSelected(i, true);
-                        break;
-                    }
+                    ShowErrorMsg("添加人物压缩包失败！");
                 }
             }
-            CharacterListControlPreparing = false;
-            lstCharacterList_SelectedIndexChanged(null, null);
         }
 
         private void pageCharacter_DragEnter(object sender, DragEventArgs e)
@@ -1193,7 +1349,7 @@ namespace MUGENCharsSet
                 }
                 try
                 {
-                    Process.Start(AppSetting.EditProgramPath, character.DefPath);
+                    Process.Start(AppConfig.EditProgramPath, character.DefPath);
                 }
                 catch (Exception)
                 {
@@ -1239,7 +1395,7 @@ namespace MUGENCharsSet
                 }
                 try
                 {
-                    Process.Start(AppSetting.EditProgramPath, character.CnsFullPath);
+                    Process.Start(AppConfig.EditProgramPath, character.CnsFullPath);
                 }
                 catch (Exception)
                 {
@@ -1330,23 +1486,34 @@ namespace MUGENCharsSet
         }
 
         /// <summary>
-        /// 当单击转换为宽屏人物包右键菜单项时发生
+        /// 当单击添加所选人物右键菜单项时发生
         /// </summary>
-        private void ctxTsmiConvertToWideScreen_Click(object sender, EventArgs e)
+        private void ctxTsmiAddCharacter_Click(object sender, EventArgs e)
         {
-            ConvertToFitScreen(true);
+            if (lstCharacterList.SelectedItems.Count == 0) return;
+            Character[] characterList = new Character[lstCharacterList.SelectedItems.Count];
+            lstCharacterList.SelectedItems.CopyTo(characterList, 0);
+            if (Character.AddCharacterToSelectDef(characterList))
+            {
+                int[] selectedIndices = new int[lstCharacterList.SelectedIndices.Count];
+                lstCharacterList.SelectedIndices.CopyTo(selectedIndices, 0);
+                RefreshCharacterListDataSource(CharacterList);
+                CharacterListControlPreparing = true;
+                foreach (int index in selectedIndices)
+                {
+                    lstCharacterList.SetSelected(index, true);
+                }
+                CharacterListControlPreparing = false;
+                lstCharacterList_SelectedIndexChanged(null, null);
+            }
+            else
+            {
+                ShowErrorMsg("添加失败！");
+            }
         }
 
         /// <summary>
-        /// 当单击转换为普屏人物包右键菜单项时发生
-        /// </summary>
-        private void ctxTsmiConvertToNormalScreen_Click(object sender, EventArgs e)
-        {
-            ConvertToFitScreen(false);
-        }
-
-        /// <summary>
-        /// 当单击删除人物右键菜单项时发生
+        /// 当单击删除所选人物右键菜单项时发生
         /// </summary>
         private void ctxTsmiDeleteCharacter_Click(object sender, EventArgs e)
         {
@@ -1400,14 +1567,53 @@ namespace MUGENCharsSet
             }
         }
 
+        /// <summary>
+        /// 当单击转换为宽屏人物包右键菜单项时发生
+        /// </summary>
+        private void ctxTsmiConvertToWideScreen_Click(object sender, EventArgs e)
+        {
+            ConvertToFitScreen(true);
+        }
+
+        /// <summary>
+        /// 当单击转换为普屏人物包右键菜单项时发生
+        /// </summary>
+        private void ctxTsmiConvertToNormalScreen_Click(object sender, EventArgs e)
+        {
+            ConvertToFitScreen(false);
+        }
+
         #endregion
 
         #region 主菜单
 
         /// <summary>
-        /// 当单击选择system.def文件菜单项时发生
+        /// 当单击添加人物压缩包菜单项时发生
         /// </summary>
-        private void tsmiSetSystemDefPath_Click(object sender, EventArgs e)
+        private void tsmiAddCharacterByDefOrArchive_Click(object sender, EventArgs e)
+        {
+            if (ofdAddCharacterPath.ShowDialog() == DialogResult.OK)
+            {
+                if (Character.ArchiveExt.Contains(Path.GetExtension(ofdAddCharacterPath.FileNames[0]).ToLower()))
+                {
+                    if (AddCharacterByArchive(ofdAddCharacterPath.FileNames) == 0)
+                    {
+                        ShowErrorMsg("添加人物压缩包失败！");
+                        return;
+                    }
+                }
+                else if (Path.GetExtension(ofdAddCharacterPath.FileNames[0]).ToLower() == Character.DefExt)
+                {
+                    AddCharacterByDef(ofdAddCharacterPath.FileNames);
+                    ctxTsmiAddCharacter_Click(null, null);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 当单击更换system.def文件菜单项时发生
+        /// </summary>
+        private void tsmiChangeSystemDefPath_Click(object sender, EventArgs e)
         {
             ofdDefPath.FileName = MugenSetting.SystemDefPath;
             if (File.Exists(MugenSetting.SystemDefPath))
@@ -1428,13 +1634,13 @@ namespace MUGENCharsSet
                 ShowErrorMsg(ex.Message);
                 return;
             }
-            ReadCharacterList();
+            btnRefreshCharacterList_Click(null, null);
         }
 
         /// <summary>
-        /// 当单击选择select.def文件菜单项时发生
+        /// 当单击更换select.def文件菜单项时发生
         /// </summary>
-        private void tsmiSetSelectDefPath_Click(object sender, EventArgs e)
+        private void tsmiChangeSelectDefPath_Click(object sender, EventArgs e)
         {
             ofdDefPath.FileName = MugenSetting.SelectDefPath;
             if (File.Exists(MugenSetting.SelectDefPath))
@@ -1455,7 +1661,34 @@ namespace MUGENCharsSet
                 ShowErrorMsg(ex.Message);
                 return;
             }
-            ReadCharacterList();
+            btnRefreshCharacterList_Click(null, null);
+        }
+
+        /// <summary>
+        /// 当单击更换fight.def文件菜单项时发生
+        /// </summary>
+        private void tsmiChangeFightDefPath_Click(object sender, EventArgs e)
+        {
+            ofdDefPath.FileName = MugenSetting.FightDefPath;
+            if (File.Exists(MugenSetting.FightDefPath))
+            {
+                ofdDefPath.InitialDirectory = MugenSetting.FightDefPath.GetDirPathOfFile();
+            }
+            else
+            {
+                ofdDefPath.InitialDirectory = MugenSetting.MugenDataDirPath;
+            }
+            if (ofdDefPath.ShowDialog() != DialogResult.OK) return;
+            try
+            {
+                MugenSetting.FightDefPath = ofdDefPath.FileName;
+            }
+            catch (ApplicationException ex)
+            {
+                ShowErrorMsg(ex.Message);
+                return;
+            }
+            ShowSuccessMsg("fight.def文件更换成功！");
         }
 
         /// <summary>
@@ -1463,7 +1696,7 @@ namespace MUGENCharsSet
         /// </summary>
         private void tsmiReload_Click(object sender, EventArgs e)
         {
-            ReadCharacterList();
+            ReadCharacterList(true);
             ReadMugenCfgSetting();
         }
 
@@ -1472,11 +1705,11 @@ namespace MUGENCharsSet
         /// </summary>
         private void tsmiLaunchMugenExe_Click(object sender, EventArgs e)
         {
-            if (File.Exists(AppSetting.MugenExePath))
+            if (File.Exists(AppConfig.MugenExePath))
             {
                 try
                 {
-                    ProcessStartInfo psi = new ProcessStartInfo(AppSetting.MugenExePath);
+                    ProcessStartInfo psi = new ProcessStartInfo(AppConfig.MugenExePath);
                     psi.UseShellExecute = false;
                     psi.WorkingDirectory = MugenSetting.MugenDirPath;
                     Process.Start(psi);
@@ -1512,7 +1745,7 @@ namespace MUGENCharsSet
             {
                 try
                 {
-                    Process.Start(AppSetting.EditProgramPath, MugenSetting.SelectDefPath);
+                    Process.Start(AppConfig.EditProgramPath, MugenSetting.SelectDefPath);
                 }
                 catch (Exception)
                 {
@@ -1535,7 +1768,7 @@ namespace MUGENCharsSet
             {
                 try
                 {
-                    Process.Start(AppSetting.EditProgramPath, MugenSetting.SystemDefPath);
+                    Process.Start(AppConfig.EditProgramPath, MugenSetting.SystemDefPath);
                 }
                 catch (Exception)
                 {
@@ -1558,7 +1791,7 @@ namespace MUGENCharsSet
             {
                 try
                 {
-                    Process.Start(AppSetting.EditProgramPath, MugenSetting.MugenCfgPath);
+                    Process.Start(AppConfig.EditProgramPath, MugenSetting.MugenCfgPath);
                 }
                 catch (Exception)
                 {

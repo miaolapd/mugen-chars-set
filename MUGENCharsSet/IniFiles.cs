@@ -32,7 +32,7 @@ namespace MUGENCharsSet
         }
 
         /// <summary>
-        /// 类构造函数
+        /// 根据指定文件路径创建<see cref="IniFiles"/>类新实例
         /// </summary>
         /// <param name="fileName">ini文件路径</param>
         /// <exception cref="System.ApplicationException"></exception>
@@ -41,7 +41,7 @@ namespace MUGENCharsSet
             // 判断文件是否存在
             FileInfo fileInfo = new FileInfo(fileName);
             //Todo:搞清枚举的用法
-            if ((!fileInfo.Exists))
+            if (!fileInfo.Exists)
             {
                 StreamWriter sw = null;
                 try

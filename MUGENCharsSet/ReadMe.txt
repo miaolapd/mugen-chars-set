@@ -1,8 +1,22 @@
 ﻿M.U.G.E.N人物设置
 
+软件简介：
+用于M.U.G.E.N人物设置的小工具，更多功能正在开发中……
+运行需.NET Framework 4.0框架，如出现运行错误，请下载安装所需组件：http://www.microsoft.com/zh-cn/download/details.aspx?id=17718
+
 项目地址：https://code.google.com/p/mugen-chars-set/
+
+MugenCharsSet开发小组
 ====================================================
 更新日志：
+
+V1.5.0 (2014-01-23)
+    更换为.NET Framework 4.0框架
+    增加添加人物文件或压缩包的功能
+    增加更换fight.def文件的功能
+    未加入select.def文件的人物显示未加入标志
+    可将不在当前人物列表里的人物def文件拖拽到窗口上
+    使用xml文件保存程序配置
 
 V1.4.1 (2014-01-11)
     增加预览使用指定色表文件的人物模型的功能

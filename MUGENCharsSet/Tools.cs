@@ -13,6 +13,14 @@ namespace MUGENCharsSet
     public static class Tools
     {
         /// <summary>
+        /// 获取程序所在文件夹绝对路径
+        /// </summary>
+        public static string AppDirPath
+        {
+            get { return Application.StartupPath + "\\"; }
+        }
+
+        /// <summary>
         /// 获取末尾带反斜杠(\)的文件夹路径
         /// </summary>
         /// <param name="dirPath">文件夹路径</param>
@@ -90,7 +98,6 @@ namespace MUGENCharsSet
         {
             int encodingBytesCount = 0;
             bool allTextsAreASCIIChars = true;
-
             if (data.Length >= 3 && (byte)0xEF == data[0] && (byte)0xBB == data[1] && (byte)0xBF == data[2])
             {
                 return true;
@@ -98,7 +105,6 @@ namespace MUGENCharsSet
             for (int i = 0; i < data.Length; i++)
             {
                 byte current = data[i];
-
                 if ((current & 0x80) == 0x80)
                 {
                     allTextsAreASCIIChars = false;
@@ -109,7 +115,6 @@ namespace MUGENCharsSet
                     {
                         continue;
                     }
-
                     if ((current & 0xC0) == 0xC0)
                     {
                         encodingBytesCount = 1;
@@ -145,19 +150,36 @@ namespace MUGENCharsSet
         }
 
         /// <summary>
-        /// 将字符串从UTF-8编码转换为默认编码
+        /// 判断指定字节流是否为Unicode编码
         /// </summary>
-        /// <param name="content">要转换的字符串</param>
-        /// <returns>转换后的字符串</returns>
-        public static string ConvertUTF8ToDefaultEncoding(string content)
+        /// <param name="data">字节流</param>
+        /// <returns>是否为Unicode编码</returns>
+        public static bool IsUnicode(byte[] data)
         {
-            byte[] bytes = Encoding.UTF8.GetBytes(content);
-            bytes = Encoding.Convert(Encoding.UTF8, Encoding.Default, bytes);
-            return Encoding.Default.GetString(bytes);
+            if (data.Length >= 2 && (((byte)0xFE == data[0] && (byte)0xFF == data[1]) || ((byte)0xFF == data[0] && (byte)0xFE == data[1])))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
-        /// 使配置文件规格化(在文件开头添加空行、将UTF-8编码的文件转换为默认编码)
+        /// 获取指定字节流使用的编码
+        /// </summary>
+        /// <param name="data">字节流</param>
+        /// <returns><see cref="Encoding"/>类对象</returns>
+        public static Encoding GetEncoding(byte[] data)
+        {
+            if (IsUTF8(data)) return Encoding.UTF8;
+            else if (IsUnicode(data)) return Encoding.Unicode;
+            else return Encoding.Default;
+        }
+
+        /// <summary>
+        /// 使配置文件规格化(在文件开头添加空行、将UTF-8及Unicode编码的文件转换为默认编码)
         /// </summary>
         /// <param name="path">文件绝对路径</param>
         public static void IniFileStandardization(string path)
@@ -180,10 +202,10 @@ namespace MUGENCharsSet
             }
             try
             {
-                if (Tools.IsUTF8(data))
+                Encoding encoding = GetEncoding(data);
+                if (encoding == Encoding.UTF8 || encoding == Encoding.Unicode)
                 {
-                    string content = File.ReadAllText(path, Encoding.UTF8);
-                    content = Tools.ConvertUTF8ToDefaultEncoding(content);
+                    string content = File.ReadAllText(path, encoding);
                     if (content[0] == '[')
                     {
                         content = "\r\n" + content;
@@ -244,6 +266,30 @@ namespace MUGENCharsSet
                 }
             }
             return -1;
+        }
+
+        /// <summary>
+        /// 获取与其它文件夹不重名的文件夹绝对路径
+        /// </summary>
+        /// <param name="parentDirPath">父文件夹绝对路径</param>
+        /// <param name="dirName">想要创建的文件夹名字</param>
+        /// <returns>与其它文件夹不重名的文件夹绝对路径</returns>
+        public static string GetNonExistsDirPath(string parentDirPath, string dirName)
+        {
+            string path = parentDirPath + dirName + "\\";
+            if (!Directory.Exists(path))
+            {
+                return path;
+            }
+            else
+            {
+                for (int i = 1; i <= 1000; i++)
+                {
+                    path = parentDirPath + dirName + "_" + i + "\\";
+                    if (!Directory.Exists(path)) return path;
+                }
+            }
+            return "";
         }
     }
 }

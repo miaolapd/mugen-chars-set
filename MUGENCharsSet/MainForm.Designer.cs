@@ -35,9 +35,10 @@
             this.ctxTsmiOpenCnsFile = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxTsmiOpenDefDir = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxTsmiCopyDefPath = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxTsmiAddCharacter = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxTsmiDeleteCharacter = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxTsmiConvertToWideScreen = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxTsmiConvertToNormalScreen = new System.Windows.Forms.ToolStripMenuItem();
-            this.ctxTsmiDeleteCharacter = new System.Windows.Forms.ToolStripMenuItem();
             this.ttpCommon = new System.Windows.Forms.ToolTip(this.components);
             this.btnRestore = new System.Windows.Forms.Button();
             this.btnBackup = new System.Windows.Forms.Button();
@@ -74,7 +75,7 @@
             this.lblDisplayName = new System.Windows.Forms.Label();
             this.txtName = new System.Windows.Forms.TextBox();
             this.lblName = new System.Windows.Forms.Label();
-            this.grpChars = new System.Windows.Forms.GroupBox();
+            this.grpCharacterList = new System.Windows.Forms.GroupBox();
             this.lblCharacterSelectCount = new System.Windows.Forms.Label();
             this.lblCharacterCount = new System.Windows.Forms.Label();
             this.txtKeyword = new System.Windows.Forms.TextBox();
@@ -143,8 +144,10 @@
             this.cboP1Jump = new System.Windows.Forms.ComboBox();
             this.mnuMain = new System.Windows.Forms.MenuStrip();
             this.tsmiFiles = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiSetSystemDefPath = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiSetSelectDefPath = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiAddCharacterByDefOrArchive = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiChangeSystemDefPath = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiChangeSelectDefPath = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiChangeFightDefPath = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiReload = new System.Windows.Forms.ToolStripMenuItem();
             this.tssTsmiFiles1 = new System.Windows.Forms.ToolStripSeparator();
             this.tsmiLaunchMugenExe = new System.Windows.Forms.ToolStripMenuItem();
@@ -168,6 +171,7 @@
             this.lblDifficultyValue = new System.Windows.Forms.Label();
             this.fswCharacterCns = new System.IO.FileSystemWatcher();
             this.ofdDefPath = new System.Windows.Forms.OpenFileDialog();
+            this.ofdAddCharacterPath = new System.Windows.Forms.OpenFileDialog();
             this.ctxmnuCharacterList.SuspendLayout();
             this.pageCharacter.SuspendLayout();
             this.grpSprite.SuspendLayout();
@@ -177,7 +181,7 @@
             this.grpPal.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPal)).BeginInit();
             this.grpProperty.SuspendLayout();
-            this.grpChars.SuspendLayout();
+            this.grpCharacterList.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trbGameSpeed)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trbDifficulty)).BeginInit();
             this.mnuMain.SuspendLayout();
@@ -196,11 +200,12 @@
             this.ctxTsmiOpenCnsFile,
             this.ctxTsmiOpenDefDir,
             this.ctxTsmiCopyDefPath,
+            this.ctxTsmiAddCharacter,
+            this.ctxTsmiDeleteCharacter,
             this.ctxTsmiConvertToWideScreen,
-            this.ctxTsmiConvertToNormalScreen,
-            this.ctxTsmiDeleteCharacter});
+            this.ctxTsmiConvertToNormalScreen});
             this.ctxmnuCharacterList.Name = "contextMenuStrip1";
-            this.ctxmnuCharacterList.Size = new System.Drawing.Size(213, 158);
+            this.ctxmnuCharacterList.Size = new System.Drawing.Size(213, 180);
             // 
             // ctxTsmiOpenDefFile
             // 
@@ -231,6 +236,22 @@
             this.ctxTsmiCopyDefPath.Text = "复制def文件路径";
             this.ctxTsmiCopyDefPath.Click += new System.EventHandler(this.ctxTsmiCopyDefPath_Click);
             // 
+            // ctxTsmiAddCharacter
+            // 
+            this.ctxTsmiAddCharacter.Name = "ctxTsmiAddCharacter";
+            this.ctxTsmiAddCharacter.ShortcutKeys = System.Windows.Forms.Keys.Insert;
+            this.ctxTsmiAddCharacter.Size = new System.Drawing.Size(212, 22);
+            this.ctxTsmiAddCharacter.Text = "添加所选人物";
+            this.ctxTsmiAddCharacter.Click += new System.EventHandler(this.ctxTsmiAddCharacter_Click);
+            // 
+            // ctxTsmiDeleteCharacter
+            // 
+            this.ctxTsmiDeleteCharacter.Name = "ctxTsmiDeleteCharacter";
+            this.ctxTsmiDeleteCharacter.ShortcutKeys = System.Windows.Forms.Keys.Delete;
+            this.ctxTsmiDeleteCharacter.Size = new System.Drawing.Size(212, 22);
+            this.ctxTsmiDeleteCharacter.Text = "删除所选人物";
+            this.ctxTsmiDeleteCharacter.Click += new System.EventHandler(this.ctxTsmiDeleteCharacter_Click);
+            // 
             // ctxTsmiConvertToWideScreen
             // 
             this.ctxTsmiConvertToWideScreen.Name = "ctxTsmiConvertToWideScreen";
@@ -244,14 +265,6 @@
             this.ctxTsmiConvertToNormalScreen.Size = new System.Drawing.Size(212, 22);
             this.ctxTsmiConvertToNormalScreen.Text = "转换为普屏人物包(&N)";
             this.ctxTsmiConvertToNormalScreen.Click += new System.EventHandler(this.ctxTsmiConvertToNormalScreen_Click);
-            // 
-            // ctxTsmiDeleteCharacter
-            // 
-            this.ctxTsmiDeleteCharacter.Name = "ctxTsmiDeleteCharacter";
-            this.ctxTsmiDeleteCharacter.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-            this.ctxTsmiDeleteCharacter.Size = new System.Drawing.Size(212, 22);
-            this.ctxTsmiDeleteCharacter.Text = "删除人物";
-            this.ctxTsmiDeleteCharacter.Click += new System.EventHandler(this.ctxTsmiDeleteCharacter_Click);
             // 
             // btnRestore
             // 
@@ -383,14 +396,14 @@
             this.pageCharacter.Controls.Add(this.btnModify);
             this.pageCharacter.Controls.Add(this.grpPal);
             this.pageCharacter.Controls.Add(this.grpProperty);
-            this.pageCharacter.Controls.Add(this.grpChars);
+            this.pageCharacter.Controls.Add(this.grpCharacterList);
             this.pageCharacter.Location = new System.Drawing.Point(4, 22);
             this.pageCharacter.Name = "pageCharacter";
             this.pageCharacter.Padding = new System.Windows.Forms.Padding(3);
             this.pageCharacter.Size = new System.Drawing.Size(551, 500);
             this.pageCharacter.TabIndex = 0;
             this.pageCharacter.Text = "人物属性";
-            this.ttpCommon.SetToolTip(this.pageCharacter, "可将人物def文件拖拽至此处");
+            this.ttpCommon.SetToolTip(this.pageCharacter, "可将单个或多个人物def文件或压缩包拖拽至此处");
             this.pageCharacter.DragDrop += new System.Windows.Forms.DragEventHandler(this.pageCharacter_DragDrop);
             this.pageCharacter.DragEnter += new System.Windows.Forms.DragEventHandler(this.pageCharacter_DragEnter);
             this.pageCharacter.Enter += new System.EventHandler(this.pageCharacter_Enter);
@@ -551,6 +564,7 @@
             this.grpProperty.TabIndex = 3;
             this.grpProperty.TabStop = false;
             this.grpProperty.Text = "人物属性设置";
+            this.ttpCommon.SetToolTip(this.grpProperty, "可将单个或多个人物def文件或压缩包拖拽至此处");
             // 
             // txtDefence
             // 
@@ -672,28 +686,28 @@
             this.lblName.TabIndex = 0;
             this.lblName.Text = "名称";
             // 
-            // grpChars
+            // grpCharacterList
             // 
-            this.grpChars.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.grpCharacterList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.grpChars.Controls.Add(this.lblCharacterSelectCount);
-            this.grpChars.Controls.Add(this.lblCharacterCount);
-            this.grpChars.Controls.Add(this.btnSearchAll);
-            this.grpChars.Controls.Add(this.cboReadCharacterType);
-            this.grpChars.Controls.Add(this.btnSearchDown);
-            this.grpChars.Controls.Add(this.btnSearchUp);
-            this.grpChars.Controls.Add(this.txtKeyword);
-            this.grpChars.Controls.Add(this.btnSelectInvert);
-            this.grpChars.Controls.Add(this.btnSelectAll);
-            this.grpChars.Controls.Add(this.chkAutoSort);
-            this.grpChars.Controls.Add(this.lstCharacterList);
-            this.grpChars.Controls.Add(this.btnRefreshCharacterList);
-            this.grpChars.Location = new System.Drawing.Point(8, 50);
-            this.grpChars.Name = "grpChars";
-            this.grpChars.Size = new System.Drawing.Size(220, 441);
-            this.grpChars.TabIndex = 1;
-            this.grpChars.TabStop = false;
-            this.grpChars.Text = "人物列表";
+            this.grpCharacterList.Controls.Add(this.lblCharacterSelectCount);
+            this.grpCharacterList.Controls.Add(this.lblCharacterCount);
+            this.grpCharacterList.Controls.Add(this.btnSearchAll);
+            this.grpCharacterList.Controls.Add(this.cboReadCharacterType);
+            this.grpCharacterList.Controls.Add(this.btnSearchDown);
+            this.grpCharacterList.Controls.Add(this.btnSearchUp);
+            this.grpCharacterList.Controls.Add(this.txtKeyword);
+            this.grpCharacterList.Controls.Add(this.btnSelectInvert);
+            this.grpCharacterList.Controls.Add(this.btnSelectAll);
+            this.grpCharacterList.Controls.Add(this.chkAutoSort);
+            this.grpCharacterList.Controls.Add(this.lstCharacterList);
+            this.grpCharacterList.Controls.Add(this.btnRefreshCharacterList);
+            this.grpCharacterList.Location = new System.Drawing.Point(8, 50);
+            this.grpCharacterList.Name = "grpCharacterList";
+            this.grpCharacterList.Size = new System.Drawing.Size(220, 441);
+            this.grpCharacterList.TabIndex = 1;
+            this.grpCharacterList.TabStop = false;
+            this.grpCharacterList.Text = "人物列表";
             // 
             // lblCharacterSelectCount
             // 
@@ -1414,8 +1428,10 @@
             // tsmiFiles
             // 
             this.tsmiFiles.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiSetSystemDefPath,
-            this.tsmiSetSelectDefPath,
+            this.tsmiAddCharacterByDefOrArchive,
+            this.tsmiChangeSystemDefPath,
+            this.tsmiChangeSelectDefPath,
+            this.tsmiChangeFightDefPath,
             this.tsmiReload,
             this.tssTsmiFiles1,
             this.tsmiLaunchMugenExe,
@@ -1424,19 +1440,33 @@
             this.tsmiFiles.Size = new System.Drawing.Size(58, 21);
             this.tsmiFiles.Text = "文件(&F)";
             // 
-            // tsmiSetSystemDefPath
+            // tsmiAddCharacterByDefOrArchive
             // 
-            this.tsmiSetSystemDefPath.Name = "tsmiSetSystemDefPath";
-            this.tsmiSetSystemDefPath.Size = new System.Drawing.Size(220, 22);
-            this.tsmiSetSystemDefPath.Text = "选择system.def文件(&T)";
-            this.tsmiSetSystemDefPath.Click += new System.EventHandler(this.tsmiSetSystemDefPath_Click);
+            this.tsmiAddCharacterByDefOrArchive.Name = "tsmiAddCharacterByDefOrArchive";
+            this.tsmiAddCharacterByDefOrArchive.Size = new System.Drawing.Size(220, 22);
+            this.tsmiAddCharacterByDefOrArchive.Text = "添加人物文件或压缩包(&A)";
+            this.tsmiAddCharacterByDefOrArchive.Click += new System.EventHandler(this.tsmiAddCharacterByDefOrArchive_Click);
             // 
-            // tsmiSetSelectDefPath
+            // tsmiChangeSystemDefPath
             // 
-            this.tsmiSetSelectDefPath.Name = "tsmiSetSelectDefPath";
-            this.tsmiSetSelectDefPath.Size = new System.Drawing.Size(220, 22);
-            this.tsmiSetSelectDefPath.Text = "选择select.def文件(&L)";
-            this.tsmiSetSelectDefPath.Click += new System.EventHandler(this.tsmiSetSelectDefPath_Click);
+            this.tsmiChangeSystemDefPath.Name = "tsmiChangeSystemDefPath";
+            this.tsmiChangeSystemDefPath.Size = new System.Drawing.Size(220, 22);
+            this.tsmiChangeSystemDefPath.Text = "更换system.def文件(&T)";
+            this.tsmiChangeSystemDefPath.Click += new System.EventHandler(this.tsmiChangeSystemDefPath_Click);
+            // 
+            // tsmiChangeSelectDefPath
+            // 
+            this.tsmiChangeSelectDefPath.Name = "tsmiChangeSelectDefPath";
+            this.tsmiChangeSelectDefPath.Size = new System.Drawing.Size(220, 22);
+            this.tsmiChangeSelectDefPath.Text = "更换select.def文件(&L)";
+            this.tsmiChangeSelectDefPath.Click += new System.EventHandler(this.tsmiChangeSelectDefPath_Click);
+            // 
+            // tsmiChangeFightDefPath
+            // 
+            this.tsmiChangeFightDefPath.Name = "tsmiChangeFightDefPath";
+            this.tsmiChangeFightDefPath.Size = new System.Drawing.Size(220, 22);
+            this.tsmiChangeFightDefPath.Text = "更换fight.def文件(&F)";
+            this.tsmiChangeFightDefPath.Click += new System.EventHandler(this.tsmiChangeFightDefPath_Click);
             // 
             // tsmiReload
             // 
@@ -1693,6 +1723,11 @@
             // 
             this.ofdDefPath.Filter = "def文件|*.def";
             // 
+            // ofdAddCharacterPath
+            // 
+            this.ofdAddCharacterPath.Filter = "压缩包文件|*.zip;*.rar;*.7z;*.tar;*.gz;*.bz2|人物def文件|*.def";
+            this.ofdAddCharacterPath.Multiselect = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1706,6 +1741,7 @@
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "M.U.G.E.N人物设置";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             this.ctxmnuCharacterList.ResumeLayout(false);
@@ -1719,8 +1755,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvPal)).EndInit();
             this.grpProperty.ResumeLayout(false);
             this.grpProperty.PerformLayout();
-            this.grpChars.ResumeLayout(false);
-            this.grpChars.PerformLayout();
+            this.grpCharacterList.ResumeLayout(false);
+            this.grpCharacterList.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trbGameSpeed)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trbDifficulty)).EndInit();
             this.mnuMain.ResumeLayout(false);
@@ -1741,144 +1777,290 @@
 
         #endregion
 
+        /// <summary>人物列表控件右键菜单</summary>
         private System.Windows.Forms.ContextMenuStrip ctxmnuCharacterList;
+        /// <summary>打开人物def文件右键菜单项</summary>
         private System.Windows.Forms.ToolStripMenuItem ctxTsmiOpenDefFile;
+        /// <summary>公共提示控件</summary>
         private System.Windows.Forms.ToolTip ttpCommon;
+        /// <summary>打开人物文件夹右键菜单项</summary>
         private System.Windows.Forms.ToolStripMenuItem ctxTsmiOpenDefDir;
+        /// <summary>打开人物cns文件右键菜单项</summary>
         private System.Windows.Forms.ToolStripMenuItem ctxTsmiOpenCnsFile;
+        /// <summary>主菜单</summary>
         private System.Windows.Forms.MenuStrip mnuMain;
+        /// <summary>帮助菜单项</summary>
         private System.Windows.Forms.ToolStripMenuItem tsmiHelp;
+        /// <summary>文件菜单项</summary>
         private System.Windows.Forms.ToolStripMenuItem tsmiFiles;
+        /// <summary>运行MUGEN程序菜单项</summary>
         private System.Windows.Forms.ToolStripMenuItem tsmiLaunchMugenExe;
+        /// <summary>关于菜单项</summary>
         private System.Windows.Forms.ToolStripMenuItem tsmiAbout;
+        /// <summary>设置菜单项</summary>
         private System.Windows.Forms.ToolStripMenuItem tsmiSetting;
+        /// <summary>删除所选人物右键菜单项</summary>
         private System.Windows.Forms.ToolStripMenuItem ctxTsmiDeleteCharacter;
+        /// <summary>复制所选人物def文件路径右键菜单项</summary>
         private System.Windows.Forms.ToolStripMenuItem ctxTsmiCopyDefPath;
+        /// <summary>主标签页控件</summary>
         private System.Windows.Forms.TabControl tabMain;
+        /// <summary>人物标签页</summary>
         private System.Windows.Forms.TabPage pageCharacter;
+        /// <summary>人物def文件路径组合框</summary>
         private System.Windows.Forms.GroupBox grpDefPath;
+        /// <summary>人物def文件路径标签</summary>
         private System.Windows.Forms.Label lblDefPath;
+        /// <summary>恢复按钮</summary>
         private System.Windows.Forms.Button btnRestore;
+        /// <summary>备份按钮</summary>
         private System.Windows.Forms.Button btnBackup;
+        /// <summary>重置按钮</summary>
         private System.Windows.Forms.Button btnReset;
+        /// <summary>修改按钮</summary>
         private System.Windows.Forms.Button btnModify;
+        /// <summary>色表组合框</summary>
         private System.Windows.Forms.GroupBox grpPal;
+        /// <summary>色表网格数据控件</summary>
         private System.Windows.Forms.DataGridView dgvPal;
+        /// <summary>色表配置项索引栏</summary>
         private System.Windows.Forms.DataGridViewTextBoxColumn PalNo;
+        /// <summary>色表配置值栏</summary>
         private System.Windows.Forms.DataGridViewComboBoxColumn PalVal;
+        /// <summary>人物属性组合框</summary>
         private System.Windows.Forms.GroupBox grpProperty;
+        /// <summary>防御力文本框</summary>
         private System.Windows.Forms.TextBox txtDefence;
+        /// <summary>防御力标签</summary>
         private System.Windows.Forms.Label lblDefence;
+        /// <summary>攻击力文本框</summary>
         private System.Windows.Forms.TextBox txtAttack;
+        /// <summary>攻击力标签</summary>
         private System.Windows.Forms.Label lblAttack;
+        /// <summary>气上限文本框</summary>
         private System.Windows.Forms.TextBox txtPower;
+        /// <summary>气上限标签</summary>
         private System.Windows.Forms.Label lblPower;
+        /// <summary>生命值文本框</summary>
         private System.Windows.Forms.TextBox txtLife;
+        /// <summary>生命值标签</summary>
         private System.Windows.Forms.Label lblLife;
+        /// <summary>显示名文本框</summary>
         private System.Windows.Forms.TextBox txtDisplayName;
+        /// <summary>显示名标签</summary>
         private System.Windows.Forms.Label lblDisplayName;
+        /// <summary>人物名称文本框</summary>
         private System.Windows.Forms.TextBox txtName;
+        /// <summary>人物名称标签</summary>
         private System.Windows.Forms.Label lblName;
-        private System.Windows.Forms.GroupBox grpChars;
+        /// <summary>人物列表组合框</summary>
+        private System.Windows.Forms.GroupBox grpCharacterList;
+        /// <summary>读取人物列表类型</summary>
         private System.Windows.Forms.ComboBox cboReadCharacterType;
+        /// <summary>向下搜索按钮</summary>
         private System.Windows.Forms.Button btnSearchDown;
+        /// <summary>向上搜索按钮</summary>
         private System.Windows.Forms.Button btnSearchUp;
+        /// <summary>搜索关键字文本框</summary>
         private System.Windows.Forms.TextBox txtKeyword;
+        /// <summary>反选按钮</summary>
         private System.Windows.Forms.Button btnSelectInvert;
+        /// <summary>全选按钮</summary>
         private System.Windows.Forms.Button btnSelectAll;
+        /// <summary>自动排序复选框</summary>
         private System.Windows.Forms.CheckBox chkAutoSort;
+        /// <summary>人物列表框</summary>
         private System.Windows.Forms.ListBox lstCharacterList;
+        /// <summary>刷新人物列表按钮</summary>
         private System.Windows.Forms.Button btnRefreshCharacterList;
+        /// <summary>全部搜索按钮</summary>
         private System.Windows.Forms.Button btnSearchAll;
+        /// <summary>重新载入菜单项</summary>
         private System.Windows.Forms.ToolStripMenuItem tsmiReload;
+        /// <summary>编辑菜单项</summary>
         private System.Windows.Forms.ToolStripMenuItem tsmiEdit;
+        /// <summary>打开select.def文件菜单项</summary>
         private System.Windows.Forms.ToolStripMenuItem tsmiOpenSelectDef;
+        /// <summary>打开system.def文件菜单项</summary>
         private System.Windows.Forms.ToolStripMenuItem tsmiOpenSystemDef;
+        /// <summary>打开mugen.cfg文件菜单项</summary>
         private System.Windows.Forms.ToolStripMenuItem tsmiOpenMugenCfg;
+        /// <summary>监视人物cns文件FileSystemWatcher控件</summary>
         private System.IO.FileSystemWatcher fswCharacterCns;
-        private System.Windows.Forms.ToolStripMenuItem tsmiSetSystemDefPath;
+        /// <summary>更换system.def文件菜单项</summary>
+        private System.Windows.Forms.ToolStripMenuItem tsmiChangeSystemDefPath;
+        /// <summary>文件菜单项分隔符</summary>
         private System.Windows.Forms.ToolStripSeparator tssTsmiFiles1;
+        /// <summary>打开def文件对话框</summary>
         private System.Windows.Forms.OpenFileDialog ofdDefPath;
-        private System.Windows.Forms.ToolStripMenuItem tsmiSetSelectDefPath;
+        /// <summary>更换select.def文件菜单项</summary>
+        private System.Windows.Forms.ToolStripMenuItem tsmiChangeSelectDefPath;
+        /// <summary>所选人物个数标签</summary>
         private System.Windows.Forms.Label lblCharacterSelectCount;
+        /// <summary>人物总数标签</summary>
         private System.Windows.Forms.Label lblCharacterCount;
+        /// <summary>MUGEN信息组合框</summary>
         private System.Windows.Forms.GroupBox grpMugenInfo;
+        /// <summary>MUGEN信息标签</summary>
         private System.Windows.Forms.Label lblMugenInfo;
+        /// <summary>转换为宽屏人物包右键菜单项</summary>
         private System.Windows.Forms.ToolStripMenuItem ctxTsmiConvertToWideScreen;
+        /// <summary>转换为普屏人物包右键菜单项</summary>
         private System.Windows.Forms.ToolStripMenuItem ctxTsmiConvertToNormalScreen;
+        /// <summary>mugen.cfg文件设置标签页</summary>
         private System.Windows.Forms.TabPage pageMugenCfgSetting;
+        /// <summary>基础信息组合框</summary>
         private System.Windows.Forms.GroupBox grpBaseSetting;
+        /// <summary>TeamLoseOnKO下拉列表</summary>
         private System.Windows.Forms.ComboBox cboTeamLoseOnKO;
+        /// <summary>TeamLoseOnKO标签</summary>
         private System.Windows.Forms.Label lblTeamLoseOnKO;
+        /// <summary>Team1VS2Life文本框</summary>
         private System.Windows.Forms.TextBox txtTeam1VS2Life;
+        /// <summary>Team1VS2Life标签</summary>
         private System.Windows.Forms.Label lblTeam1VS2Life;
+        /// <summary>游戏速度(帧率)文本框</summary>
         private System.Windows.Forms.TextBox txtGameFrame;
+        /// <summary>游戏速度(帧率)标签</summary>
         private System.Windows.Forms.Label lblGameFrame;
+        /// <summary>游戏速度文本框</summary>
         private System.Windows.Forms.Label lblGameSpeed;
+        /// <summary>每回合时间文本框</summary>
         private System.Windows.Forms.TextBox txtTime;
+        /// <summary>每回合时间标签</summary>
         private System.Windows.Forms.Label lblTime;
+        /// <summary>游戏人物生命力文本框</summary>
         private System.Windows.Forms.TextBox txtMugenCfgLife;
+        /// <summary>游戏人物生命力标签</summary>
         private System.Windows.Forms.Label lblMugenCfgLife;
+        /// <summary>游戏难度标签</summary>
         private System.Windows.Forms.Label lblDifficulty;
+        /// <summary>显示设置组合框</summary>
         private System.Windows.Forms.GroupBox grpDisplaySetting;
+        /// <summary>是否全屏下拉列表</summary>
         private System.Windows.Forms.ComboBox cboFullScreen;
+        /// <summary>渲染模式下拉列表</summary>
         private System.Windows.Forms.ComboBox cboRenderMode;
+        /// <summary>是否全屏标签</summary>
         private System.Windows.Forms.Label lblFullScreen;
+        /// <summary>渲染模式标签</summary>
         private System.Windows.Forms.Label lblRenderMode;
+        /// <summary>游戏屏幕高度文本框</summary>
         private System.Windows.Forms.TextBox txtGameHeight;
+        /// <summary>游戏屏幕高度标签</summary>
         private System.Windows.Forms.Label lblGameHeight;
+        /// <summary>游戏屏幕宽度文本框</summary>
         private System.Windows.Forms.TextBox txtGameWidth;
+        /// <summary>游戏屏幕宽度标签</summary>
         private System.Windows.Forms.Label lblGameWidth;
+        /// <summary>按键设置组合框</summary>
         private System.Windows.Forms.GroupBox grpKeyPressSetting;
+        /// <summary>跳键标签</summary>
         private System.Windows.Forms.Label lblKeyPressJump;
+        /// <summary>P2按键标签</summary>
         private System.Windows.Forms.Label lblKeyPressP2;
+        /// <summary>P1按键标签</summary>
         private System.Windows.Forms.Label lblKeyPressP1;
+        /// <summary>开始键标签</summary>
         private System.Windows.Forms.Label lblKeyPressStart;
+        /// <summary>Z键标签</summary>
         private System.Windows.Forms.Label lblKeyPressZ;
+        /// <summary>Y键标签</summary>
         private System.Windows.Forms.Label lblKeyPressY;
+        /// <summary>X键标签</summary>
         private System.Windows.Forms.Label lblKeyPressX;
+        /// <summary>C键标签</summary>
         private System.Windows.Forms.Label lblKeyPressC;
+        /// <summary>B键标签</summary>
         private System.Windows.Forms.Label lblKeyPressB;
+        /// <summary>A键标签</summary>
         private System.Windows.Forms.Label lblKeyPressA;
+        /// <summary>向前键标签</summary>
         private System.Windows.Forms.Label lblKeyPressRight;
+        /// <summary>向后键标签</summary>
         private System.Windows.Forms.Label lblKeyPressLeft;
+        /// <summary>蹲键标签</summary>
         private System.Windows.Forms.Label lblKeyPressCrouch;
+        /// <summary>恢复mugen.cfg文件按钮</summary>
         private System.Windows.Forms.Button btnMugenCfgRestore;
+        /// <summary>备份mugen.cfg文件按钮</summary>
         private System.Windows.Forms.Button btnMugenCfgBackup;
+        /// <summary>重置mugen.cfg文件按钮</summary>
         private System.Windows.Forms.Button btnMugenCfgReset;
+        /// <summary>修改mugen.cfg文件按钮</summary>
         private System.Windows.Forms.Button btnMugenCfgModify;
+        /// <summary>游戏难度滑动条</summary>
         private System.Windows.Forms.TrackBar trbDifficulty;
+        /// <summary>游戏速度滑动条</summary>
         private System.Windows.Forms.TrackBar trbGameSpeed;
+        /// <summary>游戏速度值标签</summary>
         private System.Windows.Forms.Label lblGameSpeedValue;
+        /// <summary>游戏难度值标签</summary>
         private System.Windows.Forms.Label lblDifficultyValue;
+        /// <summary>Team1VS2Life百分号标签</summary>
         private System.Windows.Forms.Label lblTeam1VS2LifePercent;
+        /// <summary>游戏人物生命力百分号标签</summary>
         private System.Windows.Forms.Label lblMugenCfgLifePercent;
-        private System.Windows.Forms.ComboBox cboP1Jump;
-        private System.Windows.Forms.ComboBox cboP2Start;
-        private System.Windows.Forms.ComboBox cboP1Start;
-        private System.Windows.Forms.ComboBox cboP2Z;
-        private System.Windows.Forms.ComboBox cboP1Z;
-        private System.Windows.Forms.ComboBox cboP2Y;
-        private System.Windows.Forms.ComboBox cboP1Y;
-        private System.Windows.Forms.ComboBox cboP2X;
-        private System.Windows.Forms.ComboBox cboP1X;
-        private System.Windows.Forms.ComboBox cboP2C;
-        private System.Windows.Forms.ComboBox cboP1C;
-        private System.Windows.Forms.ComboBox cboP2B;
-        private System.Windows.Forms.ComboBox cboP1B;
-        private System.Windows.Forms.ComboBox cboP2A;
-        private System.Windows.Forms.ComboBox cboP1A;
-        private System.Windows.Forms.ComboBox cboP2Right;
-        private System.Windows.Forms.ComboBox cboP1Right;
-        private System.Windows.Forms.ComboBox cboP2Left;
-        private System.Windows.Forms.ComboBox cboP1Left;
-        private System.Windows.Forms.ComboBox cboP2Crouch;
-        private System.Windows.Forms.ComboBox cboP1Crouch;
+        /// <summary>P2跳键下拉框</summary>
         private System.Windows.Forms.ComboBox cboP2Jump;
+        /// <summary>P1跳键下拉框</summary>
+        private System.Windows.Forms.ComboBox cboP1Jump;
+        /// <summary>P2开始键下拉框</summary>
+        private System.Windows.Forms.ComboBox cboP2Start;
+        /// <summary>P1开始键下拉框</summary>
+        private System.Windows.Forms.ComboBox cboP1Start;
+        /// <summary>P2 Z键下拉框</summary>
+        private System.Windows.Forms.ComboBox cboP2Z;
+        /// <summary>P1 Z键下拉框</summary>
+        private System.Windows.Forms.ComboBox cboP1Z;
+        /// <summary>P2 Y键下拉框</summary>
+        private System.Windows.Forms.ComboBox cboP2Y;
+        /// <summary>P1 Y键下拉框</summary>
+        private System.Windows.Forms.ComboBox cboP1Y;
+        /// <summary>P2 X键下拉框</summary>
+        private System.Windows.Forms.ComboBox cboP2X;
+        /// <summary>P1 X键下拉框</summary>
+        private System.Windows.Forms.ComboBox cboP1X;
+        /// <summary>P2 C键下拉框</summary>
+        private System.Windows.Forms.ComboBox cboP2C;
+        /// <summary>P1 C键下拉框</summary>
+        private System.Windows.Forms.ComboBox cboP1C;
+        /// <summary>P2 B键下拉框</summary>
+        private System.Windows.Forms.ComboBox cboP2B;
+        /// <summary>P1 B键下拉框</summary>
+        private System.Windows.Forms.ComboBox cboP1B;
+        /// <summary>P2 A键下拉框</summary>
+        private System.Windows.Forms.ComboBox cboP2A;
+        /// <summary>P1 A键下拉框</summary>
+        private System.Windows.Forms.ComboBox cboP1A;
+        /// <summary>P2向前键下拉框</summary>
+        private System.Windows.Forms.ComboBox cboP2Right;
+        /// <summary>P1向前键下拉框</summary>
+        private System.Windows.Forms.ComboBox cboP1Right;
+        /// <summary>P2向后键下拉框</summary>
+        private System.Windows.Forms.ComboBox cboP2Left;
+        /// <summary>P1向后键下拉框</summary>
+        private System.Windows.Forms.ComboBox cboP1Left;
+        /// <summary>P2蹲键下拉框</summary>
+        private System.Windows.Forms.ComboBox cboP2Crouch;
+        /// <summary>P1蹲键下拉框</summary>
+        private System.Windows.Forms.ComboBox cboP1Crouch;
+        /// <summary>人物模型组合框</summary>
         private System.Windows.Forms.GroupBox grpSprite;
+        /// <summary>人物模型图片控件</summary>
         private System.Windows.Forms.PictureBox picSpriteImage;
+        /// <summary>SFF文件版本标签</summary>
         private System.Windows.Forms.Label lblSpriteVersion;
+        /// <summary>可选色表文件下拉框</summary>
         private System.Windows.Forms.ComboBox cboSelectableActFileList;
+        /// <summary>添加所选人物右键菜单项</summary>
+        private System.Windows.Forms.ToolStripMenuItem ctxTsmiAddCharacter;
+        /// <summary>添加人物压缩包菜单项</summary>
+        private System.Windows.Forms.ToolStripMenuItem tsmiAddCharacterByDefOrArchive;
+        /// <summary>添加人物文件对话框</summary>
+        private System.Windows.Forms.OpenFileDialog ofdAddCharacterPath;
+        /// <summary>更换fight.def文件菜单项</summary>
+        private System.Windows.Forms.ToolStripMenuItem tsmiChangeFightDefPath;
     }
 }
 

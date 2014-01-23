@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingForm));
             this.grpSetting = new System.Windows.Forms.GroupBox();
+            this.chkShowCharacterScreenMark = new System.Windows.Forms.CheckBox();
             this.btnOpenEditProgramPath = new System.Windows.Forms.Button();
             this.txtEditProgramPath = new System.Windows.Forms.TextBox();
             this.lblEditProgram = new System.Windows.Forms.Label();
@@ -43,7 +44,6 @@
             this.txtMugenExePath = new System.Windows.Forms.TextBox();
             this.btnOpenMugenExePath = new System.Windows.Forms.Button();
             this.ttpCommon = new System.Windows.Forms.ToolTip(this.components);
-            this.chkShowCharacterScreenMark = new System.Windows.Forms.CheckBox();
             this.grpSetting.SuspendLayout();
             this.grpMugenExePath.SuspendLayout();
             this.SuspendLayout();
@@ -62,6 +62,17 @@
             this.grpSetting.TabIndex = 1;
             this.grpSetting.TabStop = false;
             this.grpSetting.Text = "程序设置";
+            // 
+            // chkShowCharacterScreenMark
+            // 
+            this.chkShowCharacterScreenMark.AutoSize = true;
+            this.chkShowCharacterScreenMark.Location = new System.Drawing.Point(8, 41);
+            this.chkShowCharacterScreenMark.Name = "chkShowCharacterScreenMark";
+            this.chkShowCharacterScreenMark.Size = new System.Drawing.Size(138, 16);
+            this.chkShowCharacterScreenMark.TabIndex = 3;
+            this.chkShowCharacterScreenMark.Text = "显示人物宽/普屏标记";
+            this.ttpCommon.SetToolTip(this.chkShowCharacterScreenMark, "是否在人物列表上显示宽/普屏标记");
+            this.chkShowCharacterScreenMark.UseVisualStyleBackColor = true;
             // 
             // btnOpenEditProgramPath
             // 
@@ -117,7 +128,6 @@
             this.btnCancel.TabIndex = 3;
             this.btnCancel.Text = "取消";
             this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDefault
             // 
@@ -180,17 +190,6 @@
             this.btnOpenMugenExePath.Text = "...";
             this.btnOpenMugenExePath.UseVisualStyleBackColor = true;
             this.btnOpenMugenExePath.Click += new System.EventHandler(this.btnOpenMugenExePath_Click);
-            // 
-            // chkShowCharacterScreenMark
-            // 
-            this.chkShowCharacterScreenMark.AutoSize = true;
-            this.chkShowCharacterScreenMark.Location = new System.Drawing.Point(8, 41);
-            this.chkShowCharacterScreenMark.Name = "chkShowCharacterScreenMark";
-            this.chkShowCharacterScreenMark.Size = new System.Drawing.Size(138, 16);
-            this.chkShowCharacterScreenMark.TabIndex = 3;
-            this.chkShowCharacterScreenMark.Text = "显示人物宽/普屏标记";
-            this.ttpCommon.SetToolTip(this.chkShowCharacterScreenMark, "是否在人物列表上显示宽/普屏标记");
-            this.chkShowCharacterScreenMark.UseVisualStyleBackColor = true;
             // 
             // SettingForm
             // 
