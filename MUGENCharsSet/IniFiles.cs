@@ -47,7 +47,7 @@ namespace MUGENCharsSet
                 try
                 {
                     //文件不存在，建立文件
-                    sw = new StreamWriter(fileName, false, Encoding.UTF8);
+                    sw = new StreamWriter(fileName, false, Encoding.Default);
                     sw.Write("\r\n");
                 }
                 catch
@@ -78,7 +78,6 @@ namespace MUGENCharsSet
         {
             if (!WritePrivateProfileString(Section, Ident, Encoding.UTF8.GetBytes(" " + Value.TrimStart()), FilePath))
             {
-
                 throw new ApplicationException("配置文件写入失败！");
             }
         }
@@ -216,8 +215,7 @@ namespace MUGENCharsSet
             //Note:必须得用Bytes来实现，StringBuilder只能取到第一个Section
             byte[] Buffer = new byte[65535];
             int bufLen = 0;
-            bufLen = GetPrivateProfileString(null, null, null, Buffer,
-             Buffer.GetUpperBound(0), FilePath);
+            bufLen = GetPrivateProfileString(null, null, null, Buffer, Buffer.GetUpperBound(0), FilePath);
             GetStringsFromBuffer(Buffer, bufLen, SectionList);
         }
 
