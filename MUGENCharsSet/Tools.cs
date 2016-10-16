@@ -203,21 +203,21 @@ namespace MUGENCharsSet
             try
             {
                 Encoding encoding = GetEncoding(data);
-                if (encoding == Encoding.UTF8 || encoding == Encoding.Unicode)
+                if (encoding != Encoding.UTF8)
                 {
                     string content = File.ReadAllText(path, encoding);
                     if (content[0] == '[')
                     {
                         content = "\r\n" + content;
                     }
-                    File.WriteAllText(path, content, Encoding.Default);
+                    File.WriteAllText(path, content, Encoding.UTF8);
                 }
                 else
                 {
                     if (data[0] == '[')
                     {
-                        string content = File.ReadAllText(path, Encoding.Default);
-                        File.WriteAllText(path, "\r\n" + content, Encoding.Default);
+                        string content = File.ReadAllText(path, Encoding.UTF8);
+                        File.WriteAllText(path, "\r\n" + content, Encoding.UTF8);
                     }
                 }
             }

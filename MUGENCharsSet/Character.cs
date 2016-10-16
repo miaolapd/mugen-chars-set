@@ -893,10 +893,10 @@ namespace MUGENCharsSet
             if (!File.Exists(stcommonPath)) throw new ApplicationException("stcommon文件不存在！");
             try
             {
-                string content = File.ReadAllText(stcommonPath, Encoding.Default);
+                string content = File.ReadAllText(stcommonPath, Encoding.UTF8);
                 Regex regex = new Regex(@"yaccel\s*\)(\s*/\s*\d+)?(\.\d+)?", RegexOptions.IgnoreCase);
                 content = regex.Replace(content, "yaccel)/1.2");
-                File.WriteAllText(stcommonPath, content, Encoding.Default);
+                File.WriteAllText(stcommonPath, content, Encoding.UTF8);
             }
             catch (Exception)
             {
@@ -914,10 +914,10 @@ namespace MUGENCharsSet
             if (!File.Exists(stcommonPath)) throw new ApplicationException("stcommon文件不存在！");
             try
             {
-                string content = File.ReadAllText(stcommonPath, Encoding.Default);
+                string content = File.ReadAllText(stcommonPath, Encoding.UTF8);
                 Regex regex = new Regex(@"yaccel\s*\)\s*/\s*\d+(\.\d+)?", RegexOptions.IgnoreCase);
                 content = regex.Replace(content, "yaccel)");
-                File.WriteAllText(stcommonPath, content, Encoding.Default);
+                File.WriteAllText(stcommonPath, content, Encoding.UTF8);
             }
             catch (Exception)
             {
@@ -1005,7 +1005,7 @@ namespace MUGENCharsSet
             string[] characterLines = null;
             try
             {
-                string defContent = File.ReadAllText(MugenSetting.SelectDefPath, Encoding.Default);
+                string defContent = File.ReadAllText(MugenSetting.SelectDefPath, Encoding.UTF8);
                 Regex regex = new Regex(@"\[Characters\](.*)\r\n\[ExtraStages\]", RegexOptions.IgnoreCase | RegexOptions.Singleline);
                 characterLines = regex.Match(defContent).Groups[1].Value.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
             }
@@ -1044,7 +1044,7 @@ namespace MUGENCharsSet
             string[] characterLines = null;
             try
             {
-                fileContent = File.ReadAllText(MugenSetting.SelectDefPath, Encoding.Default);
+                fileContent = File.ReadAllText(MugenSetting.SelectDefPath, Encoding.UTF8);
                 Regex regex = new Regex(@"(\[Characters\].*)\r\n\[ExtraStages\]", RegexOptions.IgnoreCase | RegexOptions.Singleline);
                 oriCharacterContent = regex.Match(fileContent).Groups[1].Value;
                 characterLines = oriCharacterContent.Split(new string[] { "\r\n" }, StringSplitOptions.None);
@@ -1074,7 +1074,7 @@ namespace MUGENCharsSet
             fileContent = fileContent.Replace(oriCharacterContent, String.Join("\r\n", characterLines));
             try
             {
-                File.WriteAllText(MugenSetting.SelectDefPath, fileContent, Encoding.Default);
+                File.WriteAllText(MugenSetting.SelectDefPath, fileContent, Encoding.UTF8);
             }
             catch (Exception) { }
         }
@@ -1092,7 +1092,7 @@ namespace MUGENCharsSet
             string oriCharacterContent = "";
             try
             {
-                fileContent = File.ReadAllText(MugenSetting.SelectDefPath, Encoding.Default);
+                fileContent = File.ReadAllText(MugenSetting.SelectDefPath, Encoding.UTF8);
                 Regex regex = new Regex(@"(\[Characters\].*?)(\r\n)+(;-*)?(\r\n)+\[ExtraStages\]", RegexOptions.IgnoreCase | RegexOptions.Singleline);
                 oriCharacterContent = regex.Match(fileContent).Groups[1].Value;
             }
@@ -1110,7 +1110,7 @@ namespace MUGENCharsSet
             fileContent = fileContent.Replace(oriCharacterContent, oriCharacterContent + newCharacterContent);
             try
             {
-                File.WriteAllText(MugenSetting.SelectDefPath, fileContent, Encoding.Default);
+                File.WriteAllText(MugenSetting.SelectDefPath, fileContent, Encoding.UTF8);
             }
             catch (Exception)
             {

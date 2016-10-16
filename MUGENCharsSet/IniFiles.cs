@@ -19,7 +19,7 @@ namespace MUGENCharsSet
 
         // 声明读写INI文件的API函数
         [DllImport("kernel32")]
-        private static extern bool WritePrivateProfileString(string section, string key, string val, string filePath);
+        private static extern bool WritePrivateProfileString(string section, string key, byte[] val, string filePath);
         [DllImport("kernel32")]
         private static extern int GetPrivateProfileString(string section, string key, string def, byte[] retVal, int size, string filePath);
 
@@ -47,7 +47,7 @@ namespace MUGENCharsSet
                 try
                 {
                     //文件不存在，建立文件
-                    sw = new StreamWriter(fileName, false, Encoding.Default);
+                    sw = new StreamWriter(fileName, false, Encoding.UTF8);
                     sw.Write("\r\n");
                 }
                 catch
@@ -76,7 +76,7 @@ namespace MUGENCharsSet
         /// <exception cref="System.ApplicationException"></exception>
         public void WriteString(string Section, string Ident, string Value)
         {
-            if (!WritePrivateProfileString(Section, Ident, " " + Value.TrimStart(), FilePath))
+            if (!WritePrivateProfileString(Section, Ident, Encoding.UTF8.GetBytes(" " + Value.TrimStart()), FilePath))
             {
 
                 throw new ApplicationException("配置文件写入失败！");
@@ -94,8 +94,7 @@ namespace MUGENCharsSet
         {
             Byte[] Buffer = new Byte[65535];
             int bufLen = GetPrivateProfileString(Section, Ident, Default, Buffer, Buffer.GetUpperBound(0), FilePath);
-            //必须设定0（系统默认的代码页）的编码方式，否则无法支持中文
-            string s = Encoding.Default.GetString(Buffer);
+            string s = Encoding.UTF8.GetString(Buffer);
             s = s.Substring(0, bufLen);
             if (s.IndexOf(CommentMark) >= 0)
             {
@@ -200,7 +199,7 @@ namespace MUGENCharsSet
                 {
                     if ((Buffer[i] == 0) && ((i - start) > 0))
                     {
-                        String s = Encoding.Default.GetString(Buffer, start, i - start);
+                        String s = Encoding.UTF8.GetString(Buffer, start, i - start);
                         Strings.Add(s);
                         start = i + 1;
                     }

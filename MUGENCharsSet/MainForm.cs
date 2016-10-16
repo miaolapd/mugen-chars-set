@@ -184,6 +184,7 @@ namespace MUGENCharsSet
             lblMugenInfo.Text = "";
             lblCharacterCount.Text = "";
             lblCharacterSelectCount.Text = "";
+            fswCharacterCns.EnableRaisingEvents = false;
             try
             {
                 MugenSetting.ReadMugenSetting();

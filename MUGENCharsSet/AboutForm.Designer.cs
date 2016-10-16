@@ -73,10 +73,10 @@
             this.lnkAppUrl.AutoSize = true;
             this.lnkAppUrl.Location = new System.Drawing.Point(82, 82);
             this.lnkAppUrl.Name = "lnkAppUrl";
-            this.lnkAppUrl.Size = new System.Drawing.Size(257, 12);
+            this.lnkAppUrl.Size = new System.Drawing.Size(263, 12);
             this.lnkAppUrl.TabIndex = 4;
             this.lnkAppUrl.TabStop = true;
-            this.lnkAppUrl.Text = "https://code.google.com/p/mugen-chars-set/";
+            this.lnkAppUrl.Text = "https://github.com/miaolapd/mugen-chars-set";
             this.lnkAppUrl.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkAppUrl_LinkClicked);
             // 
             // lblAuthor
