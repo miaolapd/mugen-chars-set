@@ -2,14 +2,16 @@
 用于M.U.G.E.N人物设置的小工具，更多功能正在开发中……
 
 ## 使用说明
-运行需[.NET Framework 4.0](http://www.microsoft.com/zh-cn/download/details.aspx?id=17718)框架，如出现运行错误，请下载安装所需组件
+运行需[.NET Framework 4.0](https://www.microsoft.com/zh-cn/download/details.aspx?id=17718)框架，如出现运行错误，请下载安装所需组件
 
 ## 下载地址
-[MUGENCharsSet V1.5.0.zip](https://github.com/miaolapd/mugen-chars-set/raw/master/Releases/MUGENCharsSet%20V1.5.0.zip)
+[MUGENCharsSet V1.5.0.zip](https://github.com/miaolapd/mugen-chars-set/raw/master/Releases/MUGENCharsSet%20V1.6.0.zip)
 
 _By MugenCharsSet开发小组_
 
 ## 更新日志
+* V1.6.0 (2016-10-16)
+  * 采用UTF-8编码保存MUGEN相关文件
 * V1.5.0 (2014-01-23)
   * 更换为.NET Framework 4.0框架
   * 增加添加人物文件或压缩包的功能
