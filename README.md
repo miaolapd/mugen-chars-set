@@ -5,7 +5,7 @@
 运行需[.NET Framework 4.0](https://www.microsoft.com/zh-cn/download/details.aspx?id=17718)框架，如出现运行错误，请下载安装所需组件
 
 ## 下载地址
-[MUGENCharsSet V1.5.0.zip](https://github.com/miaolapd/mugen-chars-set/raw/master/Releases/MUGENCharsSet%20V1.6.0.zip)
+[MUGENCharsSet V1.6.0.zip](https://github.com/miaolapd/mugen-chars-set/raw/master/Releases/MUGENCharsSet%20V1.6.0.zip)
 
 _By MugenCharsSet开发小组_
 
