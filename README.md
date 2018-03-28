@@ -1,5 +1,6 @@
 # M.U.G.E.N人物设置
-用于M.U.G.E.N人物设置的小工具，更多功能正在开发中……
+用于M.U.G.E.N人物设置的小工具  
+注：该项目已关闭，如有需要可自行Fork
 
 ## 使用说明
 运行需[.NET Framework 4.0](https://www.microsoft.com/zh-cn/download/details.aspx?id=17718)框架，如出现运行错误，请下载安装所需组件
